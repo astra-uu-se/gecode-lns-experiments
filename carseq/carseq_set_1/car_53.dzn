@@ -1,0 +1,32 @@
+Cars = 1..200;
+Options = 1..5;
+Classes = 1..24;
+sequenceMinCapacity = [0, 0, 0, 0, 0];
+sequenceMaxCapacity = [1, 2, 1, 2, 1];
+sequenceSize = [2, 3, 3, 5, 5];
+numOrdered = [12, 2, 22, 10, 1, 5, 5, 4, 2, 14, 5, 10, 4, 30, 1, 2, 6, 6, 25, 19, 1, 10, 2, 2];
+classHasOption = [|false, false, false, false,  true
+                  |false,  true,  true, false,  true
+                  |false,  true, false,  true, false
+                  | true, false,  true, false, false
+                  |false, false, false,  true,  true
+                  |false,  true,  true, false, false
+                  |false, false,  true, false,  true
+                  | true,  true,  true, false, false
+                  | true, false,  true, false,  true
+                  | true,  true, false, false, false
+                  |false,  true,  true,  true, false
+                  |false, false,  true,  true, false
+                  | true,  true, false, false,  true
+                  |false,  true, false, false, false
+                  | true, false, false,  true,  true
+                  | true, false, false, false,  true
+                  | true, false, false,  true, false
+                  |false,  true, false, false,  true
+                  | true, false, false, false, false
+                  |false, false, false,  true, false
+                  | true, false,  true,  true, false
+                  |false, false,  true, false, false
+                  | true,  true,  true, false,  true
+                  | true,  true, false,  true, false|];
+optionOrdering = [5, 3, 1, 4, 2];

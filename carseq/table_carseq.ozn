@@ -1,0 +1,17 @@
+output ["\"output\": {","\"default\": ",showJSON(concat(["Problem description: \n","\t permuatation = "++format(permutation)++"\n","\t number of cars = ",show(n_cars),"\n","\t number of options =  ",show(n_options),"\n","\t number of configurations =  ",show(n_confs),"\n","\t k =  ",show(k),"\n","\t min capacity =  ",show(min_caps),"\n","\t max capacity =  ",show(max_caps),"\n","\t number of cars in configurations  =  ",show(n_cars_by_confs),"\n","\t confs  =   \n \t",show(confs),"\n \n","Solution: \n","\t schedule =   \n \t",show(slice_1d(schedule,[-infinity..infinity,let {int: X_INTRODUCED_17_ = n_options+1} in (X_INTRODUCED_17_..X_INTRODUCED_17_)],index_set_1of2(schedule))),"\n"])),", \"raw\": ",showJSON(concat(["Problem description: \n","\t permuatation = "++format(permutation)++"\n","\t number of cars = ",show(n_cars),"\n","\t number of options =  ",show(n_options),"\n","\t number of configurations =  ",show(n_confs),"\n","\t k =  ",show(k),"\n","\t min capacity =  ",show(min_caps),"\n","\t max capacity =  ",show(max_caps),"\n","\t number of cars in configurations  =  ",show(n_cars_by_confs),"\n","\t confs  =   \n \t",show(confs),"\n \n","Solution: \n","\t schedule =   \n \t",show(slice_1d(schedule,[-infinity..infinity,let {int: X_INTRODUCED_17_ = n_options+1} in (X_INTRODUCED_17_..X_INTRODUCED_17_)],index_set_1of2(schedule))),"\n"])),"}, \"sections\": [\"default\", \"raw\"]"];
+set of int: options_ext = 1..6;
+set of int: cars = 1..10;
+int: n_cars = 10;
+array [1..60] of int: X_INTRODUCED_18_;
+array [cars,options_ext] of int: schedule = array2d(1..10,1..6,X_INTRODUCED_18_);
+int: n_options = 5;
+int: X_INTRODUCED_17_ = n_options+1;
+set of int: options = 1..5;
+set of int: configurations = 1..7;
+array [configurations,options] of int: confs = [|1,0,0,1,0|0,0,0,1,0|0,1,0,0,0|1,0,0,0,0|0,0,0,0,1|0,1,0,1,0|0,0,1,0,0|];
+array [configurations] of int: n_cars_by_confs = [2,1,1,2,1,1,2];
+array [options] of int: max_caps = [1,2,1,2,1];
+array [options] of int: min_caps = [0,0,0,0,0];
+array [options] of int: k = [2,3,3,5,5];
+int: n_confs = 7;
+array [1..10] of int: permutation = [6,5,7,4,8,3,9,2,10,1];

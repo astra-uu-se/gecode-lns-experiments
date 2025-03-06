@@ -1,0 +1,9 @@
+output ["solution = "++format(pred++arrival)++";\nobjective = "++format(objective)++"\n"];
+set of int: LocationsAndDummy = 1..22;
+array [LocationsAndDummy] of int: pred;
+set of int: Locations = 1..21;
+array [Locations] of int: arrival;
+array [Locations] of int: early = [0,319,0,0,116,65,67,0,41,17,84,0,129,214,100,5,162,268,150,0,248];
+array [LocationsAndDummy] of int: departure = [max(arrival[l],early[l]) | l in Locations]++[0];
+int: dummy = 22;
+int: objective = departure[pred[dummy]];
