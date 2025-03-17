@@ -1,7 +1,11 @@
+from datetime import datetime
+from glob import glob
 import json
 import logging
 from argparse import ArgumentParser, ArgumentTypeError
+from math import ceil
 from os import path
+import statistics
 from typing import Dict, List
 import matplotlib.pyplot as plt
 
@@ -9,70 +13,196 @@ import matplotlib.pyplot as plt
 class JsonComparer:
     cc_prefix = 'cc-'
     json_path: str = None
-    model_name: str = None
+    models: Dict[str, Dict[str, List[float]]] = None
     method_data: Dict[str, List[float]] = None
+    tex_pt_textwidth: float = 398.33858
+    pt_to_inch: float = 0.0138
 
-    def __init__(self, json_path: str):
-        self.json_path = json_path
-        self.parse()
-        self.scatter_plot()
-
-    def parse(self):
-        with open(self.json_path, 'r') as json_file:
+    def __init__(self):
+        self.models = dict()
+        
+    def parse(self, json_path):
+        with open(json_path, 'r') as json_file:
             data = json.load(json_file)
 
-        self.method_data = dict()
-        self.model_name = data.get('model', None)
+        model_name = data['model']
+        model_data = dict()
 
         for instance in data.get('instances', []):
             instance_name = instance.get('name', None)
             initial_objective = instance.get('initial_objective', None)
             best_objective = instance.get('best_objective', None)
+            if best_objective is None:
+              continue
             for method in instance.get('methods', []):
                 method_name = method.get('name', None)
                 mean = method.get('mean', dict()).get('objective', None)
                 if mean is None:
                     continue
-                if method_name not in self.method_data:
-                    self.method_data[method_name] = dict()
-                self.method_data[method_name][instance_name] = (
+                if method_name not in model_data:
+                    model_data[method_name] = dict()
+                model_data[method_name][instance_name] = (
                     100 * abs(mean - best_objective) / initial_objective)
+        if len(model_data) > 0:
+          self.models[model_name] = model_data
+
+    def table(self):
+        lines = [
+            '% table generation started ' +
+            datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
+        ]
+      
+        method_names = set()
+        for model_data in self.models.values():
+            method_names.update({m for m in model_data.keys()
+                                 if not m.startswith(self.cc_prefix)})
+        method_names = list(sorted(method_names))
+        num_cols = len(method_names) * 2
+        
+        lines.append('\\begin{tabular}{' + ('r'*(num_cols + 1)) + '}')
+        
+        lines += [f'\t& \\multicolumn{{2}}{{c}}{{{m}}}' for m in method_names]
+        lines.append('\\\\'),
+        lines.append('DCH')
+        lines += ['\t& multicolumn{1}{c}{no} & \multicolumn{1}{c}{yes}'
+                  for _ in len(num_cols)]
+        lines.append('\\\\')
+        lines += [f'\t\\cmidrule(lr){{{2 * i}-{(2 * i) + 1}}}'
+                  for i in range(1, len(method_names) + 1)]
+        
+        for model_name, model_data in self.models.items():
+            row_data = {mn: [None, None] for mn in method_names}
+            for mn in method_names:
+                for i, m in enumerate([mn, self.cc_prefix + mn]):
+                    if m in model_data:
+                        row_data[mn][i] = round(
+                          statistics.mean(model_data[m].values()), 2)
+            
+            best = min([k[0] for k in row_data.values() if k[0] is not None] +
+                       [k[1] for k in row_data.values() if k[1] is not None], 
+                       default=100)
+            logging.info(best)
+            lines.append(model_name.replace('\\n', ' '))
+            for mn in method_names:
+                if mn not in row_data:
+                    lines.append(f'\t& -- \t& --')
+                    continue
+                without_dch, with_dch = tuple(row_data[mn])
+                line = ''
+                if without_dch is None:
+                    line = f'\t& --'
+                elif without_dch == best:
+                    line = f'\t& \\textbf{{{without_dch:.2f}}}'
+                else:
+                    line = f'\t& {without_dch:.2f}'
+                if with_dch is None:
+                    line = f'\t& --'
+                if with_dch == best:
+                    line += f' & \\textbf{{{with_dch:.2f}}}'
+                else:
+                    line += f' & {with_dch:.2f}'
+                lines.append(line)
+            lines[-1] += ' \\\\'
+        lines.append('\\end{tabular}')
+        print('\n'.join(lines))
+            
 
     def scatter_plot(self):
-        method_names = [m for m in self.method_data.keys()
-                        if not m.startswith(self.cc_prefix)]
+        cols = min(2, len(self.models))
+        rows = int(ceil(len(self.models) / cols))
+        fig_width = max(8, self.tex_pt_textwidth * self.pt_to_inch)
+        fig_height = max(8.5, self.tex_pt_textwidth * self.pt_to_inch)
+        logging.info(f"figsize: ({fig_width}, {fig_height})")
+        fig, axes = plt.subplots(rows, cols, layout='constrained',
+                                 figsize=(fig_width, fig_height))
 
-        instance_names = None
-        for instances in self.method_data.values():
-            if instance_names is None:
-                instance_names = set(instances.keys())
-            else:
-                instance_names.intersection_update(instances.keys())
+        flat = [axes] if len(self.models) == 1 else axes.flat
 
-        instance_names = list(sorted(instance_names))
-        data_points = {m: ([self.method_data[m][i]
-                            for i in instance_names],
-                           [self.method_data[self.cc_prefix + m][i]
-                            for i in instance_names])
-                       for m in method_names}
-        fig, ax = plt.subplots()
         markers = ['.', '+', 'x', '^', ',']
-        for method_name, (x, y) in data_points.items():
-            ax.scatter(x, y, label=method_name, marker=markers.pop())
-        lim = 0
-        for x, y in data_points.values():
-            lim = max([lim, max(x), max(y)])
-        # Show the boundary between the regions:
-        ax.set_ylabel('Curated')
-        ax.set_xlabel('Non-curated')
-        ax.set_xlim(left=0, right=lim)
-        ax.set_ylim(bottom=0, top=lim)
-        ax.legend()
-        if self.model_name is not None:
-            ax.set_title(self.model_name)
-        ax.grid()
-        ax.plot([0, 100], [0, 100])
-        fig.show()
+          
+        for i, (model_name, model_data) in enumerate(self.models.items()):
+          method_names = [m for m in model_data.keys()
+                          if not m.startswith(self.cc_prefix)]
+
+          instance_names = set()
+          for instances in model_data.values():
+              if len(instance_names) == 0:
+                  instance_names = set(instances.keys())
+              else:
+                  instance_names.intersection_update(instances.keys())
+
+          instance_names = list(sorted(instance_names))
+          data_points = {m: ([model_data[m][i]
+                              for i in instance_names],
+                            [model_data[self.cc_prefix + m][i]
+                              for i in instance_names])
+                        for m in method_names}
+          lim = 0.5
+          for x, y in data_points.values():
+              lim = max([lim, max(x), max(y)])
+          flat[i].set_title(model_name.replace('\\n', '\n'))
+          flat[i].set_xlabel("without DCH", fontsize=10.5)
+          flat[i].set_ylabel("with DCH", fontsize=10.5)
+          flat[i].set_xlim(0, lim)
+          flat[i].set_ylim(0, lim)
+          flat[i].set_box_aspect(1)
+          flat[i].set_xticks(flat[i].get_yticks())
+          flat[i].set_yticks(flat[i].get_xticks())
+          marks = list(markers)
+          flat[i].plot([0, 100], [0, 100])
+          for method_name, (x, y) in data_points.items():
+              flat[i].scatter(
+                  x, 
+                  y,
+                  label=method_name,
+                  marker=marks.pop())
+        for i in range(len(self.models), len(flat)):
+          flat[i].axis('off')
+                    
+        left = 0.01
+        right = 1
+        bottom = 0.049
+        top = 0.874
+        wspace = 0.0
+        hspace = 0.35
+        logging.info(f"left: {left}")
+        logging.info(f"right: {right}")
+        logging.info(f"bottom: {bottom}")
+        logging.info(f"top: {top}")
+        logging.info(f"wspace: {wspace}")
+        logging.info(f"hspace: {hspace}")
+
+        plt.subplots_adjust(
+          left=left,
+          right=right,
+          bottom=bottom,
+          top=top,
+          wspace=wspace,
+          hspace=hspace)
+
+        seen_labels = set()
+        handles_labels = []
+
+        for ax in flat:
+            ha, la = ax.get_legend_handles_labels()
+            for handle, label in zip(ha, la):
+                if label not in seen_labels:
+                    handles_labels.append((handle, label))
+                    seen_labels.add(label)
+
+        labels = [l.strip(' LNS')
+                  for _, l in sorted(handles_labels, key=lambda hl: -len(hl[1]))]
+        handles = [h for h, _ in sorted(handles_labels, key=lambda hl: -len(hl[1]))]
+
+        if len(self.models) > 1:
+            fig.legend(labels=labels, handles=handles,
+                       ncol=min(3, len(labels)), 
+                       loc='upper center', fontsize=11.4)
+        else:
+            flat[0].legend(labels=labels, handles=handles,
+                           ncol=min(3, len(labels)),
+                           loc='best', fontsize=11.4)
+
         plt.show()
 
 
@@ -85,11 +215,35 @@ if __name__ == '__main__':
 
     parser = ArgumentParser()
 
-    parser.add_argument('--json', dest='json', type=file_path,
-                        help='The json file path.')
+    parser.add_argument('-i', '--json', dest='data_files',
+                        metavar='<data file>.txt[-*]', nargs='*',
+                        type=str, help='txt input files.')
+  
+    parser.add_argument('-p', '--plot', dest='plot', default=False,
+                        action='store_true', help='show scatter plots.')
 
     args = parser.parse_args()
 
+    if args.data_files is None:
+        exit(1)
+
+    data_files = []
+    seen_data_files = set()
+    for data_file in (fp for glob_list in args.data_files
+                      for fp in glob(glob_list)):
+        if data_file in seen_data_files:
+            continue
+        data_files.append(data_file)
+        seen_data_files.add(data_file)
+    data_files = list(sorted(data_files))    
+
     logging.basicConfig(level=logging.INFO)
 
-    json_comparer = JsonComparer(args.json)
+    json_comparer = JsonComparer()
+    for data_file in data_files:
+      json_comparer.parse(data_file)
+    
+    if args.plot:
+        json_comparer.scatter_plot()
+    else:
+        json_comparer.table()

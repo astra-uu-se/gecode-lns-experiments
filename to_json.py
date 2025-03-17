@@ -103,6 +103,12 @@ class Model:
                                                      initial_objective)
         return self.instances[instance_name]
 
+    def update_best(self, best_objective): 
+        if best_objective is None:
+          return
+        for instance in self.instances.values():
+          instance.update_best(best_objective)
+
     def to_dict(self, all_runs: bool = False):
         return {
             'model': self.name,
@@ -112,15 +118,18 @@ class Model:
 
 class JsonWriter:
     model: Model = None
-    name_dict = {'random': 'Random',
-                 'pg': 'PG-LNS',
-                 'ci': 'CIG-LNS',
+    best_objective: Union[None, int] = None
+    name_dict = {'random': 'Randomised LNS',
+                 'pg': 'Propagation guided LNS',
+                 'ci': 'Cost impact guided LNS',
                  'or': 'OR-LNS',
-                 'svd': 'VRG-LNS',
-                 'rpg': 'RPG-LNS'}
+                 'vrg': 'Variable-relationship guided LNS',
+                 'svd': 'Variable-relationship guided LNS',
+                 'rpg': 'Reverse propagation guided LNS'}
 
-    def __init__(self, model_name):
+    def __init__(self, model_name, best_objective):
         self.model = Model(model_name)
+        self.best_objective = best_objective
         logging.info(model_name)
 
     def parse_file(self, txt_file) -> None:
@@ -136,7 +145,7 @@ class JsonWriter:
                 entries = [e.strip() for e in line.split('\t')]
                 if len(entries) < 4:
                     continue
-                r_name = entries[0]
+                i_name = entries[0]
                 try:
                     r_obj = int(entries[1])
                 except ValueError:
@@ -151,8 +160,9 @@ class JsonWriter:
                 except ValueError:
                     initial_obj = None
 
-                self.model.add_instance(r_name, initial_obj).add_method(
+                self.model.add_instance(i_name, initial_obj).add_method(
                     method_name, r_obj, r_time, r_error)
+                self.model.instances[i_name].update_best(self.best_objective)
 
     def write_json(self, json_path, all_runs: bool = False):
         d = self.model.to_dict(all_runs)
@@ -205,6 +215,10 @@ if __name__ == '__main__':
                         action='store_true', default=False,
                         help='output all runs, not just the mean.')
 
+    parser.add_argument('--best-objective', dest='best_objective',
+                        type=int, default=None,
+                        help='The best known objective value.')
+
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO)
@@ -222,7 +236,7 @@ if __name__ == '__main__':
         seen_data_files.add(data_file)
     data_files = list(sorted(data_files))
 
-    json_writer = JsonWriter(args.model)
+    json_writer = JsonWriter(args.model, args.best_objective)
 
     for df in data_files:
         json_writer.parse_file(df)

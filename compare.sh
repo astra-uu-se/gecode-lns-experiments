@@ -1,30 +1,5 @@
 #!/bin/bash
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 
-PROBLEM="carseq"
-JSON="${SCRIPT_DIR}/results/${PROBLEM}.json"
-python3 compare.py --json ${JSON}
-
-PROBLEM="steelmillslab"
-JSON="${SCRIPT_DIR}/results/${PROBLEM}.json"
-python3 compare.py --json ${JSON}
-
-PROBLEM="sb-steelmillslab"
-JSON="${SCRIPT_DIR}/results/${PROBLEM}.json"
-python3 compare.py --json ${JSON}
-
-PROBLEM="jobshop"
-JSON="${SCRIPT_DIR}/results/${PROBLEM}.json"
-python3 compare.py --json ${JSON}
-
-# PROBLEM="dl-jobshop"
-# # JSON="${SCRIPT_DIR}/results/${PROBLEM}.json"
-# python3 compare.py --json ${JSON}
-
-# PROBLEM="vrp"
-# # JSON="${SCRIPT_DIR}/results/${PROBLEM}.json"
-# python3 compare.py --json ${JSON}
-
-PROBLEM="tsptw"
-JSON="${SCRIPT_DIR}/results/${PROBLEM}.json"
-python3 compare.py --json ${JSON}
+JSON="${SCRIPT_DIR}/results_old/carseq.json ${SCRIPT_DIR}/results_old/jobshop.json ${SCRIPT_DIR}/results_old/steelmillslab.json ${SCRIPT_DIR}/results_old/tsptw.json"
+python3 compare.py --json ${JSON} --plot
