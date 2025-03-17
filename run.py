@@ -16,6 +16,7 @@ class MiniZincRunner:
     model: str = None
     output_path: str = None
     extra: List[str] = []
+    time_limit: int = None
     data: List[str] = []
     minizinc_path: str
     solver: str = 'Dexter'
@@ -29,16 +30,16 @@ class MiniZincRunner:
     solution_re = re.compile(r'^\s*solution\s*=\s(.*);')
     initial_objective_re = re.compile(r'^\s*initialObjective\s*=\s*(\d+)')
 
-    def __init__(self, model, output_path, extra):
+    def __init__(self, model, output_path, time_limit, extra):
         self.model = model
         self.output_path = output_path
+        self.time_limit = time_limit
         self.extra = extra
         self.minizinc_path = which('minizinc')
         self.file_lock = Lock()
         self.kill = False
 
     def output_file_exists(self) -> bool:
-        logging.info(f'{self.output_path}: {path.exists(self.output_path)}')
         return path.exists(self.output_path)
 
     def is_unknown(self, output: str) -> bool:
@@ -73,7 +74,7 @@ class MiniZincRunner:
 
     def time(self, output, duration: float) -> str:
         if self.is_timeout(output):
-            return '300000'
+            return str(self.time_limit)
         return str(int(round(duration * 1000)))
 
     def file_name(self, data_file: str) -> str:
@@ -106,15 +107,16 @@ class MiniZincRunner:
         args = [self.minizinc_path,
                 self.model,
                 '--solver', self.solver,
-                '-d', data_file] + self.extra
-
+                '-d', data_file,
+                '--time-limit', str(self.time_limit)] + self.extra
         start = perf_counter()
         process = subprocess.Popen(args, stdout=subprocess.PIPE)
 
         try:
-            process.wait()
+            stdout, stderr = process.communicate()
         except subprocess.TimeoutExpired:
-            process.kill()
+            logging.warning("Timeout: quitting without storing results.")
+            return
 
         if self.kill:
             logging.warning("KILLED: quitting without storing results.")
@@ -122,11 +124,19 @@ class MiniZincRunner:
 
         duration = perf_counter() - start
 
-        stdout, stderr = process.communicate()
         if stderr is not None:
             logging.warning(stderr.decode('utf-8'))
 
         output = stdout.decode('utf-8')
+        
+        ms = int(duration * 1000)
+
+        if not self.is_optimal(output) and ms < self.time_limit:
+            logging.info(f'UNKNOWN; {path.basename(data_file)}; ' +
+                         f'is optimal: {self.is_optimal(output)}; ' +
+                         f'is_unknown: {self.is_unknown(output)}; ' +
+                         f'duration: {int(round(duration * 1000))}; ' +
+                         '; extra: ' + ' '.join(self.extra))
 
         solutions = output.split('\n----------\n')
         solutions = [s.strip() for s in solutions if len(s.strip()) > 0]
@@ -166,9 +176,6 @@ class MiniZincRunner:
                         objective = tmp
                         continue
 
-        logging.warning(f'solution: {solution}')
-        logging.warning(f'initial_objective: {initial_objective}')
-        logging.warning(f'objective: {objective}')
         solution = solution if solution is not None else '--'
         initial_objective = (initial_objective if initial_objective is not None
                              else '--')
@@ -237,13 +244,17 @@ if __name__ == '__main__':
                         'file.')
 
     parser.add_argument('--num-runs', dest='num_runs',
-                        type=int, default=1,
+                        type=int, default=5,
                         help='The number of runs to do for each LNS-instance '
                         'pair.')
 
     parser.add_argument('--curated-lns', dest='curated_lns', default=False,
                         action='store_true',
                         help='if dependency curated LNS should be used or not')
+
+    parser.add_argument('--time-limit', dest='time_limit', type=int,
+                        default=180000,
+                        help='the time limit for MiniZinc in milliseconds')
 
     parser.add_argument('--extra', nargs=REMAINDER, dest='extra',
                         type=str,
@@ -303,9 +314,12 @@ if __name__ == '__main__':
         lns_asset_types = [
             (i, s) for i, s in lns_asset_types if s in curated_lns_asset_types]
 
+    extra = [] if args.extra is None else args.extra
+
     mzn_runners = [MiniZincRunner(args.model,
                                   f'{args.output}-{s}',
-                                  args.extra + ['--pbs-asset-type', str(a)])
+                                  args.time_limit,
+                                  extra + ['--pbs-asset-type', str(a)])
                    for a, s in lns_asset_types]
 
     tasks = [(mi, di, ri)
@@ -317,6 +331,8 @@ if __name__ == '__main__':
     tasks = [(mi, di, ri, ti) for ti, (mi, di, ri) in enumerate(tasks)]
 
     def run(mi: int, di: int, ri: int, ti: int):
+        if mzn_runners[mi].kill:
+            return
         logging.info(f'Run {ti + 1}/{len(tasks)}; ' +
                      f'{path.basename(data_files[di])}; extra: ' +
                      ' '.join(mzn_runners[mi].extra))
@@ -332,6 +348,8 @@ if __name__ == '__main__':
         finally:
             pass
 
+    logging.info(f'Model: {path.basename(args.model)}')
+    logging.info(f'Time limit: {args.time_limit}')
     logging.info(f'Number of runs: {args.num_runs}')
     logging.info(f"Number of tasks: {len(tasks)}")
 

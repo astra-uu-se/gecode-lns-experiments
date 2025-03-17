@@ -1,5 +1,6 @@
 #!/bin/bash
-EXTRA="--extra --time-limit 300000 --solver Dexter -a"
+EXTRA="--extra --solver Dexter -a"
+TIME_LIMIT=180000
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 
 FILE_NAME="carseq-cc"
@@ -7,70 +8,90 @@ OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py ${SCRIPT_DIR}/carseq/${MZN} \
         -d ${SCRIPT_DIR}/carseq/carseq_set_1/*.dzn \
-        -o ${OUTPUT} --curated-lns ${EXTRA}
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        --curated-lns ${EXTRA}
 
 FILE_NAME="carseq"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py ${SCRIPT_DIR}/carseq/${MZN} \
         -d ${SCRIPT_DIR}/carseq/carseq_set_1/*.dzn \
-        -o ${OUTPUT} ${EXTRA}
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        ${EXTRA}
 
 FILE_NAME="steelmillslab-cc"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py ${SCRIPT_DIR}/steelmill/${MZN} \
         -d ${SCRIPT_DIR}/steelmill/steel/*.dzn \
-        -o ${OUTPUT} --curated-lns ${EXTRA}
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        --curated-lns ${EXTRA}
 
 FILE_NAME="steelmillslab"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py ${SCRIPT_DIR}/steelmill/${MZN} \
         -d ${SCRIPT_DIR}/steelmill/steel/*.dzn \
-        -o ${OUTPUT} ${EXTRA}
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        ${EXTRA}
 
 FILE_NAME="jobshop-cc"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py ${SCRIPT_DIR}/jobshop/${MZN} \
         -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
-        -o ${OUTPUT} --curated-lns ${EXTRA}
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        --curated-lns ${EXTRA}
 
 FILE_NAME="jobshop"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py ${SCRIPT_DIR}/jobshop/${MZN} \
         -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
-        -o ${OUTPUT} ${EXTRA}
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        ${EXTRA}
 
 # FILE_NAME="dl-jobshop-cc"
 # OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 # MZN="${FILE_NAME}.mzn"
 # python3 run.py ${SCRIPT_DIR}/jobshop/${MZN} \
 #         -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
-#         -o ${OUTPUT} --curated-lns ${EXTRA}
+#         -o ${OUTPUT} \
+#         --time-limit ${TIME_LIMIT} \
+#         --curated-lns ${EXTRA}
 # 
 # FILE_NAME="dl-jobshop"
 # OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 # MZN="${FILE_NAME}.mzn"
 # python3 run.py ${SCRIPT_DIR}/jobshop/${MZN} \
 #         -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
-#         -o ${OUTPUT} ${EXTRA}
+#         -o ${OUTPUT} \
+#         --time-limit ${TIME_LIMIT} \
+#         ${EXTRA}
 # 
 # FILE_NAME="vrp-cc"
 # OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 # MZN="${FILE_NAME}.mzn"
 # python3 run.py ${SCRIPT_DIR}/vrp/${MZN} \
 #         -d ${SCRIPT_DIR}/vrp/vrp/*.dzn \
-#         -o ${OUTPUT} --curated-lns ${EXTRA}
+#         -o ${OUTPUT} \
+#         --time-limit ${TIME_LIMIT} \
+#         --curated-lns ${EXTRA}
 # 
 # FILE_NAME="vrp"
 # OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 # MZN="${FILE_NAME}.mzn"
 # python3 run.py ${SCRIPT_DIR}/vrp/${MZN} \
 #         -d ${SCRIPT_DIR}/vrp/vrp/*.dzn \
-#         -o ${OUTPUT} ${EXTRA}
+#         -o ${OUTPUT} \
+#         --time-limit ${TIME_LIMIT} \
+#         ${EXTRA}
 
 
 FILE_NAME="tsptw-cc"
@@ -78,26 +99,51 @@ OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py ${SCRIPT_DIR}/tsptw/${MZN} \
         -d ${SCRIPT_DIR}/tsptw/tsptw/*w120*.dzn \
-        -o ${OUTPUT} --curated-lns ${EXTRA}
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        --curated-lns ${EXTRA}
 
 FILE_NAME="tsptw"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py ${SCRIPT_DIR}/tsptw/${MZN} \
         -d ${SCRIPT_DIR}/tsptw/tsptw/*w120*.dzn \
-        -o ${OUTPUT} ${EXTRA}
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        ${EXTRA}
 
-#FILE_NAME="sb-steelmillslab-cc"
-#OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-#MZN="${FILE_NAME}.mzn"
-#python3 run.py ${SCRIPT_DIR}/steelmill/${MZN} \
-#        -d ${SCRIPT_DIR}/steelmill/steel/*.dzn \
-#        -o ${OUTPUT} --curated-lns ${EXTRA}
-#
-#FILE_NAME="sb-steelmillslab"
-#OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-#MZN="${FILE_NAME}.mzn"
-#python3 run.py ${SCRIPT_DIR}/steelmill/${MZN} \
-#        -d ${SCRIPT_DIR}/steelmill/steel/*.dzn \
-#        -o ${OUTPUT} ${EXTRA}
+FILE_NAME="sb-steelmillslab-cc"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
+MZN="${FILE_NAME}.mzn"
+python3 run.py ${SCRIPT_DIR}/steelmill/${MZN} \
+        -d ${SCRIPT_DIR}/steelmill/steel/*.dzn \
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        --curated-lns ${EXTRA}
 
+FILE_NAME="sb-steelmillslab"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
+MZN="${FILE_NAME}.mzn"
+python3 run.py ${SCRIPT_DIR}/steelmill/${MZN} \
+        -d ${SCRIPT_DIR}/steelmill/steel/*.dzn \
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        ${EXTRA}
+
+FILE_NAME="tsptw-cc"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
+MZN="${FILE_NAME}.mzn"
+python3 run.py ${SCRIPT_DIR}/tsptw/${MZN} \
+        -d ${SCRIPT_DIR}/tsptw/tsptw/*.dzn \
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        --curated-lns ${EXTRA}
+
+FILE_NAME="tsptw"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
+MZN="${FILE_NAME}.mzn"
+python3 run.py ${SCRIPT_DIR}/tsptw/${MZN} \
+        -d ${SCRIPT_DIR}/tsptw/tsptw/*.dzn \
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        ${EXTRA}
