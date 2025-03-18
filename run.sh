@@ -44,6 +44,8 @@ OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py ${SCRIPT_DIR}/jobshop/${MZN} \
         -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
+           ${SCRIPT_DIR}/jobshop/job/jobshop_sw*.dzn \
+           ${SCRIPT_DIR}/jobshop/job/jobshop_yl*.dzn \
         -o ${OUTPUT} \
         --time-limit ${TIME_LIMIT} \
         --curated-lns ${EXTRA}
@@ -53,6 +55,8 @@ OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py ${SCRIPT_DIR}/jobshop/${MZN} \
         -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
+           ${SCRIPT_DIR}/jobshop/job/jobshop_sw*.dzn \
+           ${SCRIPT_DIR}/jobshop/job/jobshop_yl*.dzn \
         -o ${OUTPUT} \
         --time-limit ${TIME_LIMIT} \
         ${EXTRA}
