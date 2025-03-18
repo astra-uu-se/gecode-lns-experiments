@@ -6,15 +6,41 @@ from argparse import ArgumentParser, ArgumentTypeError
 from math import ceil
 from os import path
 import statistics
-from typing import Dict, List
+from typing import Dict, List, Any
 import matplotlib.pyplot as plt
+
+class Model:
+    name: str = None
+    acronym: str = None
+    data: Dict[str, List[float]] = None
+    acronyms: Dict[str, str]
+    
+    def __init__(self, name, acronym, data, acronyms):
+        self.name = name
+        self.acronym = acronym
+        self.data = data
+        self.acronyms = acronyms
+    
+    def values(self):
+        return self.data.values()
+
+    def keys(self):
+        return self.data.keys()
+
+    def items(self):
+        return self.data.items()
+
+    def __getitem__(self, index):
+        return self.data[index]
+
+    def __contains__(self, index):
+        return index in self.data
 
 
 class JsonComparer:
     cc_prefix = 'cc-'
     json_path: str = None
-    models: Dict[str, Dict[str, List[float]]] = None
-    method_data: Dict[str, List[float]] = None
+    models: Dict[str, Model] = None
     tex_pt_textwidth: float = 398.33858
     pt_to_inch: float = 0.0138
 
@@ -26,7 +52,9 @@ class JsonComparer:
             data = json.load(json_file)
 
         model_name = data['model']
+        model_acronym = data['acronym']
         model_data = dict()
+        method_acronyms = dict()
 
         for instance in data.get('instances', []):
             instance_name = instance.get('name', None)
@@ -36,6 +64,7 @@ class JsonComparer:
               continue
             for method in instance.get('methods', []):
                 method_name = method.get('name', None)
+                method_acr = method.get('acronym', None)
                 mean = method.get('mean', dict()).get('objective', None)
                 if mean is None:
                     continue
@@ -43,8 +72,10 @@ class JsonComparer:
                     model_data[method_name] = dict()
                 model_data[method_name][instance_name] = (
                     100 * abs(mean - best_objective) / initial_objective)
+                method_acronyms[method_name] = method_acr
         if len(model_data) > 0:
-          self.models[model_name] = model_data
+          self.models[model_name] = Model(model_name, model_acronym,
+                                          model_data, method_acronyms)
 
     def table(self):
         lines = [
@@ -53,36 +84,40 @@ class JsonComparer:
         ]
       
         method_names = set()
-        for model_data in self.models.values():
-            method_names.update({m for m in model_data.keys()
-                                 if not m.startswith(self.cc_prefix)})
+        acronym_names = dict()
+        for model in self.models.values():
+            mn = {m for m in model.keys() if not m.startswith(self.cc_prefix)}
+            method_names.update(mn)
+            for name in mn:
+                acronym_names[name] = model.acronyms[name]
         method_names = list(sorted(method_names))
         num_cols = len(method_names) * 2
         
         lines.append('\\begin{tabular}{' + ('r'*(num_cols + 1)) + '}')
         
-        lines += [f'\t& \\multicolumn{{2}}{{c}}{{{m}}}' for m in method_names]
+        lines += [f'\t& \\multicolumn{{2}}{{c}}{{{acronym_names[m]}}}'
+                  for m in method_names]
         lines.append('\\\\'),
         lines.append('DCH')
-        lines += ['\t& multicolumn{1}{c}{no} & \multicolumn{1}{c}{yes}'
-                  for _ in len(num_cols)]
+        lines += ['\t& \\multicolumn{1}{c}{no} & \\multicolumn{1}{c}{yes}'
+                  for _ in range(len(method_names))]
         lines.append('\\\\')
         lines += [f'\t\\cmidrule(lr){{{2 * i}-{(2 * i) + 1}}}'
                   for i in range(1, len(method_names) + 1)]
         
-        for model_name, model_data in self.models.items():
+        for model in self.models.values():
             row_data = {mn: [None, None] for mn in method_names}
             for mn in method_names:
                 for i, m in enumerate([mn, self.cc_prefix + mn]):
-                    if m in model_data:
+                    if m in model:
                         row_data[mn][i] = round(
-                          statistics.mean(model_data[m].values()), 2)
+                          statistics.mean(model[m].values()), 2)
             
             best = min([k[0] for k in row_data.values() if k[0] is not None] +
                        [k[1] for k in row_data.values() if k[1] is not None], 
                        default=100)
             logging.info(best)
-            lines.append(model_name.replace('\\n', ' '))
+            lines.append(model.acronym.replace('\\n', ' '))
             for mn in method_names:
                 if mn not in row_data:
                     lines.append(f'\t& -- \t& --')
@@ -120,21 +155,21 @@ class JsonComparer:
 
         markers = ['.', '+', 'x', '^', ',']
           
-        for i, (model_name, model_data) in enumerate(self.models.items()):
-          method_names = [m for m in model_data.keys()
+        for i, (model_name, model) in enumerate(self.models.items()):
+          method_names = [m for m in model.keys()
                           if not m.startswith(self.cc_prefix)]
 
           instance_names = set()
-          for instances in model_data.values():
+          for instances in model.values():
               if len(instance_names) == 0:
                   instance_names = set(instances.keys())
               else:
                   instance_names.intersection_update(instances.keys())
 
           instance_names = list(sorted(instance_names))
-          data_points = {m: ([model_data[m][i]
+          data_points = {m: ([model[m][i]
                               for i in instance_names],
-                            [model_data[self.cc_prefix + m][i]
+                            [model[self.cc_prefix + m][i]
                               for i in instance_names])
                         for m in method_names}
           lim = 0.5

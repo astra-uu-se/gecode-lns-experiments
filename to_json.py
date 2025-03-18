@@ -25,10 +25,12 @@ class Run:
 
 class Method:
     name: str
+    acronym: str
     runs: List[Run] = None
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, acronym: str):
         self.name = name
+        self.acronym = acronym
         self.runs = []
 
     def append_run(self, obj, time, error) -> None:
@@ -43,12 +45,12 @@ class Method:
         return Run(obj, time, error)
 
     def to_dict(self, all_runs: bool = False):
+        d = {'name': self.name,
+             'acronym': self.acronym,
+             'mean': self.mean_run().to_dict()}
         if all_runs:
-            return {'name': self.name,
-                    'mean': self.mean_run().to_dict(),
-                    'runs': [r.to_dict() for r in self.runs]}
-        else:
-            return {'name': self.name, 'mean': self.mean_run().to_dict()}
+            d['runs'] = [r.to_dict() for r in self.runs]
+        return d
 
 
 class Instance:
@@ -63,10 +65,10 @@ class Instance:
         self.best_objective = initial_objective
         self.methods = {}
 
-    def add_method(self, method_name: str, obj: int, time: int,
+    def add_method(self, method_name: str, acronym: str, obj: int, time: int,
                    error: bool) -> None:
         if method_name not in self.methods:
-            self.methods[method_name] = Method(method_name)
+            self.methods[method_name] = Method(method_name, acronym)
         self.methods[method_name].append_run(obj, time, error)
         if obj is not None:
             self.update_best(obj)
@@ -91,10 +93,12 @@ class Instance:
 
 class Model:
     name: str = None
+    acronym: str = None
     instances: Dict[str, Instance]
 
-    def __init__(self, name):
+    def __init__(self, name, acronym):
         self.name = name
+        self.acronym = acronym
         self.instances = dict()
 
     def add_instance(self, instance_name: str, initial_objective) -> Instance:
@@ -112,6 +116,7 @@ class Model:
     def to_dict(self, all_runs: bool = False):
         return {
             'model': self.name,
+            'acronym': self.acronym,
             'instances': [instance.to_dict(all_runs) for
                           instance in self.instances.values()]}
 
@@ -126,15 +131,24 @@ class JsonWriter:
                  'vrg': 'Variable-relationship guided LNS',
                  'svd': 'Variable-relationship guided LNS',
                  'rpg': 'Reverse propagation guided LNS'}
+    acronym_dict = {'random': 'Randomised LNS',
+                    'pg': 'PG-LNS',
+                    'ci': 'CIG-LNS',
+                    'or': 'OR-LNS',
+                    'vrg': 'VRG-LNS',
+                    'svd': 'VRG-LNS',
+                    'rpg': 'RPG-LNS'}
 
-    def __init__(self, model_name, best_objective):
-        self.model = Model(model_name)
+    def __init__(self, model_name, acronym, best_objective):
+        self.model = Model(model_name, acronym)
         self.best_objective = best_objective
         logging.info(model_name)
+        logging.info(acronym)
 
     def parse_file(self, txt_file) -> None:
         fname, ext = path.splitext(path.basename(txt_file))
         method_name = ext.lstrip('.').lstrip('txt').lstrip('-')
+        acronym = self.acronym_dict.get(method_name)
         method_name = self.name_dict.get(method_name, method_name)
 
         if fname.lower().endswith('-cc'):
@@ -161,7 +175,7 @@ class JsonWriter:
                     initial_obj = None
 
                 self.model.add_instance(i_name, initial_obj).add_method(
-                    method_name, r_obj, r_time, r_error)
+                    method_name, acronym, r_obj, r_time, r_error)
                 self.model.instances[i_name].update_best(self.best_objective)
 
     def write_json(self, json_path, all_runs: bool = False):
@@ -203,6 +217,9 @@ if __name__ == '__main__':
     parser.add_argument('--model', dest='model', type=str,
                         help='The model name.')
 
+    parser.add_argument('--acronym', dest='acronym', type=str,
+                        help='The model acronym.')
+
     data_group.add_argument('-d', '--data', dest='data_files',
                             metavar='<data file>.txt[-*]', nargs='*',
                             type=str, help='txt input files.')
@@ -236,7 +253,7 @@ if __name__ == '__main__':
         seen_data_files.add(data_file)
     data_files = list(sorted(data_files))
 
-    json_writer = JsonWriter(args.model, args.best_objective)
+    json_writer = JsonWriter(args.model, args.acronym, args.best_objective)
 
     for df in data_files:
         json_writer.parse_file(df)
