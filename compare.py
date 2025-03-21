@@ -43,6 +43,8 @@ class JsonComparer:
     models: Dict[str, Model] = None
     tex_pt_textwidth: float = 398.33858
     pt_to_inch: float = 0.0138
+    scheme_name = 'dependecy-curating scheme'
+    scheme_acronym = 'DCS'
 
     def __init__(self):
         self.models = dict()
@@ -98,7 +100,7 @@ class JsonComparer:
         lines += [f'\t& \\multicolumn{{2}}{{c}}{{{acronym_names[m]}}}'
                   for m in method_names]
         lines.append('\\\\'),
-        lines.append('DCH')
+        lines.append(self.scheme_acronym)
         lines += ['\t& \\multicolumn{1}{c}{no} & \\multicolumn{1}{c}{yes}'
                   for _ in range(len(method_names))]
         lines.append('\\\\')
@@ -176,8 +178,8 @@ class JsonComparer:
           for x, y in data_points.values():
               lim = max([lim, max(x), max(y)])
           flat[i].set_title(model_name.replace('\\n', '\n'))
-          flat[i].set_xlabel("without DCH", fontsize=10.5)
-          flat[i].set_ylabel("with DCH", fontsize=10.5)
+          flat[i].set_xlabel('without ' + self.scheme_acronym, fontsize=10.5)
+          flat[i].set_ylabel('with ' + self.scheme_acronym, fontsize=10.5)
           flat[i].set_xlim(0, lim)
           flat[i].set_ylim(0, lim)
           flat[i].set_box_aspect(1)
