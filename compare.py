@@ -97,11 +97,13 @@ class JsonComparer:
         
         lines.append('\\begin{tabular}{' + ('r'*(num_cols + 1)) + '}')
         
-        lines += [f'\t& \\multicolumn{{2}}{{c}}{{{acronym_names[m]}}}'
+        lines += ['\t& \\multicolumn{2}{c}{\\normalfont{' + 
+                  acronym_names[m] + '}}'
                   for m in method_names]
         lines.append('\\\\'),
-        lines.append(self.scheme_acronym)
-        lines += ['\t& \\multicolumn{1}{c}{no} & \\multicolumn{1}{c}{yes}'
+        lines.append('\\normalfont{' + self.scheme_acronym + '}')
+        lines += ['\t& \\multicolumn{1}{c}{\\normalfont{no}} &' +
+                  '\\multicolumn{1}{c}{\\normalfont{yes}}'
                   for _ in range(len(method_names))]
         lines.append('\\\\')
         lines += [f'\t\\cmidrule(lr){{{2 * i}-{(2 * i) + 1}}}'
@@ -119,7 +121,9 @@ class JsonComparer:
                        [k[1] for k in row_data.values() if k[1] is not None], 
                        default=100)
             logging.info(best)
-            lines.append(model.acronym.replace('\\n', ' '))
+            lines.append('\\normalfont{' + 
+                         model.acronym.replace('\\n', ' ') +
+                         '}')
             for mn in method_names:
                 if mn not in row_data:
                     lines.append(f'\t& -- \t& --')
