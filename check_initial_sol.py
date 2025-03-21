@@ -1,84 +1,61 @@
+from concurrent.futures import ThreadPoolExecutor
 import logging
 from sys import exc_info
-from typing import List, Union
-from argparse import ArgumentParser, ArgumentTypeError, REMAINDER
+from typing import List
+from argparse import ArgumentParser, ArgumentTypeError
 from glob import glob
 from os import path
 import subprocess
 from shutil import which
-from multiprocessing.pool import Pool
 import re
-
-
-def to_int_list(str_array: str) -> List[int]:
-    comma_seperated_ints = str_array.strip().lstrip('[').rstrip(']').split(',')
-    return [int(si.strip()) for si in comma_seperated_ints]
 
 
 class MiniZincRunner:
     model: str = None
     solver: str = None
-    extra: List[str] = []
     data: List[str] = []
     minizinc_path: str
+    kill: bool = False
 
-    solution_re = re.compile(r'(solution\s*=\s*\[[^\]]*\]);')
+    re_unsatisfiable = re.compile(r'(=====UNSATISFIABLE=====)')
 
-    def __init__(self, model, solver, extra):
+    def __init__(self, model, solver):
         self.model = model
         self.solver = solver
-        self.extra = extra if extra is not None else []
         self.minizinc_path = which('minizinc')
 
     @classmethod
-    def get_solution(cls, output: str) -> Union[None, str]:
-        match = cls.solution_re.search(output)
-        return None if match is None else match.group(0)
-
-    @classmethod
-    def should_run(cls, data_file: str) -> bool:
-        if not path.exists(data_file):
-            return False
-        if not path.isfile(data_file):
-            return False
-        with open(data_file, 'r') as output_file:
-            for output in output_file.readlines():
-                if cls.get_solution(output.strip()) is not None:
-                    return False
-        return True
+    def is_unsat(cls, output):
+        return cls.re_unsatisfiable.search(output) is not None
 
     def run_dzn(self, data_file: str) -> None:
-        if not self.should_run(data_file):
-            return
-
         args = [self.minizinc_path,
                 self.model,
-                '--solver', self.solver,
-                '-d', data_file] + self.extra
+                '--solver', 'gecode',
+                '-d', data_file]
 
         process = subprocess.Popen(args, stdout=subprocess.PIPE)
 
         try:
             stdout, stderr = process.communicate()
         except subprocess.TimeoutExpired:
-            process.kill()
+            logging.warning("Timeout: quitting without appending solution.")
+            return
+
+        if self.kill:
+            logging.warning("KILLED: quitting without appending solution.")
             return
 
         if stderr is not None:
             logging.warning(stderr.decode('utf-8'))
 
         output = stdout.decode('utf-8')
-        solution = self.get_solution(output)
+        is_unsat = self.is_unsat(output)
 
-        if solution is None:
-            return
-
-        logging.warning(f'{data_file}: "{solution}"')
-
-        solution_line = f'\n{solution}'
-
-        with open(data_file, 'a') as output_file:
-            output_file.write(solution_line)
+        if is_unsat is None:
+            logging.warning(f'{path.basename(data_file)}: "{output}"')
+        else:
+            logging.debug(f'{path.basename(data_file)}: sat')
 
 
 if __name__ == '__main__':
@@ -124,13 +101,6 @@ if __name__ == '__main__':
                         type=str, help='The dzn or JSON instance file(s) '
                         'to run the model on.')
 
-    parser.add_argument('--extra', nargs=REMAINDER, dest='extra',
-                        type=str,
-                        help='The extra flags (with leading dashes) that are '
-                        'passed to the MiniZinc CLI. Note that all arguments '
-                        'following this flag are passed to the MiniZinc CLI, '
-                        'and is not parsed by this script.')
-
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO)
@@ -148,18 +118,13 @@ if __name__ == '__main__':
         seen_data_files.add(data_file)
     data_files = list(sorted(data_files))
 
-    mzn_runner = MiniZincRunner(args.model, args.solver,
-                                args.extra if args.extra is not None else [])
+    mzn_runner = MiniZincRunner(args.model, args.solver)
 
-    tasks = [di for di in range(len(data_files))
-             if mzn_runner.should_run(data_files[di])]
+    tasks = list(range(len(data_files)))
 
-    tasks = [(di, ti) for ti, di in enumerate(tasks)]
-
-    def run(di: int, ti: int):
-        logging.info(f'Run {ti + 1}/{len(tasks)}; ' +
-                     f'{path.basename(data_files[di])}; extra: ' +
-                     ' '.join(mzn_runner.extra))
+    def run(di: int):
+        if mzn_runner.kill:
+            return
         try:
             mzn_runner.run_dzn(data_files[di])
         except Exception as e:
@@ -172,13 +137,14 @@ if __name__ == '__main__':
         finally:
             pass
 
-    if isinstance(args.num_processes, int) and args.num_processes > 0:
-        pool = Pool(args.num_processes)
-    else:
-        pool = Pool()
     logging.info(f'Solver: {args.solver}')
-    logging.info(f'Number of processes: {pool._processes}')
     logging.info(f"Number of tasks: {len(tasks)}")
-    pool.starmap_async(run, tasks)
-    pool.close()
-    pool.join()
+    with ThreadPoolExecutor(max_workers=16) as executor:
+        try:
+            for task in tasks:
+                executor.submit(run, *[task])
+            executor.shutdown(True)
+        except (KeyboardInterrupt, SystemExit):
+            logging.warning("KILLED: shutting down threads...")
+            mzn_runner.kill = True
+            executor.shutdown(False)
