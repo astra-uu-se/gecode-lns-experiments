@@ -1,23 +1,31 @@
-# Dependecy-Curating Heuristics Experiment Scripts
-This repository contains the scripts for: 
+# The Dependecy Curated Scheme Results and Experiment Scripts
+This repository contains results from our experiments and the scripts for: 
 1. converting data file instances to the MiniZinc data file format (.dzn); 
 2. running the experiments using the Gecode-based portfolio solver; 
-3. converting the experiments results to json; and 
-4. generating scatter plots and the table from the converted json.
+3. converting the experiments results to json; 
+4. generating scatter plots and the table from the converted json; and 
+5. generating low-cardinality sets of search variables for the job shop, 
+relaxed car sequencing, travelling salesperson with time windows, and 
+steel mill slab design.
 
+## Results
+Our results are located in the `results` directory.
 
-## Requirements
+## Running the experiments
+In the following sections, we describe how to install and run the experiments.
+
+### Requirements
 Before you can run the experiments, you need to:
 1. clone and install the extended Gecode-based portfolio solver; 
 2. add a solver entry for the extended Gecode-based portfolio solver 
 for MiniZinc; and
 3. update the MiniZinc `Preferences.json`. 
 
-### Cloning and installing the Gecode-based portfolio solver
+#### Cloning and installing the Gecode-based portfolio solver
 1. Locate and clone the Gecode-based portfolio solver repository and
 2. if you are using Linux, then open a terminal and navigate to the base 
 directory of the cloned repository and install the Gecode-based porfolio solver 
-and perform the following commands:
+by performing the following commands:
 
 ```bash
 mkdir -p build 
@@ -26,7 +34,7 @@ cmake .. && make -j 16
 sudo make install -j 16
 ```
 
-### Adding the Gecode-based portfolio solver to MiniZinc 
+#### Adding the Gecode-based portfolio solver to MiniZinc 
 To add the Gecode-based portfolio solver to MiniZinc: 
 1. create a directory, for example in your MiniZinc directory, with the 
 name `gecode-lns`; 
@@ -47,7 +55,7 @@ ln -s GECODE_LNS/build/bin bin
 in the `"mzn_solver_path"` array entry, append as a string (inside quotations) 
 the absolute path to `gecode-lns/shared/flatzinc`. 
 
-## Running the experiments
+### Running the experiments
 To run the experiments: 
 1. remove all files from the `results` directory and 
 2. in a terminal, run the command: 
@@ -58,13 +66,13 @@ bash run.sh
 The experiments of each problem using and not using the dependency-curating 
 heuristic will be run
 
-## Generating the JSON experiment results
+### Generating the JSON experiment results
 To generate the JSON experiment result files, in a terminal, run the command: 
 ```bash
 bash to_json.sh
 ```
 
-## Generating the latex table and the scatter plots
+### Generating the latex table and the scatter plots
 Creating the scatter plots requires [matplotlib](https://matplotlib.org/)
 
 To generate the latex table and the scatter plots, in a terminal, run the 
@@ -87,3 +95,18 @@ running `dcs.py` in a terminal by:
 python3 dcs.py --problem PROBLEM
 ```
 outputs the low-cardinality curated set of search variables for `PROBLEM`.
+
+## The Dependency Curated Scheme Generator
+Python source code for the dependency curated scheme can be found in 
+`dcs.py`. 
+The program outputs the low-cardinality curated set of search variables for the 
+inputted problem.
+
+Given that `PROBLEM` is either `jsp`, `smsd`, `tsptw`, or `rcs` (for job shop, 
+steel mill slab design, travelling salesperson with time windows, and relaxed 
+car sequencing respectively), 
+you can run `dcs.py` in a terminal by:
+
+```bash
+python3 dcs.py --problem PROBLEM
+```
