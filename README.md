@@ -75,3 +75,15 @@ bash to_json.sh
 
 The latex table will be outputted into the terminal and a window with the 
 scatter plots will open.
+
+## The Dependency Curated Scheme Generator
+Python source code for the dependency curated scheme can be found in 
+`dcs.py`. 
+Given that `PROBLEM` is either `jsp`, `smsd`, `tsptw`, and `rcs` for job shop, 
+steel mill slab design, travelling salesperson with time windows, and relaxed 
+car sequencing respectively, 
+running `dcs.py` in a terminal by:
+```bash
+python3 dcs.py --problem PROBLEM
+```
+outputs the low-cardinality curated set of search variables for `PROBLEM`.
