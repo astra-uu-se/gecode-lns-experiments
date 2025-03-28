@@ -1,4 +1,4 @@
-# The Dependency-Curation Scheme: Results, Scheme, and Experiment Scripts
+# Dependency-Curated LNS: Results, Scheme Source Code, and Experiment Scripts
 This repository contains results from our experiments and the scripts for: 
 1. converting data file instances to the MiniZinc data file format (.dzn); 
 2. running the experiments using the Gecode-based portfolio solver; 
