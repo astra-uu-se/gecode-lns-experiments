@@ -61,25 +61,36 @@ ln -s GECODE_LNS/gecode/flatzinc/mznlib shared/mznlib
 ln -s GECODE_LNS/build/bin bin
 ```
 4. locate the `Preferences.json` file in the MiniZinc directory (it is in the 
-`share/minizinc` subfolder); and 
-5. given that created folder in step 1. is `gecode-lns`, 
-in the `"mzn_solver_path"` array entry, append as a string (inside quotations) 
-the absolute path to `gecode-lns/shared/flatzinc`. 
+`share/minizinc` subfolder) and open it with a text editor; and 
+5. given that the name of the created folder in step 1. is `gecode-lns`, 
+in the `"mzn_solver_path"` array entry in the `Preferences.json` file, append 
+as a string (inside quotations) the absolute path to the directory 
+`gecode-lns/shared/flatzinc`. 
 
 ### Running the experiments
 To run the experiments: 
-1. remove all files from the `results` directory and 
+1. remove all files from the `results` subdirectory and 
 2. in a terminal, run the command: 
 ```bash
 bash run.sh
 ```
 
 The experiments of each problem with and without the dependency curation scheme 
-will be run.
+will be run and the results will be saved in `.txt` files in the `results` 
+subdirectory.
+
+### Converting the Results to JSON
+To convert the results from the `.txt` files to the `.json` format, in a 
+terminal, run the command: 
+```bash
+bash to_json.sh
+```
+
+For each problem, the results will be combined into a single `.json` file 
+and saved in the `results` subdirectory.
 
 ### Generating the JSON experiment results and the scatter plots
 Generating the scatter plots required [matplotlib](https://matplotlib.org/).
-
 
 To generate the JSON experiment result files and the scatter plots, in a 
 terminal, run the command: 
