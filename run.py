@@ -30,7 +30,9 @@ class MiniZincRunner:
     solution_re = re.compile(r'^\s*solution\s*=\s(.*);')
     initial_objective_re = re.compile(r'^\s*initialObjective\s*=\s*(\d+)')
 
-    def __init__(self, model, output_path, time_limit, extra):
+    def __init__(self, solver_path, model, output_path, time_limit, extra):
+        if path.exists(solver_path):
+            self.solver = solver_path
         self.model = model
         self.output_path = output_path
         self.time_limit = time_limit
@@ -228,6 +230,10 @@ if __name__ == '__main__':
 
     parser = ArgumentParser()
 
+    parser.add_argument('--solver', dest='solver',
+                        metavar='<path to solver>.msc',
+                        type=str, help='The path to the gecode LNS .msc file.')
+
     parser.add_argument(dest='model', metavar='<model>.mzn', type=file_path,
                         help='The MiniZinc model file.')
 
@@ -316,7 +322,8 @@ if __name__ == '__main__':
 
     extra = [] if args.extra is None else args.extra
 
-    mzn_runners = [MiniZincRunner(args.model,
+    mzn_runners = [MiniZincRunner(args.solver,
+                                  args.model,
                                   f'{args.output}-{s}',
                                   args.time_limit,
                                   extra + ['--pbs-asset-type', str(a)])
