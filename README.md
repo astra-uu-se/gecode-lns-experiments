@@ -75,7 +75,7 @@ Generating the scatter plots required [matplotlib](https://matplotlib.org/).
 To generate the JSON experiment result files and the scatter plots, in a 
 terminal, run the command: 
 ```bash
-bash to_json.sh
+bash compare.sh
 ```
 
 The latex table will be outputted into the terminal and a window with the 
