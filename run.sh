@@ -7,7 +7,7 @@ NUM_RUNS=10
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 
 FILE_NAME="carseq-cc"
-OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/carseq/${MZN} \
@@ -18,7 +18,7 @@ python3 run.py --solver ${SOLVER} \
         --curated-lns ${EXTRA}
 
 FILE_NAME="carseq"
-OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/carseq/${MZN} \
@@ -29,7 +29,7 @@ python3 run.py --solver ${SOLVER} \
         ${EXTRA}
 
 FILE_NAME="jobshop-cc"
-OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/jobshop/${MZN} \
@@ -42,7 +42,7 @@ python3 run.py --solver ${SOLVER} \
         --curated-lns ${EXTRA}
 
 FILE_NAME="jobshop"
-OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/jobshop/${MZN} \
@@ -55,7 +55,7 @@ python3 run.py --solver ${SOLVER} \
         ${EXTRA}
 
 # FILE_NAME="dl-jobshop-cc"
-# OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+# OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 # MZN="${FILE_NAME}.mzn"
 # python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/jobshop/${MZN} \
@@ -66,7 +66,7 @@ python3 run.py --solver ${SOLVER} \
 #         --curated-lns ${EXTRA}
 # 
 # FILE_NAME="dl-jobshop"
-# OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+# OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 # MZN="${FILE_NAME}.mzn"
 # python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/jobshop/${MZN} \
@@ -77,7 +77,7 @@ python3 run.py --solver ${SOLVER} \
 #         ${EXTRA}
 # 
 # FILE_NAME="vrp-cc"
-# OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+# OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 # MZN="${FILE_NAME}.mzn"
 # python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/vrp/${MZN} \
@@ -88,7 +88,7 @@ python3 run.py --solver ${SOLVER} \
 #         --curated-lns ${EXTRA}
 # 
 # FILE_NAME="vrp"
-# OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+# OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 # MZN="${FILE_NAME}.mzn"
 # python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/vrp/${MZN} \
@@ -100,7 +100,7 @@ python3 run.py --solver ${SOLVER} \
 
 
 FILE_NAME="tsptw-cc"
-OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/tsptw/${MZN} \
@@ -111,7 +111,7 @@ python3 run.py --solver ${SOLVER} \
         --curated-lns ${EXTRA}
 
 FILE_NAME="tsptw"
-OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/tsptw/${MZN} \
@@ -122,7 +122,7 @@ python3 run.py --solver ${SOLVER} \
         ${EXTRA}
 
 FILE_NAME="sb-steelmillslab-cc"
-OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/steelmill/${MZN} \
@@ -133,7 +133,7 @@ python3 run.py --solver ${SOLVER} \
         --curated-lns ${EXTRA}
 
 FILE_NAME="sb-steelmillslab"
-OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/steelmill/${MZN} \
@@ -144,7 +144,7 @@ python3 run.py --solver ${SOLVER} \
         ${EXTRA}
 
 FILE_NAME="tsptw-cc"
-OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/tsptw/${MZN} \
@@ -155,7 +155,7 @@ python3 run.py --solver ${SOLVER} \
         --curated-lns ${EXTRA}
 
 FILE_NAME="tsptw"
-OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/tsptw/${MZN} \
@@ -166,7 +166,7 @@ python3 run.py --solver ${SOLVER} \
         ${EXTRA}
 
 FILE_NAME="steelmillslab-cc"
-OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/steelmill/${MZN} \
@@ -177,7 +177,7 @@ python3 run.py --solver ${SOLVER} \
         --curated-lns ${EXTRA}
 
 FILE_NAME="steelmillslab"
-OUTPUT="${SCRIPT_DIR}/results_5min/${FILE_NAME}.txt"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/steelmill/${MZN} \
