@@ -26,13 +26,9 @@ In the following sections, we describe how to install and run the experiments
 on a Linux-based operating system.
 
 ### Requirements
-Before you can run the experiments, you need to:
-1. clone and install the extended Gecode-based portfolio solver; 
-2. add a solver entry for the extended Gecode-based portfolio solver 
-for MiniZinc; and
-3. update the MiniZinc `Preferences.json`. 
+Before you can run the experiments, you need to clone and install the extended 
+Gecode-based portfolio solver.
 
-#### Cloning and installing the Gecode-based portfolio solver
 1. Locate and clone the Gecode-based portfolio solver repository and
 2. using a Linux-based OS, open a terminal and navigate to the base directory 
 of the cloned repository and install the Gecode-based portfolio solver by 
@@ -45,32 +41,16 @@ cmake .. && make -j 16
 sudo make install -j 16
 ```
 
-#### Adding the Gecode-based portfolio solver to MiniZinc 
-To add the Gecode-based portfolio solver to MiniZinc: 
-1. create a directory, for example in your MiniZinc directory, with the 
-name `gecode-lns`; 
-2. open a terminal and navigate to the created directory; and 
-3. given that the base directory of the cloned Gecode-based portfolio solver is 
-`GECODE_LNS`, run the following commands in the terminal to create symbolic 
-links to folders installed in the previous section: 
-
-```bash
-mkdir -p shared
-ln -s GECODE_LNS/build/tools/flatzinc shared/flatzinc
-ln -s GECODE_LNS/gecode/flatzinc/mznlib shared/mznlib
-ln -s GECODE_LNS/build/bin bin
-```
-4. locate the `Preferences.json` file in the MiniZinc directory (it is in the 
-`share/minizinc` subfolder) and open it with a text editor; and 
-5. given that the name of the created folder in step 1. is `gecode-lns`, 
-in the `"mzn_solver_path"` array entry in the `Preferences.json` file, append 
-as a string (inside quotations) the absolute path to the directory 
-`gecode-lns/shared/flatzinc`. 
-
 ### Running the experiments
 To run the experiments: 
-1. remove all files from the `results` subdirectory and 
-2. in a terminal, run the command: 
+1. remove all files from the `results` subdirectory; 
+2. given that the Gecode-based portfolio solver is named 
+   `gecode-lns` and is in your home directory, open `run.sh` in your favourite
+   text editor and edit the declaration of the `SOLVER_DIR` variable to:
+```bash
+SOLVER_DIR="${HOME}/gecode-lns"
+``` 
+3. in a terminal, run the command: 
 ```bash
 bash run.sh
 ```
