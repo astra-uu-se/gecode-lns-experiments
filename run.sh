@@ -2,7 +2,7 @@
 SOLVER_DIR="${HOME}/dependency-curated-lns-gecode"
 SOLVER="${SOLVER_DIR}/build/tools/flatzinc/gecode.msc"
 EXTRA="--extra --solver Dexter -a"
-TIME_LIMIT=300000
+TIME_LIMIT=180000
 NUM_RUNS=10
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 
