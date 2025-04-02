@@ -44,9 +44,10 @@ sudo make install -j 16
 ### Running the experiments
 To run the experiments: 
 1. remove all files from the `results` subdirectory; 
-2. given that the Gecode-based portfolio solver is named 
-   `gecode-lns` and is in your home directory, open `run.sh` in your favourite
-   text editor and edit the declaration of the `SOLVER_DIR` variable to:
+2. given that the base directory of the cloned Gecode-based portfolio solver is 
+   `gecode-lns` and that the directory is in your home directory, open `run.sh` 
+   in your favourite text editor and edit the declaration of the `SOLVER_DIR` 
+   variable to:
 ```bash
 SOLVER_DIR="${HOME}/gecode-lns"
 ``` 
@@ -56,7 +57,7 @@ bash run.sh
 ```
 
 The experiments of each problem with and without the dependency curation scheme 
-will be run and the results will be saved in `.txt` files in the `results` 
+will be run, and the results will be saved in `.txt` files in the `results` 
 subdirectory.
 
 ### Converting the Results to JSON
