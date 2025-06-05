@@ -369,4 +369,7 @@ if __name__ == '__main__':
             logging.warning("KILLED: shutting down threads...")
             for mr in mzn_runners:
                 mr.kill = True
-            executor.shutdown(False)
+            executor.shutdown(True)
+            logging.warning("KILLED: DONE")
+            exit(1)
+

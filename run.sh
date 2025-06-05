@@ -58,7 +58,7 @@ python3 run.py --solver ${SOLVER} \
 # OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 # MZN="${FILE_NAME}.mzn"
 # python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/jobshop/${MZN} \
+#        ${SCRIPT_DIR}/jobshop/${MZN} \
 #         -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
 #         -o ${OUTPUT} \
 #         --time-limit ${TIME_LIMIT} \
@@ -69,7 +69,7 @@ python3 run.py --solver ${SOLVER} \
 # OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 # MZN="${FILE_NAME}.mzn"
 # python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/jobshop/${MZN} \
+#        ${SCRIPT_DIR}/jobshop/${MZN} \
 #         -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
 #         -o ${OUTPUT} \
 #         --time-limit ${TIME_LIMIT} \
@@ -80,7 +80,7 @@ python3 run.py --solver ${SOLVER} \
 # OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 # MZN="${FILE_NAME}.mzn"
 # python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/vrp/${MZN} \
+#        ${SCRIPT_DIR}/vrp/${MZN} \
 #         -d ${SCRIPT_DIR}/vrp/vrp/*.dzn \
 #         -o ${OUTPUT} \
 #         --time-limit ${TIME_LIMIT} \
@@ -91,35 +91,13 @@ python3 run.py --solver ${SOLVER} \
 # OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 # MZN="${FILE_NAME}.mzn"
 # python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/vrp/${MZN} \
+#        ${SCRIPT_DIR}/vrp/${MZN} \
 #         -d ${SCRIPT_DIR}/vrp/vrp/*.dzn \
 #         -o ${OUTPUT} \
 #         --time-limit ${TIME_LIMIT} \
 #         --num-runs ${NUM_RUNS} \
 #         ${EXTRA}
 
-
-FILE_NAME="tsptw-cc"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/tsptw/${MZN} \
-        -d ${SCRIPT_DIR}/tsptw/tsptw/*w120*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        --curated-lns ${EXTRA}
-
-FILE_NAME="tsptw"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/tsptw/${MZN} \
-        -d ${SCRIPT_DIR}/tsptw/tsptw/*w120*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        ${EXTRA}
 
 FILE_NAME="sb-steelmillslab-cc"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
@@ -131,6 +109,8 @@ python3 run.py --solver ${SOLVER} \
         --time-limit ${TIME_LIMIT} \
         --num-runs ${NUM_RUNS} \
         --curated-lns ${EXTRA}
+COMMAND_STATUS=$?
+#if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
 
 FILE_NAME="sb-steelmillslab"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
@@ -143,6 +123,33 @@ python3 run.py --solver ${SOLVER} \
         --num-runs ${NUM_RUNS} \
         ${EXTRA}
 
+
+FILE_NAME="orig-tsptw-cc"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
+MZN="${FILE_NAME}.mzn"
+python3 run.py --solver ${SOLVER} \
+        ${SCRIPT_DIR}/tsptw/${MZN} \
+        -d ${SCRIPT_DIR}/tsptw/orig-tsptw/*.dzn \
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        --num-runs ${NUM_RUNS} \
+        --curated-lns ${EXTRA}
+COMMAND_STATUS=$?
+#if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
+
+FILE_NAME="orig-tsptw"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
+MZN="${FILE_NAME}.mzn"
+python3 run.py --solver ${SOLVER} \
+        ${SCRIPT_DIR}/tsptw/${MZN} \
+        -d ${SCRIPT_DIR}/tsptw/orig-tsptw/*.dzn \
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        --num-runs ${NUM_RUNS} \
+        ${EXTRA}
+COMMAND_STATUS=$?
+#if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
+
 FILE_NAME="tsptw-cc"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
@@ -153,6 +160,8 @@ python3 run.py --solver ${SOLVER} \
         --time-limit ${TIME_LIMIT} \
         --num-runs ${NUM_RUNS} \
         --curated-lns ${EXTRA}
+COMMAND_STATUS=$?
+#if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
 
 FILE_NAME="tsptw"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
@@ -164,6 +173,8 @@ python3 run.py --solver ${SOLVER} \
         --time-limit ${TIME_LIMIT} \
         --num-runs ${NUM_RUNS} \
         ${EXTRA}
+COMMAND_STATUS=$?
+#if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
 
 FILE_NAME="steelmillslab-cc"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
@@ -175,6 +186,8 @@ python3 run.py --solver ${SOLVER} \
         --time-limit ${TIME_LIMIT} \
         --num-runs ${NUM_RUNS} \
         --curated-lns ${EXTRA}
+COMMAND_STATUS=$?
+#if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
 
 FILE_NAME="steelmillslab"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
@@ -186,3 +199,5 @@ python3 run.py --solver ${SOLVER} \
         --time-limit ${TIME_LIMIT} \
         --num-runs ${NUM_RUNS} \
         ${EXTRA}
+COMMAND_STATUS=$?
+#if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi

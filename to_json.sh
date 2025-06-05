@@ -63,3 +63,12 @@ OUTPUT="${SCRIPT_DIR}/results/${MODEL}.json"
 python3 to_json.py --model "${NAME}" --acronym "${ACRONYM}" \
         --data ${DATA} \
         --output ${OUTPUT}
+
+MODEL="orig-tsptw"
+NAME="Travelling salesperson\nwith time windows"
+ACRONYM="TSPTW"
+DATA="${SCRIPT_DIR}/results/${MODEL}*.txt-*"
+OUTPUT="${SCRIPT_DIR}/results/${MODEL}.json"
+python3 to_json.py --model "${NAME}" --acronym "${ACRONYM}" \
+        --data ${DATA} \
+        --output ${OUTPUT}

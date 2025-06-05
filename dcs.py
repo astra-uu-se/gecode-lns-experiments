@@ -203,28 +203,25 @@ if __name__ == '__main__':
         
     elif problem == 'tsptw':
         num_nodes = 9
-        dummy = num_nodes + 1
+        depot = 1
         pred = [Variable(f'pred[{n}]')
-                for n in range(1, num_nodes + 1)] + [Variable('pred[dummy]')]
-        dur_to_pred = [Variable(f'durToPred[{n}]')
-                       for n in range(1, num_nodes + 1)]
+                for n in range(1, num_nodes + 1)] + [Variable('pred[depot]')]
+        dur_from_pred = [Variable(f'durFromPred[{n}]')
+                         for n in range(1, num_nodes + 1)]
         arrival = [Variable(f'arrival[{n}]') for n in range(1, num_nodes + 1)]
         departure = [Variable(f'departure[{n}]')
-                     for n in range(1, num_nodes + 1)]
+                     for n in range(2, num_nodes + 1)]
         departure_pred = [Variable(f'departurePred[{n}]') 
                           for n in range(1, num_nodes + 1)]
-        objective = Variable('objective')
         for n in range(num_nodes):
-            channelling.append(({pred[n]}, 'element', {dur_to_pred[n]}))
-        for n in range(num_nodes):
-            channelling.append(({arrival[n]}, 'max', {departure[n]}))
+            channelling.append(({pred[n]}, 'element', {dur_from_pred[n]}))
+        for n in range(1, num_nodes):
+            channelling.append(({arrival[n]}, 'max', {departure[n - 1]}))
         for n in range(num_nodes):
             channelling.append((set(departure + [pred[n]]), 'element',
                                 {departure_pred[n]}))
-        channelling.append((set(departure + [pred[dummy - 1]]), 'element',
-                            {objective}))
         for n in range(num_nodes):
-            channelling.append(({departure_pred[n], dur_to_pred[n]},
+            channelling.append(({departure_pred[n], dur_from_pred[n]},
                                 'plus', {arrival[n]}))
     elif problem == 'jsp':
         num_jobs = 9
@@ -266,6 +263,6 @@ if __name__ == '__main__':
         vars.update(i)
         vars.update(o)
     search_vars = dependecy_curation(vars, channelling)
-    search_vars = sorted(search_vars, key = lambda v: v.identifier)
+    search_vars = sorted(search_vars, key=lambda v: v.identifier)
 
     print('{' + ', '.join(map(str, search_vars)) + '}')

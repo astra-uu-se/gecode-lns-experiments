@@ -82,7 +82,7 @@ class Tsptw:
     def output(self, output_file):
         lines = []
         lines.extend(self.comments)
-        lines.append(f'Locations = 1..{len(self.locations)};')
+        lines.append(f'n = {len(self.locations)};')
 
         duration = [[u.duration(v) for v in self.locations]
                     for u in self.locations]
