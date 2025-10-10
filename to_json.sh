@@ -30,11 +30,41 @@ python3 to_json.py --model "${NAME}" --acronym "${ACRONYM}" \
 
 MODEL="jobshop"
 NAME="Job shop"
+P_MODEL="precedence-${MODEL}"
 ACRONYM="JSP"
 DATA="${SCRIPT_DIR}/results/${MODEL}*.txt-*"
+P_DATA="${SCRIPT_DIR}/results/${P_MODEL}*.txt-*"
 OUTPUT="${SCRIPT_DIR}/results/${MODEL}.json"
 python3 to_json.py --model "${NAME}" --acronym "${ACRONYM}" \
         --data ${DATA} \
+        --comparative-data ${P_DATA} \
+        --output ${OUTPUT}
+
+NAME="Job shop with precedences"
+ACRONYM="JSP-P"
+OUTPUT="${SCRIPT_DIR}/results/${P_MODEL}.json"
+python3 to_json.py --model "${NAME}" --acronym "${ACRONYM}" \
+        --data ${P_DATA} \
+        --comparative-data ${DATA} \
+        --output ${OUTPUT}
+
+MODEL="rcpsp"
+P_MODEL="precedence-${MODEL}"
+NAME="RCPSP"
+ACRONYM="RCPSP"
+DATA="${SCRIPT_DIR}/results/${MODEL}*.txt-*"
+P_DATA="${SCRIPT_DIR}/results/${P_MODEL}*.txt-*"
+OUTPUT="${SCRIPT_DIR}/results/${MODEL}.json"
+python3 to_json.py --model "${NAME}" --acronym "${ACRONYM}" \
+        --data ${DATA} \
+        --output ${OUTPUT}
+
+NAME="RCPSP with precedences"
+ACRONYM="RCPSP-P"
+OUTPUT="${SCRIPT_DIR}/results/${P_MODEL}.json"
+python3 to_json.py --model "${NAME}" --acronym "${ACRONYM}" \
+        --data ${P_DATA} \
+        --comparative-data ${DATA} \
         --output ${OUTPUT}
 
 MODEL="dl-jobshop"

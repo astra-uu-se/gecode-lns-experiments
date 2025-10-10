@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Tuple, Any
 from argparse import ArgumentParser, ArgumentTypeError
 from glob import glob
 from os import path
@@ -55,33 +55,40 @@ class Method:
 
 class Instance:
     name: str = None
-    initial_objective: int = None
-    best_objective: int = None
+    is_minimisation: bool = True
+    initial_objective: Union[None, int] = None
+    best_objective: Union[None, int] = None
     methods = Dict[str, Method]
 
-    def __init__(self, name, initial_objective):
+    def __init__(self, is_minimisation, name):
         self.name = name
-        self.initial_objective = initial_objective
-        self.best_objective = initial_objective
+        self.is_minimisation = is_minimisation
+        self.initial_objective = None
+        self.best_objective = None
+        self.initial_objectives: List[int] = []
+        self.best_objectivs: List[int] = []
         self.methods = {}
+        assert isinstance(is_minimisation, bool)
 
-    def add_method(self, method_name: str, acronym: str, obj: int, time: int,
-                   error: bool) -> None:
+    def add_method(self, method_name: str, acronym: str,
+                   initial_obj: Union[None, int], obj: Union[None, int],
+                   time: int, error: bool) -> None:
         if method_name not in self.methods:
             self.methods[method_name] = Method(method_name, acronym)
         self.methods[method_name].append_run(obj, time, error)
-        if obj is not None:
-            self.update_best(obj)
+        self.update_objectives(initial_obj, obj)
 
-    def update_best(self, best_objective):
-        if best_objective is None:
+    def update_objectives(self, *kvargs):
+        entries = list(kvargs) + [self.initial_objective, self.best_objective]
+        vals = [v for v in entries if v is not None]
+        if len(vals) == 0:
             return
-        if self.initial_objective is None:
-            self.initial_objective = best_objective
-        if best_objective > self.initial_objective:
-            self.best_objective = max(best_objective, self.best_objective)
-        elif best_objective < self.initial_objective:
-            self.best_objective = min(best_objective, self.best_objective)
+        if self.is_minimisation:
+            self.initial_objective = max(vals)
+            self.best_objective = min(vals)
+        else:
+            self.initial_objective = min(vals)
+            self.best_objective = max(vals)
 
     def to_dict(self, all_runs: bool = False):
         return {'name': self.name,
@@ -95,23 +102,25 @@ class Model:
     name: str = None
     acronym: str = None
     instances: Dict[str, Instance]
+    is_minimisation: Union[None, bool] = None
 
     def __init__(self, name, acronym):
         self.name = name
         self.acronym = acronym
         self.instances = dict()
+        self.is_minimisation = None
 
-    def add_instance(self, instance_name: str, initial_objective) -> Instance:
+    def add_instance(self, instance_name: str) -> Instance:
         if instance_name not in self.instances:
-            self.instances[instance_name] = Instance(instance_name,
-                                                     initial_objective)
+            self.instances[instance_name] = Instance(self.is_minimisation,
+                                                     instance_name)
         return self.instances[instance_name]
 
-    def update_best(self, best_objective): 
+    def update_objectives(self, best_objective):
         if best_objective is None:
-          return
+            return
         for instance in self.instances.values():
-          instance.update_best(best_objective)
+            instance.update_objectives(best_objective)
 
     def to_dict(self, all_runs: bool = False):
         return {
@@ -154,6 +163,7 @@ class JsonWriter:
         if fname.lower().endswith('-cc'):
             method_name = f'cc-{method_name}'
 
+        data: List[Tuple[Any, Any, Any, Any, bool]] = []
         with open(txt_file, 'r') as input:
             for line in input.readlines():
                 entries = [e.strip() for e in line.split('\t')]
@@ -174,9 +184,45 @@ class JsonWriter:
                 except ValueError:
                     initial_obj = None
 
-                self.model.add_instance(i_name, initial_obj).add_method(
-                    method_name, acronym, r_obj, r_time, r_error)
-                self.model.instances[i_name].update_best(self.best_objective)
+                data.append((i_name, r_obj, r_time, initial_obj, r_error))
+                if r_obj is None or initial_obj is None:
+                    continue
+                if self.model.is_minimisation is not None:
+                    continue
+                if r_obj < initial_obj:
+                    logging.warning("minimisation")
+                    self.model.is_minimisation = True
+                elif r_obj > initial_obj:
+                    logging.warning("maximisation")
+                    self.model.is_minimisation = False
+        assert self.model.is_minimisation is not None
+        for i_name, r_obj, r_time, initial_obj, r_error in data:
+            self.model.add_instance(i_name).add_method(
+                method_name, acronym, initial_obj, r_obj, r_time, r_error)
+
+    def parse_comparative_file(self, txt_file) -> None:
+        with open(txt_file, 'r') as input:
+            for line in input.readlines():
+                entries = [e.strip() for e in line.split('\t')]
+                if len(entries) < 4:
+                    continue
+                i_name = entries[0]
+                try:
+                    r_obj = int(entries[1])
+                except ValueError:
+                    r_obj = None
+                try:
+                    r_time = int(entries[2])
+                except ValueError:
+                    r_time = None
+                r_error = entries[3].lower() != 'false'
+                try:
+                    initial_obj = int(entries[4])
+                except ValueError:
+                    initial_obj = None
+
+                self.model.add_instance(i_name).update_objectives(initial_obj,
+                                                                  r_obj)
 
     def write_json(self, json_path, all_runs: bool = False):
         d = self.model.to_dict(all_runs)
@@ -213,16 +259,20 @@ if __name__ == '__main__':
 
     parser = ArgumentParser()
 
-    data_group = parser.add_mutually_exclusive_group()
     parser.add_argument('--model', dest='model', type=str,
                         help='The model name.')
 
     parser.add_argument('--acronym', dest='acronym', type=str,
                         help='The model acronym.')
 
-    data_group.add_argument('-d', '--data', dest='data_files',
-                            metavar='<data file>.txt[-*]', nargs='*',
-                            type=str, help='txt input files.')
+    parser.add_argument('-d', '--data', dest='data_files',
+                        metavar='<data file>.txt[-*]', nargs='*',
+                        type=str, help='txt input files.')
+
+    parser.add_argument('-c', '--comparative-data',
+                        dest='comparative_data_files',
+                        metavar='<comparative data file>.txt[-*]', nargs='*',
+                        type=str, help='txt input files to compare with.')
 
     parser.add_argument('-o', '--output', dest='output',
                         metavar='<output file>', type=creatable_file,
@@ -251,11 +301,27 @@ if __name__ == '__main__':
             continue
         data_files.append(data_file)
         seen_data_files.add(data_file)
+    
+    cdf_globs = (
+        [] if args.comparative_data_files is not None else
+        [fp for glob_list in args.data_files for fp in glob(glob_list)])
+    
+    comparative_data_files = []
+    for data_file in cdf_globs:
+        if data_file in seen_data_files:
+            continue
+        comparative_data_files.append(data_file)
+        seen_data_files.add(data_file)
+    
     data_files = list(sorted(data_files))
+    comparative_data_files = list(sorted(comparative_data_files))
 
     json_writer = JsonWriter(args.model, args.acronym, args.best_objective)
 
     for df in data_files:
         json_writer.parse_file(df)
+
+    for cdf in comparative_data_files:
+        json_writer.parse_comparative_file(cdf)
 
     json_writer.write_json(args.output, args.all_runs)
