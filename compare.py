@@ -39,6 +39,7 @@ class Model:
 
 
 class JsonComparer:
+    skip_missing: bool
     cc_prefix = 'cc-'
     json_path: str = None
     models: Dict[str, Model] = None
@@ -47,7 +48,8 @@ class JsonComparer:
     scheme_name = 'dependecy-curating scheme'
     scheme_acronym = 'DCS'
 
-    def __init__(self):
+    def __init__(self, skip_missing: bool):
+        self.skip_missing = skip_missing
         self.models = dict()
 
     def parse(self, json_path):
@@ -63,18 +65,25 @@ class JsonComparer:
             instance_name = instance.get('name', None)
             initial_objective = instance.get('initial_objective', None)
             best_objective = instance.get('best_objective', None)
-            if best_objective is None:
+            if initial_objective is None or best_objective is None:
+                assert initial_objective is None
+                assert best_objective is None
                 continue
             for method in instance.get('methods', []):
                 method_name = method.get('name', None)
                 method_acr = method.get('acronym', None)
                 mean = method.get('mean', dict()).get('objective', None)
                 if mean is None:
-                    continue
+                    logging.warning("missing initial solution for "
+                                    f"{model_name} - {method_name}")
+                    if self.skip_missing:
+                        continue
+                    mean = initial_objective
                 if method_name not in model_data:
                     model_data[method_name] = dict()
-                model_data[method_name][instance_name] = (
-                    100 * abs(mean - best_objective) / initial_objective)
+                val = 100 * abs(mean - best_objective) / initial_objective
+                assert 0 <= val and val <= 100
+                model_data[method_name][instance_name] = val
                 method_acronyms[method_name] = method_acr
         if len(model_data) > 0:
             self.models[model_name] = Model(model_name, model_acronym,
@@ -268,6 +277,10 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--plot', dest='plot', default=False,
                         action='store_true', help='show scatter plots.')
 
+    parser.add_argument('--skip-missing', dest='skip_missing',
+                        default=False, action='store_true',
+                        help='skip instances without any solution.')
+
     args = parser.parse_args()
 
     if args.data_files is None:
@@ -285,7 +298,7 @@ if __name__ == '__main__':
 
     logging.basicConfig(level=logging.INFO)
 
-    json_comparer = JsonComparer()
+    json_comparer = JsonComparer(args.skip_missing)
     for data_file in data_files:
         json_comparer.parse(data_file)
 
