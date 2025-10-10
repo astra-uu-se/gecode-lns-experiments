@@ -12,7 +12,7 @@ array[LocationsAndDummy, LocationsAndDummy] of int: dur = array2d(
       | u, v in LocationsAndDummy]);
 array[LocationsAndDummy] of var LocationsAndDummy: pred;
 array[Locations] of var 0..max(duration): durToPred = [
-    dur[l, pred[l]] | l in Locations];
+    dur[pred[l], l] | l in Locations];
 array[Locations] of var 0..(max(duration) * card(Locations)): arrival;
 array[LocationsAndDummy] of var min(early)..max(late): departure = [
     max(arrival[l], early[l]) | l in Locations] ++ [0];
