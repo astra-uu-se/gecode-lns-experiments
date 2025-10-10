@@ -18,7 +18,7 @@ constraint forall (l in Locations) (%* \label{listing:tsptw:constraint:arrival:s
 constraint circuit(pred);%* \label{listing:tsptw:constraint:circuit} %*
 constraint forall (l in Locations) (departure[l] <= late[l]);%* \label{listing:tsptw:constraint:late} %*
 array[int] of int: solution;
-solve :: lns_warm_start(pred ++ arrival, solution)
+solve :: warm_start(pred ++ arrival, solution)
       :: seq_search([int_search(pred, first_fail, indomain_min),
                      int_search([arrival[l] | l in arg_sort(early)],
                                 input_order, indomain_min)])

@@ -15,7 +15,7 @@ array[Locations] of var 0..max(duration): durToPred = [
     dur[pred[l], l] | l in Locations];
 array[Locations] of var 0..(max(duration) * card(Locations)): arrival;
 array[LocationsAndDummy] of var min(early)..max(late): departure = [
-    max(arrival[l], early[l]) | l in Locations] ++ [0];
+    max(arrival[l], early[l]) :: defines_var(departure[l]) | l in Locations] ++ [0];
 array[Locations] of var 0..sum(duration): departurePred = [
     departure[pred[l]] | l in Locations];
 var int: objective = departure[pred[dummy]];
@@ -24,7 +24,7 @@ constraint forall (n in Locations) (
 constraint circuit(pred) :: domain;
 constraint forall (l in Locations) (departure[l] <= late[l]);
 array[int] of int: solution;
-solve :: lns_warm_start(pred ++ arrival, solution)
+solve :: warm_start(pred ++ arrival, solution)
       :: seq_search([int_search(pred, first_fail, indomain_min),
                      int_search([arrival[l] | l in arg_sort(early)],
                                 input_order, indomain_min)])

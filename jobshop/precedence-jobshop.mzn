@@ -41,7 +41,7 @@ constraint forall(m in Machines, j1 in Jobs, j2 in Jobs) (
     not machineJobPrecedence[m, j2, j1]
   endif);
 
-solve :: lns_warm_start(
+solve :: warm_start(
             array1d(machineJobPrecedence),
             [j1 < j2 | _ in Machines, j1 in Jobs, j2 in Jobs])
       :: seq_search(

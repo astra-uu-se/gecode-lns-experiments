@@ -15,7 +15,7 @@ array[Locations] of var 0..max(duration): durToPred = [
     dur[pred[l], l] | l in Locations];
 array[Locations] of var 0..(max(duration) * card(Locations)): arrival;
 array[LocationsAndDummy] of var min(early)..max(late): departure = [
-    max(arrival[l], early[l]) | l in Locations] ++ [0];
+    max(arrival[l], early[l]) :: defines_var(departure[l]) | l in Locations] ++ [0];
 array[Locations] of var 0..sum(duration): departurePred = [
     departure[pred[l]] | l in Locations];
 var int: objective = departure[pred[dummy]];

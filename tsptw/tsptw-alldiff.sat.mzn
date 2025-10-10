@@ -39,7 +39,7 @@ constraint forall (index in Locations) (
         if index = 1 then
             early[tour[index]]
         else
-            max(early[tour[index]], arrivalAtIndex[index])
+            max(early[tour[index]], arrivalAtIndex[index]) :: defines_var(departureFromIndex[index])
         endif);
 
 constraint forall (index in Locations) (

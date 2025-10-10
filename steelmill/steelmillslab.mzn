@@ -22,7 +22,7 @@ array[Slabs, Colors] of var bool: hasColor = array2d(
 array[Slabs] of var 0..maxColors: nColors = [
   count(hasColor[s, ..]) | s in Slabs];
 var int: objective = sum(s in Slabs)(slack[load[s]]);
-solve :: lns_warm_start(placedIn, [s | s in Slabs])
+solve :: warm_start(placedIn, [s | s in Slabs])
       :: int_search(
   [placedIn[i] | i in reverse(arg_sort(size))],
   first_fail,

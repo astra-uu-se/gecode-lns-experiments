@@ -114,7 +114,7 @@ array [Tasks] of int: InitialStart = let {
   } in [S[I_inv[t]] | t in Tasks];
 
 solve :: relax_and_reconstruct(array1d(Precedence[.., ..]), -1)
-      :: lns_warm_start([Start[t] | t in InitialSolution],
+      :: warm_start([Start[t] | t in InitialSolution],
                         [InitialStart[t] | t in InitialSolution])
       :: int_search(Start, smallest, indomain_min, complete )
    minimize objective;

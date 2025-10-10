@@ -30,7 +30,7 @@ constraint forall(m in Machines) (disjunctive(
   [   start[j, task[j, m]] | j in Jobs],
   [duration[j, task[j, m]] | j in Jobs]));
 
-solve :: lns_warm_start(
+solve :: warm_start(
             array1d(start),
             [sum([sum(duration[pj, ..]) | pj in 1..j - 1]) +
              sum([duration[j, pt] | pt in 1..t - 1])

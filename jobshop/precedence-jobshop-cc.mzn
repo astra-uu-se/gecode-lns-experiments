@@ -41,7 +41,7 @@ constraint forall(m in Machines, j1 in Jobs, j2 in Jobs) (
     not machineJobPrecedence[m, j2, j1]
   endif);
 
-solve :: lns_warm_start(
+solve :: warm_start(
             array1d(start),
             [sum([sum(duration[pj, ..]) | pj in 1..j - 1]) +
              sum([duration[j, pt] | pt in 1..t - 1])

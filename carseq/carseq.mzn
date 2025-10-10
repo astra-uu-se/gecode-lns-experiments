@@ -28,7 +28,7 @@ array[int] of int: permutation = let {
   int: offset = 1 + (card(Cars) - card(Cars) mod 2) div 2;
   } in [offset + (if c mod 2 = 0 then c else -(c + 1) endif div 2) | c in 0..card(Cars)-1];
 array [Options] of int: optionOrdering;
-solve :: lns_warm_start(class, [dummyClass | _ in Cars])
+solve :: warm_start(class, [dummyClass | _ in Cars])
       :: seq_search([int_search([class[permutation[car]] | car in Cars], input_order, indomain_split)] ++ 
                     [int_search([carHasOption[permutation[c], o] | c in Cars], input_order, indomain_min)
                     | o in optionOrdering])
