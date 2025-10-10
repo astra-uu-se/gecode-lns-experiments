@@ -15,12 +15,12 @@ array[Locations] of var 0..max(duration): durToPred = [
     dur[pred[l], l] | l in Locations];
 array[Locations] of var 0..(max(duration) * card(Locations)): arrival;
 array[LocationsAndDummy] of var min(early)..max(late): departure = [
-    max(arrival[l], early[l]) :: defines_var(departure[l]) | l in Locations] ++ [0];
+    max(arrival[l], early[l])| l in Locations] ++ [0];
 array[Locations] of var 0..sum(duration): departurePred = [
     departure[pred[l]] | l in Locations];
 var int: objective = departure[pred[dummy]];
-constraint forall (n in Locations) (
-    arrival[n] = departurePred[n] + durToPred[n]);
+constraint forall (l in Locations) (
+    arrival[l] = departurePred[l] + durToPred[l]);
 constraint circuit(pred) :: domain;
 constraint forall (l in Locations) (departure[l] <= late[l]);
 array[int] of int: solution;
@@ -29,4 +29,4 @@ solve :: warm_start(pred ++ arrival, solution)
                      int_search([arrival[l] | l in arg_sort(early)],
                                 input_order, indomain_min)])
          minimize objective;
-output ["solution = \(pred ++ arrival);\ninitialObjective = \(max(solution));\nobjective = \(objective);\n"];
+output ["solution = \(pred ++ arrival);\ninitialObjective = \(max(solution));\nobjective = \(objective);\l"];
