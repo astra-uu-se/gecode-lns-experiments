@@ -1,5 +1,4 @@
 include "globals.mzn";
-include "gecode.mzn";
 int: n; int: depot = 1; set of int: Locations = 1..n;%* \label{listing:tsptw:parameters:start} %*
 array[Locations] of int: early;
 array[Locations] of int: late;
@@ -17,10 +16,8 @@ constraint forall (l in Locations) (%* \label{listing:tsptw:constraint:arrival:s
     arrival[l] = departurePred[l] + durFromPred[l]);%* \label{listing:tsptw:constraint:arrival:end} %*
 constraint circuit(pred);%* \label{listing:tsptw:constraint:circuit} %*
 constraint forall (l in Locations) (departure[l] <= late[l]);%* \label{listing:tsptw:constraint:late} %*
-array[int] of int: solution;
-solve :: warm_start(pred ++ arrival, solution)
-      :: seq_search([int_search(pred, first_fail, indomain_min),
+solve :: seq_search([int_search(pred, first_fail, indomain_min),
                      int_search([arrival[l] | l in arg_sort(early)],
                                 input_order, indomain_min)])
          minimize objective;
-output ["solution = \(pred ++ arrival);\ninitialObjective = \(max(solution));\nobjective = \(objective);\n"];
+output ["solution = \(pred ++ arrival);\n;\nobjective = \(objective);\n"];

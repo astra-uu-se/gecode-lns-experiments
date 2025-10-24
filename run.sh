@@ -1,164 +1,18 @@
 #!/bin/bash
-SOLVER_DIR="${HOME}/dependency-curated-lns-gecode"
+SOLVER_DIR="${HOME}/gecode-lns"
 SOLVER="${SOLVER_DIR}/build/tools/flatzinc/gecode.msc"
-EXTRA="--extra -a"
+EXTRA="--extra --use-pbs -p 8"
 TIME_LIMIT=180000
-NUM_RUNS=10
+TIME_LIMIT_CSP=600000
+NUM_RUNS=1
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
-
-FILE_NAME="carseq-cc"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/carseq/${MZN} \
-        -d ${SCRIPT_DIR}/carseq/carseq_set_1/*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        --curated-lns ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="carseq"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/carseq/${MZN} \
-        -d ${SCRIPT_DIR}/carseq/carseq_set_1/*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="jobshop-cc"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/jobshop/${MZN} \
-        -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
-           ${SCRIPT_DIR}/jobshop/job/jobshop_sw*.dzn \
-           ${SCRIPT_DIR}/jobshop/job/jobshop_yl*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        --curated-lns ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="jobshop"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/jobshop/${MZN} \
-        -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
-           ${SCRIPT_DIR}/jobshop/job/jobshop_sw*.dzn \
-           ${SCRIPT_DIR}/jobshop/job/jobshop_yl*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-# FILE_NAME="dl-jobshop-cc"
-# OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-# MZN="${FILE_NAME}.mzn"
-# python3 run.py --solver ${SOLVER} \
-#        ${SCRIPT_DIR}/jobshop/${MZN} \
-#         -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
-#         -o ${OUTPUT} \
-#         --time-limit ${TIME_LIMIT} \
-#         --num-runs ${NUM_RUNS} \
-#         --curated-lns ${EXTRA}
-# COMMAND_STATUS=$?
-#if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-#
-# FILE_NAME="dl-jobshop"
-# OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-# MZN="${FILE_NAME}.mzn"
-# python3 run.py --solver ${SOLVER} \
-#        ${SCRIPT_DIR}/jobshop/${MZN} \
-#         -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
-#         -o ${OUTPUT} \
-#         --time-limit ${TIME_LIMIT} \
-#         --num-runs ${NUM_RUNS} \
-#         ${EXTRA}
-# COMMAND_STATUS=$?
-# if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-#
-# FILE_NAME="vrp-cc"
-# OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-# MZN="${FILE_NAME}.mzn"
-# python3 run.py --solver ${SOLVER} \
-#        ${SCRIPT_DIR}/vrp/${MZN} \
-#         -d ${SCRIPT_DIR}/vrp/vrp/*.dzn \
-#         -o ${OUTPUT} \
-#         --time-limit ${TIME_LIMIT} \
-#         --num-runs ${NUM_RUNS} \
-#         --curated-lns ${EXTRA}
-# COMMAND_STATUS=$?
-# if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-#
-# FILE_NAME="vrp"
-# OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-# MZN="${FILE_NAME}.mzn"
-# python3 run.py --solver ${SOLVER} \
-#        ${SCRIPT_DIR}/vrp/${MZN} \
-#         -d ${SCRIPT_DIR}/vrp/vrp/*.dzn \
-#         -o ${OUTPUT} \
-#         --time-limit ${TIME_LIMIT} \
-#         --num-runs ${NUM_RUNS} \
-#         ${EXTRA}
-# COMMAND_STATUS=$?
-# if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="sb-steelmillslab-cc"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/steelmill/${MZN} \
-        -d ${SCRIPT_DIR}/steelmill/steel/*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        --curated-lns ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="sb-steelmillslab"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/steelmill/${MZN} \
-        -d ${SCRIPT_DIR}/steelmill/steel/*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="orig-tsptw-cc"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/tsptw/${MZN} \
-        -d ${SCRIPT_DIR}/tsptw/orig-tsptw/*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        --curated-lns ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
 
 FILE_NAME="orig-tsptw"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
         ${SCRIPT_DIR}/tsptw/${MZN} \
-        -d ${SCRIPT_DIR}/tsptw/orig-tsptw/*.dzn \
+        -d ${SCRIPT_DIR}/tsptw/tsptw-orig/*.dzn \
         -o ${OUTPUT} \
         --time-limit ${TIME_LIMIT} \
         --num-runs ${NUM_RUNS} \
@@ -166,38 +20,27 @@ python3 run.py --solver ${SOLVER} \
 COMMAND_STATUS=$?
 if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
 
-FILE_NAME="tsptw-cc"
+FILE_NAME="csp-carseq"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/tsptw/${MZN} \
-        -d ${SCRIPT_DIR}/tsptw/tsptw/*.dzn \
+        ${SCRIPT_DIR}/carseq/${MZN} \
+        -d ${SCRIPT_DIR}/carseq/carseq_set_1/*.dzn \
         -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        --curated-lns ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="tsptw"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/tsptw/${MZN} \
-        -d ${SCRIPT_DIR}/tsptw/tsptw/*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
+        --time-limit ${TIME_LIMIT_CSP} \
         --num-runs ${NUM_RUNS} \
         ${EXTRA}
 COMMAND_STATUS=$?
 if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
 
-FILE_NAME="steelmillslab-cc"
+FILE_NAME="csp-jobshop"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/steelmill/${MZN} \
-        -d ${SCRIPT_DIR}/steelmill/steel/*.dzn \
+        ${SCRIPT_DIR}/jobshop/${MZN} \
+        -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
+           ${SCRIPT_DIR}/jobshop/job/jobshop_sw*.dzn \
+           ${SCRIPT_DIR}/jobshop/job/jobshop_y*.dzn \
         -o ${OUTPUT} \
         --time-limit ${TIME_LIMIT} \
         --num-runs ${NUM_RUNS} \
@@ -205,7 +48,7 @@ python3 run.py --solver ${SOLVER} \
 COMMAND_STATUS=$?
 if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
 
-FILE_NAME="steelmillslab"
+FILE_NAME="csp-sb-steelmillslab"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
 python3 run.py --solver ${SOLVER} \
@@ -217,135 +60,3 @@ python3 run.py --solver ${SOLVER} \
         ${EXTRA}
 COMMAND_STATUS=$?
 if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="precedence-jobshop-cc"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/jobshop/${MZN} \
-        -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
-           ${SCRIPT_DIR}/jobshop/job/jobshop_sw*.dzn \
-           ${SCRIPT_DIR}/jobshop/job/jobshop_yl*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        --curated-lns ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="precedence-jobshop"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/jobshop/${MZN} \
-        -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
-           ${SCRIPT_DIR}/jobshop/job/jobshop_sw*.dzn \
-           ${SCRIPT_DIR}/jobshop/job/jobshop_yl*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="rcpsp-cc"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/rcpsp/${MZN} \
-        -d ${SCRIPT_DIR}/rcpsp/new/la*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        --curated-lns ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="rcpsp"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/rcpsp/${MZN} \
-        -d ${SCRIPT_DIR}/rcpsp/new/la*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="precedence-rcpsp-cc"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/rcpsp/${MZN} \
-        -d ${SCRIPT_DIR}/rcpsp/new/la*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        --curated-lns ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="precedence-rcpsp"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/rcpsp/${MZN} \
-        -d ${SCRIPT_DIR}/rcpsp/new/la*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="wet-rcpsp-cc"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/rcpsp-wet/${MZN} \
-        -d ${SCRIPT_DIR}/rcpsp-wet/new/*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        --curated-lns ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="wet-rcpsp"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/rcpsp-wet/${MZN} \
-        -d ${SCRIPT_DIR}/rcpsp-wet/new/*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="precedence-wet-rcpsp"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/rcpsp-wet/${MZN} \
-        -d ${SCRIPT_DIR}/rcpsp-wet/new/*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="precedence-wet-rcpsp-cc"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/rcpsp-wet/${MZN} \
-        -d ${SCRIPT_DIR}/rcpsp-wet/new/*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        --curated-lns ${EXTRA}

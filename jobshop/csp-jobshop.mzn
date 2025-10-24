@@ -1,5 +1,4 @@
 include "globals.mzn";
-include "gecode.mzn";
 int: n_jobs;
 int: n_machines;
 int: n_tasks = n_machines;
@@ -30,14 +29,9 @@ constraint forall(m in Machines) (disjunctive(
   [   start[j, task[j, m]] | j in Jobs],
   [duration[j, task[j, m]] | j in Jobs]));
 
-solve :: relax_and_reconstruct(
-            array1d(start), -1,
-            [sum([sum(duration[pj, ..]) | pj in 1..j - 1]) +
-             sum([duration[j, pt] | pt in 1..t - 1])
-            | j in Jobs, t in Tasks])
-      :: int_search(start[.., ..], smallest, indomain_min)
+solve :: int_search(start[.., ..], smallest, indomain_min)
          minimize objective;
 
 output ["solution = [|"
      ++ join("|", [join(", ", ["\(start[j, t])" | t in Tasks]) | j in Jobs])
-     ++ "|];\ninitialObjective = \(sum(duration));\nobjective = \(objective);\n"];
+     ++ "|];\nobjective = \(objective);\n"];

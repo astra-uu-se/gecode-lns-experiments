@@ -33,6 +33,7 @@ class MiniZincRunner:
     def __init__(self, solver_path, model, output_path, time_limit, extra):
         if path.exists(solver_path):
             self.solver = solver_path
+        logging.warning(self.solver)
         self.model = model
         self.output_path = output_path
         self.time_limit = time_limit
@@ -119,6 +120,13 @@ class MiniZincRunner:
         except subprocess.TimeoutExpired:
             logging.warning("Timeout: quitting without storing results.")
             return
+        except (KeyboardInterrupt, SystemExit):
+            logging.warning("KILLED: shutting down threads...")
+            process.kill()
+            mzn_runner.kill = True
+            logging.warning("KILLED: DONE")
+            exit(1)
+
 
         if self.kill:
             logging.warning("KILLED: quitting without storing results.")
@@ -286,65 +294,26 @@ if __name__ == '__main__':
         seen_data_files.add(data_file)
     data_files = list(sorted(data_files))
 
-    # enumeration of the PBS asset type:
-    # 0 = branch and bound asset;
-    # 1 = random lns asset;
-    # 2 = propagation guided lns asset;
-    # 3 = cost impact guided lns asset;
-    # 4 = objective relaxation lns asset;
-    # 5 = static variable dependency lns asset;
-    # 6 = reversed propagation guided lns asset;
-    # 7 = prioritized branching bab asset;
-    # 8 = branch and bound opposite branching asset;
-    # 9 = shaving asset;
-    # -1 = run multiple assets"
-
-    curated_lns_asset_types = {
-        'random',
-        'pg',
-        'ci',
-        'vrg',
-        'rpg'
-    }
-
-    lns_asset_types = [
-        (1, "random"),
-        (2, "pg"),
-        (3, "ci"),
-        # (4, "or"),  # not an automated selection heuristic
-        (5, "vrg"),
-        (6, "rpg")
-    ]
-
-    if args.curated_lns:
-        lns_asset_types = [
-            (i, s) for i, s in lns_asset_types if s in curated_lns_asset_types]
-
     extra = [] if args.extra is None else args.extra
 
-    mzn_runners = [MiniZincRunner(args.solver,
-                                  args.model,
-                                  f'{args.output}-{s}',
-                                  args.time_limit,
-                                  extra + ['--pbs-asset-type', str(a)])
-                   for a, s in lns_asset_types]
+    mzn_runner = MiniZincRunner(args.solver, args.model, args.output,
+                                args.time_limit, extra)
 
-    tasks = [(mi, di, ri)
-             for mi in range(len(mzn_runners))
+    tasks = [(di, ri)
              for di in range(len(data_files))
              for ri in range(args.num_runs)
-             if mzn_runners[mi].should_run(data_files[di], ri, False)]
+             if mzn_runner.should_run(data_files[di], ri, False)]
 
-    tasks = [(mi, di, ri, ti) for ti, (mi, di, ri) in enumerate(tasks)]
+    tasks = [(di, ri, ti) for ti, (di, ri) in enumerate(tasks)]
 
-    def run(mi: int, di: int, ri: int, ti: int):
-        if mzn_runners[mi].kill:
+    def run(di: int, ri: int, ti: int):
+        if mzn_runner.kill:
             return
         logging.info(f'Run {ti + 1}/{len(tasks)}; ' +
                      f'{path.basename(data_files[di])}; extra: ' +
-                     ' '.join(mzn_runners[mi].extra))
+                     ' '.join(mzn_runner.extra))
         try:
-            mzn_runners[mi].run_dzn(data_files[di], ri)
+            mzn_runner.run_dzn(data_files[di], ri)
         except Exception as e:
             exc_type, exc_obj, exc_tb = exc_info()
             fname = path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -360,16 +329,6 @@ if __name__ == '__main__':
     logging.info(f'Number of runs: {args.num_runs}')
     logging.info(f"Number of tasks: {len(tasks)}")
 
-    with ThreadPoolExecutor(max_workers=16) as executor:
-        try:
-            for task in tasks:
-                executor.submit(run, *task)
-            executor.shutdown(True)
-        except (KeyboardInterrupt, SystemExit):
-            logging.warning("KILLED: shutting down threads...")
-            for mr in mzn_runners:
-                mr.kill = True
-            executor.shutdown(True)
-            logging.warning("KILLED: DONE")
-            exit(1)
+    for task in tasks:
+        run(*task)
 

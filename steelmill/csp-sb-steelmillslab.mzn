@@ -1,4 +1,3 @@
-include "gecode.mzn";
 include "globals.mzn";
 set of int: Orders;
 set of int: Slabs = Orders; % need max one slab per order
@@ -23,7 +22,7 @@ array[Slabs, Colors] of var 0..1: hasColor = array2d(
 array[Slabs] of var 0..maxColors: nColors = [
   sum(hasColor[s, ..]) | s in Slabs];
 var int: objective = sum(s in Slabs)(slack[load[s]]);
-solve :: relax_and_reconstruct(placedIn, -1)
+solve 
       :: int_search(
   [placedIn[i] | i in reverse(arg_sort(size))],
   first_fail,
@@ -47,4 +46,4 @@ constraint symmetry_breaking_constraint(
     endif));
 
 
-output ["solution = \(placedIn);\ninitialObjective = \(sum([slack[size[o]] | o in Orders]));\nobjective = \(objective);\n"];
+output ["solution = \(placedIn);\nobjective = \(objective);\n"];
