@@ -79,7 +79,7 @@ class Tsptw:
                 break
             self.locations.append(location)
 
-    def output(self, output_file):
+    def output(self, output_file, tsp: bool = False):
         lines = []
         lines.extend(self.comments)
         lines.append(f'n = {len(self.locations)};')
@@ -92,15 +92,15 @@ class Tsptw:
         lines.append(f'{lhs}|' +
                      prefix.join([', '.join(map(str, row))
                                   for row in duration]) + '|];')
-
-        lines.append('early = [' +
-                     ', '.join(map(str, [loc.ready_time
-                                         for loc in self.locations])) +
-                     '];')
-        lines.append('late = [' +
-                     ', '.join(map(str, [loc.due_date
-                                         for loc in self.locations])) +
-                     '];')
+        if not tsp:
+            lines.append('early = [' +
+                        ', '.join(map(str, [loc.ready_time
+                                            for loc in self.locations])) +
+                        '];')
+            lines.append('late = [' +
+                        ', '.join(map(str, [loc.due_date
+                                            for loc in self.locations])) +
+                        '];')
         lines = '\n'.join(lines)
         with open(output_file, 'w+') as of:
             of.write(lines)
@@ -140,6 +140,9 @@ if __name__ == '__main__':
                         type=str,
                         help='The txt instance input file(s)')
 
+    parser.add_argument('--tsp', dest='tsp', action='store_true',
+                        default=False, help='ignore time windows')
+
     parser.add_argument('-o', '--output', dest='output',
                         metavar='<output dir>', type=dir_path,
                         help='output directory')
@@ -168,4 +171,4 @@ if __name__ == '__main__':
         fn, ext = path.splitext(path.basename(dzn))
         output = path.join(args.output, f'{fn}.dzn')
         logging.info(output)
-        parser.output(output)
+        parser.output(output, args.tsp)
