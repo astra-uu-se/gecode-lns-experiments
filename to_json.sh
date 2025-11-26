@@ -1,5 +1,78 @@
 #!/bin/bash
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
+MODELS=(\
+"carseq" \
+"steelmillslab" \
+"sb-steelmillslab" \
+"jobshop" \
+"precedence-jobshop" \
+"rcpsp" \
+"precedence-rcpsp" \
+"dl-jobshop" \
+"vrp" \
+"tsptw" \
+"orig-tsptw" \
+)
+COMPARATIVE_MODELS=(\
+"" \
+"" \
+${MODELS[4]} \
+${MODELS[3]} \
+${MODELS[5]} \
+${MODELS[4]} \
+"" \
+"" \
+"" \
+"" \
+"" \
+)
+NAMES=(\
+"Relaxed car sequencing" \
+"Steel mill slab design\n(without symmetry breaking)" \
+"Steel mill slab design" \
+"Job shop" \
+"Job shop with precedences" \
+"RCPSP" \
+"RCPSP with precedences" \
+"Job shop with\nearliness and tardiness costs" \
+"Vehicle routing problem" \
+"Travelling salesperson\nwith time windows" \
+"Travelling salesperson\nwith time windows" \
+)
+ACRONYMS=(\
+"RCS" \
+"SMSD (w/o symmetry breaking)" \
+"SMSD" \
+"JSP" \
+"JSP-P" \
+"RCPSP" \
+"RCPSP-P" \
+"JSP-ETC" \
+"VRP" \
+"TSPTW" \
+"TSPTW" \
+)
+for i in "${!MODELS[@]}"; do
+  MODEL=${MODELS[$i]}
+  NAME=${NAMES[$i]}
+  ACRONYM=${ACRONYMS[$i]}
+  DATA="${SCRIPT_DIR}/results/${MODEL}*.txt"
+  if compgen -G "${DATA}" > /dev/null; then
+    OUTPUT="${SCRIPT_DIR}/results/${MODEL}.json"
+    if [ -z ${COMPARATIVE_MODELS[$i]} ]; then 
+    COMPARE=""
+    else
+    COMPARE="--comparative-data \"${COMPARATIVE_MODELS[$i]}\""
+    fi
+    python3 to_json.py \
+            --model "${NAME}" \
+            --acronym "${ACRONYM}" \
+            --data ${DATA} \
+            --output ${OUTPUT} \
+            ${COMPARE}
+  fi
+done
+exit 0
 
 MODEL="carseq"
 NAME="Relaxed car sequencing"

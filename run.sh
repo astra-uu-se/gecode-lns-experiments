@@ -1,21 +1,78 @@
 #!/bin/bash
-SOLVER_DIR="${HOME}/gecode-lns"
-SOLVER="${SOLVER_DIR}/build/tools/flatzinc/gecode.msc"
-EXTRA="--extra --use-pbs -p 8"
-TIME_LIMIT=180000
-TIME_LIMIT_CSP=600000
-NUM_RUNS=1
+LNS_SOLVER_DIR="${HOME}/gecode-lns"
+PAR_SOLVER_DIR="${HOME}/gecode-par"
+SOLVERS=("${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc" "${PAR_SOLVER_DIR}/build/tools/flatzinc/gecode.msc")
+NUM_RUNS=(3 1)
+SUFFIXES=("lns" "par")
+FLAGS=("--extra --use-pbs -p 8" "--extra -p 8")
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
+FILE_NAMES=(\
+"csp-jobshop" \
+"orig-tsptw" \
+"csp-carseq" \
+"csp-sb-steelmillslab" \
+"sequence-tsptw")
+FOLDERS=(
+"${SCRIPT_DIR}/jobshop/" \
+"${SCRIPT_DIR}/tsptw/" \
+"${SCRIPT_DIR}/carseq/" \
+"${SCRIPT_DIR}/steelmill/" \
+"${SCRIPT_DIR}/tsptw/")
+DATA_LOCATIONS=(\
+"${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn ${SCRIPT_DIR}/jobshop/job/jobshop_sw*.dzn ${SCRIPT_DIR}/jobshop/job/jobshop_y*.dzn" \
+"${SCRIPT_DIR}/tsptw/tsptw-orig/*.dzn" \
+"${SCRIPT_DIR}/carseq/carseq_set_1/*.dzn" \
+"${SCRIPT_DIR}/steelmill/steel/*.dzn" \
+"${SCRIPT_DIR}/tsptw/tsptw-orig/*.dzn")
+TIME_LIMITS=(180000 180000 600000 180000 180000)
+for s in "${!SOLVERS[@]}"; do
+  SOLVER=${SOLVERS[$s]}
+  SUFFIX=${SUFFIXES[$s]}
+  RUNS=${NUM_RUNS[$s]}
+  EXTRA=${FLAGS[$s]}
+  for i in "${!FILE_NAMES[@]}"; do
+    FILE_NAME=${FILE_NAMES[$i]}
+    MZN="${FOLDERS[$i]}${FILE_NAME}.mzn"
+    DATA=${DATA_LOCATIONS[$i]}
+    OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.${SUFFIX}.txt"
+    TIME_LIMIT=${TIME_LIMITS[$i]}
+    python3 run.py --solver ${SOLVER} \
+                   ${MZN} \
+                   -d ${DATA} \
+                   -o ${OUTPUT} \
+                   --time-limit ${TIME_LIMIT} \
+                   --num-runs ${RUNS} \
+                   ${EXTRA}
+    COMMAND_STATUS=$?
+    if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
+  done
+done
+exit 0
+
+FILE_NAME="csp-jobshop"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
+MZN="${FILE_NAME}.mzn"
+python3 run.py --solver ${LNS_SOLVER} \
+        ${SCRIPT_DIR}/jobshop/${MZN} \
+        -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
+           ${SCRIPT_DIR}/jobshop/job/jobshop_sw*.dzn \
+           ${SCRIPT_DIR}/jobshop/job/jobshop_y*.dzn \
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        --num-runs ${LNS_NUM_RUNS} \
+        --curated-lns ${EXTRA}
+COMMAND_STATUS=$?
+if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
 
 FILE_NAME="orig-tsptw"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
+python3 run.py --solver ${LNS_SOLVER} \
         ${SCRIPT_DIR}/tsptw/${MZN} \
         -d ${SCRIPT_DIR}/tsptw/tsptw-orig/*.dzn \
         -o ${OUTPUT} \
         --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
+        --num-runs ${LNS_NUM_RUNS} \
         ${EXTRA}
 COMMAND_STATUS=$?
 if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
@@ -23,40 +80,38 @@ if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
 FILE_NAME="csp-carseq"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
+python3 run.py --solver ${LNS_SOLVER} \
         ${SCRIPT_DIR}/carseq/${MZN} \
         -d ${SCRIPT_DIR}/carseq/carseq_set_1/*.dzn \
         -o ${OUTPUT} \
         --time-limit ${TIME_LIMIT_CSP} \
-        --num-runs ${NUM_RUNS} \
+        --num-runs ${LNS_NUM_RUNS} \
         ${EXTRA}
-COMMAND_STATUS=$?
-if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
-
-FILE_NAME="csp-jobshop"
-OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
-MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
-        ${SCRIPT_DIR}/jobshop/${MZN} \
-        -d ${SCRIPT_DIR}/jobshop/job/jobshop_orb*.dzn \
-           ${SCRIPT_DIR}/jobshop/job/jobshop_sw*.dzn \
-           ${SCRIPT_DIR}/jobshop/job/jobshop_y*.dzn \
-        -o ${OUTPUT} \
-        --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
-        --curated-lns ${EXTRA}
 COMMAND_STATUS=$?
 if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
 
 FILE_NAME="csp-sb-steelmillslab"
 OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
 MZN="${FILE_NAME}.mzn"
-python3 run.py --solver ${SOLVER} \
+python3 run.py --solver ${LNS_SOLVER} \
         ${SCRIPT_DIR}/steelmill/${MZN} \
         -d ${SCRIPT_DIR}/steelmill/steel/*.dzn \
         -o ${OUTPUT} \
         --time-limit ${TIME_LIMIT} \
-        --num-runs ${NUM_RUNS} \
+        --num-runs ${LNS_NUM_RUNS} \
+        ${EXTRA}
+COMMAND_STATUS=$?
+if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
+
+FILE_NAME="sequence-tsptw"
+OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt"
+MZN="${FILE_NAME}.mzn"
+python3 run.py --solver ${LNS_SOLVER} \
+        ${SCRIPT_DIR}/tsptw/${MZN} \
+        -d ${SCRIPT_DIR}/tsptw/tsptw-orig/*.dzn \
+        -o ${OUTPUT} \
+        --time-limit ${TIME_LIMIT} \
+        --num-runs ${LNS_NUM_RUNS} \
         ${EXTRA}
 COMMAND_STATUS=$?
 if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi
