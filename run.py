@@ -147,6 +147,7 @@ class MiniZincRunner:
                          f'is_unknown: {self.is_unknown(output)}; ' +
                          f'duration: {int(round(duration * 1000))}; ' +
                          '; extra: ' + ' '.join(self.extra))
+            logging.info(output)
 
         solutions = output.split('\n----------\n')
         solutions = [s.strip() for s in solutions if len(s.strip()) > 0]

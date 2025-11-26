@@ -195,6 +195,9 @@ class JsonWriter:
                 elif r_obj > initial_obj:
                     logging.warning("maximisation")
                     self.model.is_minimisation = False
+        self.model.is_minimisation = (
+            True if self.model.is_minimisation is None else
+            self.model.is_minimisation)
         assert self.model.is_minimisation is not None
         for i_name, r_obj, r_time, initial_obj, r_error in data:
             self.model.add_instance(i_name).add_method(
