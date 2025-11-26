@@ -8,13 +8,15 @@ array [Options] of int: sequenceMaxCapacity;
 array [Classes] of int: numOrdered;
 array [Classes, Options] of bool: classHasOption;
 array[Cars] of var Classes: class;
-array[Cars, Options] of var bool: carHasOption = array2d(
-  Cars, Options, [classHasOption[class[car], o]
-                 | car in Cars, o in Options]);
+array[Cars, Options] of var bool: carHasOption;
 constraint global_cardinality_closed(class, Classes, numOrdered);
-% constraint forall(o in Options)(
-%   sliding_sum(sequenceMinCapacity[o], sequenceMaxCapacity[o],
-%               sequenceSize[o], carHasOption[.., o]));
+
+constraint :: "table"
+  forall(c in Cars) (
+     table([class[c]] ++ carHasOption[c, ..],
+           array2d(Classes, 1..max(Options) + 1,
+           [if o = 0 then Classes[k] else classHasOption[k, o] endif | k in Classes, o in 0..max(Options)]
+     ) :: defines_var(carHasOption[c, ..])));
 
 constraint :: "options"
   forall(o in Options)(
@@ -32,12 +34,17 @@ constraint :: "options"
     )
   );
 
+
+
 array [Options] of int: optionOrdering;
 array[int] of int: permutation = let {
   int: offset = 1 + (card(Cars) - card(Cars) mod 2) div 2;
   } in [offset + (if c mod 2 = 0 then c else -(c + 1) endif div 2) | c in 0..card(Cars)-1];
+
+array[int] of set of int: pairs = [{permutation[i], permutation[card(Cars) - i + 1]} | i in 1..(ceil(card(Cars) / 2))];
+
 solve :: seq_search([int_search([class[permutation[car]] | car in Cars], input_order, indomain_split)] ++ 
                     [bool_search([carHasOption[permutation[c], o] | c in Cars], input_order, indomain_min)
                     | o in optionOrdering])
-      satisfy;
+       satisfy;
 output ["solution = \(class);\n"];
