@@ -1,0 +1,18 @@
+week_length = 7;
+nb_workers = 49;
+min_daysoff = 2;
+max_daysoff = 2;
+min_work = 3;
+max_work = 6;
+nb_shifts = 2;
+temp_req = [| 17, 17, 17, 16, 16, 13, 13
+            | 20, 20, 20, 20, 20, 15, 15 |];
+shift_name = ["D", "A"];
+shift_start = [360, 840];
+shift_length = [480, 480];
+shift_block_min = [2, 3];
+shift_block_max = [6, 4];
+nb_forbidden = 1;
+forbidden_before = [2];
+forbidden_after = [1];
+forbidden_daysoff = [false];
