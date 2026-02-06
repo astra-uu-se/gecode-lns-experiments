@@ -142,8 +142,8 @@ constraint
 
 array[Tasks] of int: initial_solution;
 
-solve :: relax_and_reconstruct(array1d(Precedence[.., ..]), -1)
-      :: warm_start(s, initial_solution)
+solve % :: relax_and_reconstruct(array1d(Precedence[.., ..]), -1)
+      % :: warm_start(s, initial_solution)
       :: int_search(s, first_fail, indomain_min, complete )
   minimize objective;
 

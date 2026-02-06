@@ -95,9 +95,9 @@ array [Tasks] of int: InitialStart = let {
   array[Tasks] of int: I_inv = inverse(InitialSolution);
   } in [S[I_inv[t]] | t in Tasks];
 
-solve :: relax_and_reconstruct([Start[t] | t in InitialSolution],
-                               -1,
-                               [InitialStart[t] | t in InitialSolution])
+solve % :: relax_and_reconstruct([Start[t] | t in InitialSolution],
+      %                          -1,
+      %                          [InitialStart[t] | t in InitialSolution])
       :: int_search(Start, smallest, indomain_min, complete )
    minimize objective;
 

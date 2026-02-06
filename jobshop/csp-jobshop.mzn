@@ -46,4 +46,4 @@ solve :: seq_search(
 
 output ["solution = [|"
      ++ join("|", [join(", ", ["\(start[j, t])" | t in Tasks]) | j in Jobs])
-     ++ "|];\nobjective = \(objective);\n"];
+     ++ "|];\ninitialObjective = \(max_makespan);\nobjective = \(objective);\n"];
