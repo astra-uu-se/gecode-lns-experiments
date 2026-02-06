@@ -21,12 +21,14 @@ array[Slabs, Colors] of var 0..1: hasColor = array2d(
     | s in Slabs, c in Colors]);
 array[Slabs] of var 0..maxColors: nColors = [
   sum(hasColor[s, ..]) | s in Slabs];
-var int: objective = sum(s in Slabs)(slack[load[s]]);
-solve 
-      :: int_search(
-  [placedIn[i] | i in reverse(arg_sort(size))],
-  first_fail,
-  indomain_min) 
+var 0..sum(s in size)(slack[s]): objective = sum(s in Slabs)(slack[load[s]]);
+solve :: seq_search(
+  [int_search(placedIn, first_fail, indomain_min)]
+  %[int_search([placedIn[o] | o in Orders where size[o] = s],
+  %              first_fail,
+  %              indomain_min)
+  %  | s in reverse(sort(set2array(array2set(size))))]
+  )
   minimize objective;
 
 %------------------------------------------------------------------------------%
@@ -45,5 +47,6 @@ constraint symmetry_breaking_constraint(
       increasing([placedIn[o] | o in identicalOrders])
     endif));
 
+int: initialObjective = sum(s in size)(slack[s]);
 
-output ["solution = \(placedIn);\nobjective = \(objective);\n"];
+output ["solution = \(placedIn);\ninitialObjective = \(initialObjective);\nobjective = \(objective);\n"];

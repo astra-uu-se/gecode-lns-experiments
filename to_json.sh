@@ -1,62 +1,54 @@
 #!/bin/bash
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 MODELS=(\
-"carseq" \
-"steelmillslab" \
-"sb-steelmillslab" \
-"jobshop" \
-"precedence-jobshop" \
-"rcpsp" \
-"precedence-rcpsp" \
-"dl-jobshop" \
-"vrp" \
-"tsptw" \
+"csp-carseq" \
+"csp-jobshop" \
+"csp-sb-steelmillslab" \
 "orig-tsptw" \
+"sequence-tsptw" \
+"tdtsp" \
+"hrc" \
+"rotating-workforce" \
+"nurse" \
 )
 COMPARATIVE_MODELS=(\
 "" \
 "" \
+"" \
 ${MODELS[4]} \
 ${MODELS[3]} \
-${MODELS[5]} \
-${MODELS[4]} \
-"" \
 "" \
 "" \
 "" \
 "" \
 )
 NAMES=(\
-"Relaxed car sequencing" \
-"Steel mill slab design\n(without symmetry breaking)" \
-"Steel mill slab design" \
+"Car sequencing" \
 "Job shop" \
-"Job shop with precedences" \
-"RCPSP" \
-"RCPSP with precedences" \
-"Job shop with\nearliness and tardiness costs" \
-"Vehicle routing problem" \
-"Travelling salesperson\nwith time windows" \
-"Travelling salesperson\nwith time windows" \
+"Steel mill slab design" \
+"Travelling salesperson\nwith time windows (circuit)" \
+"Travelling salesperson\nwith time windows (sequence)" \
+"Time-dependent travelling salesperson" \
+"Hospitals/residents matching with couples" \
+"Rotating workforce" \
+"Nurse rostering" \
 )
 ACRONYMS=(\
-"RCS" \
-"SMSD (w/o symmetry breaking)" \
-"SMSD" \
+"CS" \
 "JSP" \
-"JSP-P" \
-"RCPSP" \
-"RCPSP-P" \
-"JSP-ETC" \
-"VRP" \
+"SMSD" \
 "TSPTW" \
 "TSPTW" \
+"TDTSP" \
+"HRC" \
+"rotating-workforce" \
+"nurse" \
 )
 for i in "${!MODELS[@]}"; do
   MODEL=${MODELS[$i]}
   NAME=${NAMES[$i]}
   ACRONYM=${ACRONYMS[$i]}
-  DATA="${SCRIPT_DIR}/results/${MODEL}*.txt"
+  DATA="${SCRIPT_DIR}/results/${MODEL}.txt-*"
   if compgen -G "${DATA}" > /dev/null; then
     OUTPUT="${SCRIPT_DIR}/results/${MODEL}.json"
     if [ -z ${COMPARATIVE_MODELS[$i]} ]; then 
