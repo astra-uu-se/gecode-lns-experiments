@@ -17,8 +17,11 @@ constraint forall (l in Locations) (%* \label{listing:tsptw:constraint:arrival:s
 constraint circuit(pred);%* \label{listing:tsptw:constraint:circuit} %*
 constraint forall (l in Locations) (departure[l] <= late[l]);%* \label{listing:tsptw:constraint:late} %*
 
+int: initialObjective;
+array[int] of int: initialSolution;
+
 solve :: seq_search([int_search(pred, first_fail, indomain_min),
                      int_search([departure[l] | l in arg_sort(early)],
                                 input_order, indomain_min)])
          minimize objective;
-output ["solution = \(pred ++ arrival);\nobjective = \(objective);\n"];
+output ["solution = \(pred ++ arrival);\ninitialObjective = \(initialObjective);\nobjective = \(objective);\n"];

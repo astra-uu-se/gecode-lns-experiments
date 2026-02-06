@@ -27,11 +27,9 @@ array[Locations] of var Locations: OrderedSequence;
 constraint forall(l in Locations) (
   Sequence[l] = ValueOrdering[OrderedSequence[l]]);
 
-int: initialObjective;
-array[int] of int: initialSolution;
 
 solve :: seq_search([int_search(OrderedSequence, input_order, indomain_min)] ++
                     [int_search([departure[l] | l in arg_sort(early)],
                                 input_order, indomain_min)])
-         minimize objective;
-output ["solution = \(Sequence ++ departure);\ninitialObjective = \(initialObjective);\nobjective = \(objective);\n"];
+         maximize objective;
+output ["solution = \(Sequence ++ departure);\nobjective = \(objective);"];
