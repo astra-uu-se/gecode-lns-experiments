@@ -1,0 +1,50 @@
+easy-1	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 78, "initial_objective": null, "solutions": [{"time": 77, "objective": null}]}
+easy-1	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 77, "initial_objective": null, "solutions": [{"time": 77, "objective": null}]}
+easy-1	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 78, "initial_objective": null, "solutions": [{"time": 78, "objective": null}]}
+easy-10	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 121, "initial_objective": null, "solutions": [{"time": 103, "objective": null}]}
+easy-10	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 115, "initial_objective": null, "solutions": [{"time": 102, "objective": null}]}
+easy-10	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 115, "initial_objective": null, "solutions": [{"time": 101, "objective": null}]}
+easy-2	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 81, "initial_objective": null, "solutions": [{"time": 78, "objective": null}]}
+easy-2	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 82, "initial_objective": null, "solutions": [{"time": 79, "objective": null}]}
+easy-2	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 83, "initial_objective": null, "solutions": [{"time": 80, "objective": null}]}
+easy-3	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 99, "initial_objective": null, "solutions": [{"time": 93, "objective": null}]}
+easy-3	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 99, "initial_objective": null, "solutions": [{"time": 94, "objective": null}]}
+easy-3	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 102, "initial_objective": null, "solutions": [{"time": 93, "objective": null}]}
+easy-4	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 5172, "initial_objective": null, "solutions": [{"time": 5172, "objective": null}]}
+easy-4	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 2426, "initial_objective": null, "solutions": [{"time": 2425, "objective": null}]}
+easy-4	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 6228, "initial_objective": null, "solutions": [{"time": 6227, "objective": null}]}
+easy-5	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 81, "initial_objective": null, "solutions": [{"time": 80, "objective": null}]}
+easy-5	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 81, "initial_objective": null, "solutions": [{"time": 80, "objective": null}]}
+easy-5	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 76, "initial_objective": null, "solutions": [{"time": 75, "objective": null}]}
+easy-6	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 93, "initial_objective": null, "solutions": [{"time": 85, "objective": null}]}
+easy-6	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 100, "initial_objective": null, "solutions": [{"time": 94, "objective": null}]}
+easy-6	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 94, "initial_objective": null, "solutions": [{"time": 86, "objective": null}]}
+easy-7	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 838, "initial_objective": null, "solutions": [{"time": 838, "objective": null}]}
+easy-7	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 95, "initial_objective": null, "solutions": [{"time": 93, "objective": null}]}
+easy-7	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 212, "initial_objective": null, "solutions": [{"time": 212, "objective": null}]}
+easy-8	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 114, "initial_objective": null, "solutions": [{"time": 100, "objective": null}]}
+easy-8	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 113, "initial_objective": null, "solutions": [{"time": 98, "objective": null}]}
+easy-8	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 113, "initial_objective": null, "solutions": [{"time": 98, "objective": null}]}
+easy-9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 78, "initial_objective": null, "solutions": [{"time": 77, "objective": null}]}
+easy-9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 78, "initial_objective": null, "solutions": [{"time": 77, "objective": null}]}
+easy-9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 78, "initial_objective": null, "solutions": [{"time": 78, "objective": null}]}
+nurse-2	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 157, "initial_objective": null, "solutions": [{"time": 148, "objective": null}]}
+nurse-2	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 191, "initial_objective": null, "solutions": [{"time": 159, "objective": null}]}
+nurse-3	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 30739, "initial_objective": null, "solutions": [{"time": 30736, "objective": null}]}
+nurse-3	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 58441, "initial_objective": null, "solutions": [{"time": 58438, "objective": null}]}
+nurse-5	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 24223, "initial_objective": null, "solutions": [{"time": 24219, "objective": null}]}
+nurse-6	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 73862, "initial_objective": null, "solutions": [{"time": 73859, "objective": null}]}
+nurse-9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 20289, "initial_objective": null, "solutions": [{"time": 20257, "objective": null}]}
+nurse-9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 58015, "initial_objective": null, "solutions": [{"time": 57979, "objective": null}]}
+nurse-1	{"best_obj": null, "status": "UNKNOWN", "time": 180007, "initial_objective": null, "solutions": []}
+nurse-1	{"best_obj": null, "status": "UNKNOWN", "time": 180005, "initial_objective": null, "solutions": []}
+nurse-10	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 20915, "initial_objective": null, "solutions": [{"time": 20911, "objective": null}]}
+nurse-10	{"best_obj": null, "status": "UNKNOWN", "time": 180094, "initial_objective": null, "solutions": []}
+nurse-4	{"best_obj": null, "status": "UNKNOWN", "time": 180006, "initial_objective": null, "solutions": []}
+nurse-4	{"best_obj": null, "status": "UNKNOWN", "time": 180006, "initial_objective": null, "solutions": []}
+nurse-5	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 11283, "initial_objective": null, "solutions": [{"time": 11278, "objective": null}]}
+nurse-6	{"best_obj": null, "status": "UNKNOWN", "time": 180010, "initial_objective": null, "solutions": []}
+nurse-7	{"best_obj": null, "status": "UNKNOWN", "time": 180009, "initial_objective": null, "solutions": []}
+nurse-7	{"best_obj": null, "status": "UNKNOWN", "time": 180008, "initial_objective": null, "solutions": []}
+nurse-8	{"best_obj": null, "status": "UNKNOWN", "time": 180013, "initial_objective": null, "solutions": []}
+nurse-8	{"best_obj": null, "status": "UNKNOWN", "time": 180010, "initial_objective": null, "solutions": []}
