@@ -37,6 +37,16 @@ declare -a DATA_LOCATIONS=(\
 "${SCRIPT_DIR}/rotating-workforce/dzn/*.dzn" \
 "${SCRIPT_DIR}/nurse/dzn/*.dzn" \
 "${SCRIPT_DIR}/carseq/carseq_set_1/*.dzn")
+declare -a CSP_FLAGS=(\
+"" \
+"" \
+"" \
+"" \
+"" \
+"" \
+"--csp" \
+"--csp" \
+"--csp")
 #  3 min timeout for COP
 # 30 min timeout for CSP
 TIME_LIMITS=(180000 180000 180000 180000 180000 180000 180000 180000 180000)
@@ -51,12 +61,14 @@ for s in "${!SOLVERS[@]}"; do
     DATA=${DATA_LOCATIONS[$i]}
     OUTPUT="${SCRIPT_DIR}/results/${FILE_NAME}.txt-${SUFFIX}"
     TIME_LIMIT=${TIME_LIMITS[$i]}
+    CSP_FLAG=${CSP_FLAGS[$i]}
     python3 run.py --solver ${SOLVER} \
                    ${MZN} \
                    -d ${DATA} \
                    -o ${OUTPUT} \
                    --time-limit ${TIME_LIMIT} \
                    --num-runs ${RUNS} \
+                   ${CSP_FLAG} \
                    ${EXTRA}
     COMMAND_STATUS=$?
     if [ $COMMAND_STATUS -ne 0 ]; then exit $COMMAND_STATUS; fi

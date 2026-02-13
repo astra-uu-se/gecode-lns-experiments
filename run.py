@@ -23,6 +23,7 @@ class MiniZincRunner:
     minizinc_path: str
     solver: str = 'Dexter'
     file_lock: None
+    csp: bool
     kill: bool = False
 
     unknown_re = re.compile(r'=====UNKNOWN=====')
@@ -32,13 +33,14 @@ class MiniZincRunner:
     solution_re = re.compile(r'solution\s*=\s(.*);')
     initial_objective_re = re.compile(r'initialObjective\s*=\s*(\d+)')
 
-    def __init__(self, solver_path, model, output_path, time_limit, extra):
+    def __init__(self, solver_path, model, output_path, time_limit, csp, extra):
         if path.exists(solver_path):
             self.solver = solver_path
         logging.warning(self.solver)
         self.model = model
         self.output_path = output_path
         self.time_limit = time_limit
+        self.csp = csp
         self.extra = extra
         self.minizinc_path = which('minizinc')
         self.file_lock = Lock()
@@ -194,15 +196,16 @@ class MiniZincRunner:
         if not self.should_run(data_file, run_index, True):
             return
 
-        args = [self.minizinc_path,
-                self.model,
-                '--solver', self.solver,
-                '-d', data_file,
-                '--json-stream',
-                '--output-time',
-                '--all-solutions',
-                '--output-objective',
-                '--time-limit', str(self.time_limit)] + self.extra
+        args = ([self.minizinc_path,
+                 self.model,
+                 '--solver', self.solver,
+                 '-d', data_file,
+                 '--json-stream',
+                 '--output-time',
+                 '--output-objective',
+                 '--time-limit', str(self.time_limit)] +
+                ([] if self.csp else ['--all-solutions']) +
+                self.extra)
         start = perf_counter()
         process = subprocess.Popen(
             args,
@@ -315,6 +318,10 @@ if __name__ == '__main__':
                         default=180000,
                         help='the time limit for MiniZinc in milliseconds')
 
+    parser.add_argument('--csp', dest='csp', default=False,
+                        action='store_true',
+                        help='the problem is a CSP')
+
     parser.add_argument('--extra', nargs=REMAINDER, dest='extra',
                         type=str,
                         help='The extra flags (with leading dashes) that are '
@@ -341,8 +348,10 @@ if __name__ == '__main__':
 
     extra = [] if args.extra is None else args.extra
 
+    logging.warning(args.csp)
+
     mzn_runner = MiniZincRunner(args.solver, args.model, args.output,
-                                args.time_limit, extra)
+                                args.time_limit, args.csp, extra)
 
     tasks = [(di, ri)
              for di in range(len(data_files))

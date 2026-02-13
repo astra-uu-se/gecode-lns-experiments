@@ -1,0 +1,21 @@
+easy-1	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 80, "objective": null}]}
+easy-1	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 78, "objective": null}]}
+easy-10	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 93, "objective": null}]}
+easy-10	{"best_obj": null, "status": "ERROR", "time": 1174, "initial_objective": null, "solutions": [{"time": 94, "objective": null}]}
+easy-2	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 79, "objective": null}]}
+easy-2	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 79, "objective": null}]}
+easy-3	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 106, "objective": null}]}
+easy-3	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 98, "objective": null}]}
+easy-4	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 313, "objective": null}]}
+easy-4	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 158, "objective": null}]}
+easy-5	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 78, "objective": null}]}
+easy-5	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 78, "objective": null}]}
+easy-6	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 85, "objective": null}]}
+easy-6	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 83, "objective": null}]}
+easy-7	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 86, "objective": null}]}
+easy-7	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 154, "objective": null}]}
+easy-8	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 91, "objective": null}]}
+easy-8	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 90, "objective": null}]}
+easy-9	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 80, "objective": null}]}
+easy-9	{"best_obj": null, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 79, "objective": null}]}
+nurse-1	{"best_obj": null, "status": "UNKNOWN", "time": 181100, "initial_objective": null, "solutions": []}
