@@ -2,7 +2,7 @@
 LNS_SOLVER_DIR="${HOME}/gecode-lns"
 PAR_SOLVER_DIR="${HOME}/gecode-par"
 SOLVERS=("${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc" "${PAR_SOLVER_DIR}/cmake-build-release/tools/flatzinc/gecode.msc")
-NUM_RUNS=(3 3)
+NUM_RUNS=(2 2)
 SUFFIXES=("lns" "par")
 FLAGS=("--extra --use-pbs -p 8" "--extra -p 8 --assets 3")
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
@@ -39,7 +39,7 @@ declare -a DATA_LOCATIONS=(\
 "${SCRIPT_DIR}/carseq/carseq_set_1/*.dzn")
 #  3 min timeout for COP
 # 30 min timeout for CSP
-TIME_LIMITS=(180000 180000 180000 180000 180000 1800000 1800000 1800000 1800000)
+TIME_LIMITS=(180000 180000 180000 180000 180000 180000 180000 180000 180000)
 for s in "${!SOLVERS[@]}"; do
   SOLVER=${SOLVERS[$s]}
   SUFFIX=${SUFFIXES[$s]}

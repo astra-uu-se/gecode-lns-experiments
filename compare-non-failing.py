@@ -6,33 +6,43 @@ from argparse import ArgumentParser, ArgumentTypeError
 from math import ceil
 from os import path
 import statistics
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 import matplotlib.pyplot as plt
+
 
 class Instance:
     name: str
-    objective: Optional[str]
-    initial_objective: Optional[float]
     best_objective: Optional[float]
-    time: Optional[float]
+    initial_objective: Optional[float]
     solved: bool
-    error: bool
+    is_csp: bool
+    objective: Optional[str]
+    time: Optional[float]
     val: float
     
-    def __init__(self, name:str, objective: Optional[float],
-                 initial_objective: Optional[float],
-                 best_objective:Optional[float],
-                 time:Optional[float], solved:bool, error:bool):
+    def __init__(self, name: str, best_objective: Optional[int], 
+                 initial_objective: Optional[int], is_csp: bool,
+                 method: Dict[str, Any]):
         self.name = name
-        self.objective = objective
-        self.initial_objective = initial_objective
         self.best_objective = best_objective
-        self.time = time
-        self.solved = solved
-        self.error = error
+        self.initial_objective = initial_objective
+        self.is_csp = is_csp
+        
+        worst = method.get('mean', dict()).get('worst', dict())
+        self.worst_objective = worst.get('objective', None)
+        self.worst_time = worst.get('time', None)
+
+        sol = method.get('mean', dict()).get('best', dict())
+        self.objective = sol.get('objective', None)
+        self.time = sol.get('time', None)
+        
+        self.solved = method.get('solved', False)
+        
+        
         self.val = (
-            100 if None in {objective, best_objective, initial_objective}
-            else 100 * abs(objective - best_objective) / initial_objective)
+            100 if None in {self.objective, best_objective, initial_objective}
+            else 100 * abs(self.objective - best_objective) / initial_objective)
+
 
 class Model:
     name: str = None
@@ -89,23 +99,24 @@ class JsonComparer:
         num_solved: Dict[str, int] = dict()
         for instance in data.get('instances', []):
             instance_name = instance.get('name', None)
-            initial_objective = instance.get('initial_objective', None)
-            best_objective = instance.get('best_objective', None)
+            worst_obj = instance.get('worst_obj', None)
+            best_obj = instance.get('best_obj', None)
+            is_csp = instance.get('is_csp', False)
             for method in instance.get('methods', []):
                 method_name = method.get('name', None)
-                method_acr = method.get('acronym', None)
-                objective = method.get('mean', dict()).get('objective', None)
-                time = method.get('mean', dict()).get('time', None)
-                solved = method.get('mean', dict()).get('solved', False)
-                error = method.get('mean', dict()).get('error', False)
-                if not solved:
+                method_acronym = method.get('acronym', None)
+                if method_name is None or method_acronym is None:
+                    continue
+                
+                instance = Instance(instance_name, best_obj, 
+                                    worst_obj, is_csp, method)
+
+                if not instance.solved:
                     continue
                 if method_name not in model_data:
                     model_data[method_name] = dict()
-                model_data[method_name][instance_name] = Instance(
-                    instance_name, objective, initial_objective,
-                    best_objective, time, solved, error)
-                method_acronyms[method_name] = method_acr
+                model_data[method_name][instance_name] = instance
+                method_acronyms[method_name] = method_acronym
         if len(model_data) > 0:
             self.models[model_name] = Model(model_name, model_acronym,
                                             model_data, method_acronyms, csp)
@@ -143,7 +154,8 @@ class JsonComparer:
             for mn in method_names:
                 if mn in model:
                     row_data[mn] = round(
-                        statistics.mean(model[mn].values()), 2)
+                        statistics.mean((i.val for i in model[mn].values())),
+                        2)
             best = min([k for k in row_data.values() if k is not None],
                        default=100.0)
             lines.append('\\normalfont{' +
@@ -240,9 +252,9 @@ class JsonComparer:
             else:
                 instance_names.intersection_update(instances.keys())
         instance_names = list(sorted(instance_names))
-        data_points = tuple(([model[m][i].val for i in instance_names]
-                                for m in method_names))
-        logging.info(data_points)
+        data_points = tuple(([(model[m][i].val if m in model.instances else 100)
+                              for i in instance_names]
+                             for m in method_names))
         lim = 0.5
         x, y = data_points
         lim = max([lim, max(x), max(y)])
@@ -271,8 +283,10 @@ class JsonComparer:
         axis.semilogy()
         axis.legend()    
         for m in method_names:
-            y = list(sorted((i.time for i in model[m].values()
-                                if i.solved)))
+            if m not in model:
+                continue
+            y = list(sorted((i.worst_time for i in model[m].values()
+                             if i.solved)))
             x = list(range(1, len(y) + 1))
             axis.plot(
                 x,

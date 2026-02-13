@@ -11,6 +11,7 @@ from threading import Lock
 import re
 from sys import exc_info, argv
 from json import loads, dumps
+import psutil
 
 
 class MiniZincRunner:
@@ -164,7 +165,7 @@ class MiniZincRunner:
         if any(isinstance(o, dict) and o.get('type', None) == 'error' for o in data):
             logging.warning("ERROR")
             logging.warning(output)
-            exit(0)
+
         status = self.get_status(data)
         solutions = self.get_solutions(data)
         initial_objective = self.initial_objective(data)
@@ -214,14 +215,19 @@ class MiniZincRunner:
                 timeout=(self.time_limit / 1000) + 1000)
         except subprocess.TimeoutExpired:
             logging.warning("SOLVER TIMED OUT")
-            pass
+            parent = psutil.Process(process.pid)
+            for child in parent.children(recursive=True):
+                child.kill()
+            process.kill()
         except (KeyboardInterrupt, SystemExit):
             logging.warning("KILLED: shutting down threads...")
+            parent = psutil.Process(process.pid)
+            for child in parent.children(recursive=True):
+                child.kill()
             process.kill()
             mzn_runner.kill = True
             logging.warning("KILLED: DONE")
             exit(1)
-
 
         if self.kill:
             logging.warning("KILLED: quitting without storing results.")
