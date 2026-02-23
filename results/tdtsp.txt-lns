@@ -1413,9 +1413,6 @@ inst_30_43_00	--	0000	false	--	--
 inst_30_43_10	--	0000	false	--	--
 inst_30_43_10	--	0000	false	--	--
 inst_30_43_10	--	0000	false	--	--
-inst_30_43_20	--	0000	false	--	--
-inst_30_43_20	--	0000	false	--	--
-inst_30_43_20	--	0000	false	--	--
 inst_30_44_00	--	0000	false	--	--
 inst_30_44_00	--	0000	false	--	--
 inst_30_44_00	--	0000	false	--	--
@@ -1487,9 +1484,6 @@ inst_30_51_00	--	0000	false	--	--
 inst_30_51_10	--	0000	false	--	--
 inst_30_51_10	--	0000	false	--	--
 inst_30_51_10	--	0000	false	--	--
-inst_30_51_20	--	0000	false	--	--
-inst_30_51_20	--	0000	false	--	--
-inst_30_51_20	--	0000	false	--	--
 inst_30_52_00	--	0000	false	--	--
 inst_30_52_00	--	0000	false	--	--
 inst_30_52_00	--	0000	false	--	--
@@ -1541,9 +1535,6 @@ inst_30_57_00	--	0000	false	--	--
 inst_30_57_10	--	0000	false	--	--
 inst_30_57_10	--	0000	false	--	--
 inst_30_57_10	--	0000	false	--	--
-inst_30_57_20	--	0000	false	--	--
-inst_30_57_20	--	0000	false	--	--
-inst_30_57_20	--	0000	false	--	--
 inst_30_58_00	--	0000	false	--	--
 inst_30_58_00	--	0000	false	--	--
 inst_30_58_00	--	0000	false	--	--
@@ -1618,3 +1609,12 @@ inst_30_5_00	{"best_obj": 22725, "status": "UNKNOWN", "time": 180000, "initial_o
 inst_30_5_00	{"best_obj": 22739, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 119695, "objective": 22842}, {"time": 128862, "objective": 22815}, {"time": 130854, "objective": 22739}, {"time": 180013, "objective": 22739}]}
 inst_30_5_00	{"best_obj": null, "status": "UNKNOWN", "time": 180014, "initial_objective": null, "solutions": []}
 inst_30_5_10	{"best_obj": 22767, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 149051, "objective": 22977}, {"time": 150360, "objective": 22855}, {"time": 159024, "objective": 22814}, {"time": 159455, "objective": 22767}]}
+inst_30_43_20	{"best_obj": null, "status": "UNKNOWN", "time": 180015, "initial_objective": null, "solutions": []}
+inst_30_43_20	{"best_obj": null, "status": "UNKNOWN", "time": 180014, "initial_objective": null, "solutions": []}
+inst_30_43_20	{"best_obj": null, "status": "UNKNOWN", "time": 180014, "initial_objective": null, "solutions": []}
+inst_30_51_20	{"best_obj": null, "status": "UNKNOWN", "time": 180013, "initial_objective": null, "solutions": []}
+inst_30_51_20	{"best_obj": null, "status": "UNKNOWN", "time": 180014, "initial_objective": null, "solutions": []}
+inst_30_51_20	{"best_obj": null, "status": "UNKNOWN", "time": 180014, "initial_objective": null, "solutions": []}
+inst_30_57_20	{"best_obj": null, "status": "UNKNOWN", "time": 180014, "initial_objective": null, "solutions": []}
+inst_30_57_20	{"best_obj": null, "status": "UNKNOWN", "time": 180018, "initial_objective": null, "solutions": []}
+inst_30_57_20	{"best_obj": null, "status": "UNKNOWN", "time": 180014, "initial_objective": null, "solutions": []}

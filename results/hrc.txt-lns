@@ -1,7 +1,15 @@
-exp1-1-5460	{"best_obj": 9, "status": "OPTIMAL_SOLUTION", "time": 5169, "initial_objective": null, "solutions": [{"time": 467, "objective": 10}, {"time": 1067, "objective": 9}]}
-exp2-1-5145	--	0000	false	--	--
-exp2-1-5145	--	0000	false	--	--
-exp2-1-5145	--	0000	false	--	--
-exp2-1-5600	--	0000	false	--	--
-exp2-1-5600	--	0000	false	--	--
-exp2-1-5600	--	0000	false	--	--
+exp1-1-5110	{"best_obj": 6, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 2641, "objective": 7}, {"time": 2700, "objective": 6}]}
+exp1-1-5110	{"best_obj": 6, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 3298, "objective": 7}, {"time": 4400, "objective": 6}]}
+exp1-1-5425	{"best_obj": 9, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 9755, "objective": 9}]}
+exp1-1-5425	{"best_obj": 9, "status": "OPTIMAL_SOLUTION", "time": 152841, "initial_objective": null, "solutions": [{"time": 36437, "objective": 11}, {"time": 65238, "objective": 9}]}
+exp1-1-5460	{"best_obj": 9, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 650, "objective": 10}, {"time": 2960, "objective": 9}]}
+exp1-1-5460	{"best_obj": 9, "status": "OPTIMAL_SOLUTION", "time": 7500, "initial_objective": null, "solutions": [{"time": 1113, "objective": 10}, {"time": 3506, "objective": 9}]}
+exp2-1-5145	{"best_obj": null, "status": "UNKNOWN", "time": 180069, "initial_objective": null, "solutions": []}
+exp2-1-5600	{"best_obj": null, "status": "UNKNOWN", "time": 180072, "initial_objective": null, "solutions": []}
+exp2-1-5145	{"best_obj": null, "status": "UNKNOWN", "time": 180069, "initial_objective": null, "solutions": []}
+exp2-1-5600	{"best_obj": null, "status": "UNKNOWN", "time": 180072, "initial_objective": null, "solutions": []}
+exp2-1-5145	{"best_obj": null, "status": "UNKNOWN", "time": 180069, "initial_objective": null, "solutions": []}
+exp2-1-5600	{"best_obj": null, "status": "UNKNOWN", "time": 180072, "initial_objective": null, "solutions": []}
+exp1-1-5110	{"best_obj": 6, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 3678, "objective": 7}, {"time": 3796, "objective": 6}]}
+exp1-1-5425	{"best_obj": 9, "status": "OPTIMAL_SOLUTION", "time": 146903, "initial_objective": null, "solutions": [{"time": 48518, "objective": 12}, {"time": 48713, "objective": 10}, {"time": 63446, "objective": 9}]}
+exp1-1-5460	{"best_obj": 9, "status": "OPTIMAL_SOLUTION", "time": 6688, "initial_objective": null, "solutions": [{"time": 2514, "objective": 10}, {"time": 5716, "objective": 9}]}

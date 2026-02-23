@@ -271,8 +271,9 @@ class JsonWriter:
                  'vrg': 'Variable-relationship guided LNS',
                  'svd': 'Variable-relationship guided LNS',
                  'rpg': 'Reverse propagation guided LNS',
-                 'lns': 'Gecode LNS',
-                 'par': 'Gecode Par'}
+                 'lns': 'Bandit LNS',
+                 'par': 'Gecode Par',
+                 'cp25': 'Gecode DCS'}
     acronym_dict = {'random': 'Randomised LNS',
                     'pg': 'PG-LNS',
                     'ci': 'CIG-LNS',
@@ -281,7 +282,8 @@ class JsonWriter:
                     'svd': 'VRG-LNS',
                     'rpg': 'RPG-LNS',
                     'lns': 'lns',
-                    'par': 'par'}
+                    'par': 'par',
+                    'cp25': 'dcs'}
 
     def __init__(self, model_name, acronym, best_obj):
         self.model = Model(model_name, acronym)

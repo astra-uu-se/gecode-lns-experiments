@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, Union
+from typing import List, Optional, Set, Union
 from argparse import ArgumentParser, ArgumentTypeError, REMAINDER
 from glob import glob
 from os import path
@@ -25,6 +25,7 @@ class MiniZincRunner:
     file_lock: None
     csp: bool
     kill: bool = False
+    no_sol_instances: Set[str] = set()
 
     unknown_re = re.compile(r'=====UNKNOWN=====')
     optimal_re = re.compile(r'==========')
@@ -45,6 +46,7 @@ class MiniZincRunner:
         self.minizinc_path = which('minizinc')
         self.file_lock = Lock()
         self.kill = False
+        self.no_sol_instances = set()
 
     def output_file_exists(self) -> bool:
         return path.exists(self.output_path)
@@ -77,6 +79,9 @@ class MiniZincRunner:
                 except:
                     pass
             ret.append({'time': time, 'objective': objective})
+        if self.csp and len(ret) > 1:
+            assert ret[0] == min(ret, key=lambda s: s['time'])
+            ret = [ret[0]]
         return ret
     
     def error_status(self):
@@ -129,6 +134,8 @@ class MiniZincRunner:
             return True
         if not path.isfile(self.output_path):
             return True
+        if data_file in self.no_sol_instances:
+            return False
         num_matches = 0
         file_name = self.file_name(data_file) + '\t'
         if requires_lock:
@@ -157,7 +164,7 @@ class MiniZincRunner:
                 objects = output.split('\n')
                 json = ('[' +
                         ','.join([o.strip() for o in objects
-                                if len(o.strip()) > 0]) +
+                                  if len(o.strip()) > 0]) +
                         ']')
                 data = list() if len(objects) == 0 else loads(json)
         except Exception as e:
@@ -171,7 +178,7 @@ class MiniZincRunner:
         status = self.get_status(data)
         solutions = self.get_solutions(data)
         initial_objective = self.initial_objective(data)
-        
+
         if not self.is_optimal(status) and duration < self.time_limit:
             logging.warning(
                 "NON-OPTIMAL: expected optimal status, but got = " +
@@ -183,7 +190,7 @@ class MiniZincRunner:
                 for comment in self.get_comments(data):
                     logging.info(comment)
                 logging.info('NON-OPTIMAL: COMMENTS END')
-        
+
         return {
             'best_obj': None if len(solutions) == 0 else solutions[-1]['objective'],
             'status': status.get('status', 'UNKNOWN'),
@@ -204,7 +211,7 @@ class MiniZincRunner:
                  '--output-time',
                  '--output-objective',
                  '--time-limit', str(self.time_limit)] +
-                ([] if self.csp else ['--all-solutions']) +
+                (['--num-solutions', '1'] if self.csp else ['--all-solutions']) +
                 self.extra)
         start = perf_counter()
         process = subprocess.Popen(
@@ -248,6 +255,9 @@ class MiniZincRunner:
 
         output_line = (file_name + '\t' +
                        dumps(output_data) + '\n')
+
+        if len(output_data.get('solutions', [])) == 0:
+            self.no_sol_instances.add(data_file)
 
         self.file_lock.acquire()
         try:

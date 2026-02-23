@@ -26,9 +26,9 @@ NAMES=(\
 "Car sequencing" \
 "Job shop" \
 "Steel mill slab design" \
-"Travelling salesperson\nwith time windows (circuit)" \
+"Travelling salesperson\nwith time windows" \
 "Travelling salesperson\nwith time windows (sequence)" \
-"Time-dependent travelling salesperson" \
+"Time-dependent\ntravelling salesperson" \
 "Hospitals/residents matching with couples" \
 "Rotating workforce" \
 "Nurse rostering" \

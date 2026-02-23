@@ -8,6 +8,7 @@ from os import path
 import statistics
 from typing import Any, Dict, List, Optional
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 
 
 class Instance:
@@ -19,7 +20,7 @@ class Instance:
     objective: Optional[str]
     time: Optional[float]
     val: float
-    
+
     def __init__(self, name: str, best_objective: Optional[int], 
                  initial_objective: Optional[int], is_csp: bool,
                  method: Dict[str, Any]):
@@ -27,7 +28,7 @@ class Instance:
         self.best_objective = best_objective
         self.initial_objective = initial_objective
         self.is_csp = is_csp
-        
+
         worst = method.get('mean', dict()).get('worst', dict())
         self.worst_objective = worst.get('objective', None)
         self.worst_time = worst.get('time', None)
@@ -35,10 +36,9 @@ class Instance:
         sol = method.get('mean', dict()).get('best', dict())
         self.objective = sol.get('objective', None)
         self.time = sol.get('time', None)
-        
+
         self.solved = method.get('solved', False)
-        
-        
+
         self.val = (
             100 if None in {self.objective, best_objective, initial_objective}
             else 100 * abs(self.objective - best_objective) / initial_objective)
@@ -51,9 +51,9 @@ class Model:
     acronyms: Dict[str, str]
     csp: bool = False
 
-    def __init__(self, name:str, acronym:str,
+    def __init__(self, name: str, acronym: str,
                  instances: Dict[str, Dict[str, Instance]],
-                 acronyms:Dict[str, str], csp:bool):
+                 acronyms: Dict[str, str], csp: bool):
         self.name = name
         self.acronym = acronym
         self.instances = instances
@@ -82,10 +82,31 @@ class JsonComparer:
     models: Dict[str, Model] = None
     tex_pt_textwidth: float = 398.33858
     pt_to_inch: float = 0.0138
+    master_method: str = 'Bandit LNS'
 
     def __init__(self, skip_missing: bool):
         self.skip_missing = skip_missing
         self.models = dict()
+
+    @staticmethod
+    def marker(method_name: Optional[str] = None) -> str:
+        if method_name is None or method_name.lower() == 'bandit lns':
+            return '*'
+        elif method_name is None or method_name.lower() == 'gecode dcs':
+            return 'x'
+        elif method_name is None or method_name.lower() == 'gecode par':
+            return '.'
+        return 's'
+
+    @staticmethod
+    def color(method_name: Optional[str] = None) -> str:
+        if method_name is None or method_name.lower() == 'bandit lns':
+            return '#ff7f0e'
+        elif method_name is None or method_name.lower() == 'gecode dcs':
+            return '#2ca02c'
+        elif method_name is None or method_name.lower() == 'gecode par':
+            return '#1f77b4'
+        return '#7f7f7f'
 
     def parse(self, json_path):
         with open(json_path, 'r') as json_file:
@@ -96,7 +117,6 @@ class JsonComparer:
         csp = data['csp']
         model_data: Dict[str, Dict[str, Instance]] = dict()
         method_acronyms = dict()
-        num_solved: Dict[str, int] = dict()
         for instance in data.get('instances', []):
             instance_name = instance.get('name', None)
             worst_obj = instance.get('worst_obj', None)
@@ -136,7 +156,7 @@ class JsonComparer:
                 acronym_names[name] = model.acronyms[name]
                 logging.info(f'{name}: {acronym_names[name]}')
         method_names = list(sorted(method_names))
-        assert(len(method_names) == 2)
+        #  assert len(method_names) == 2
         num_cols = len(method_names) * 2
 
         lines.append('\\begin{tabular}{' + ('r'*(num_cols + 1)) + '}')
@@ -177,20 +197,24 @@ class JsonComparer:
         lines.append('\\end{tabular}')
         print('\n'.join(lines))
 
-    def scatter_plot(self):
-        cols = min(3, len(self.models))
-        rows = int(ceil(len(self.models) / cols))
+    def create_plots(self):
+        self.create_csp_plots()
+        self.create_cop_plots()
+
+    def create_csp_plots(self):
+        num_plots = len(self.models)
+        cols = min(3, num_plots)
+        rows = int(ceil(num_plots / cols))
         fig_width = max(8, self.tex_pt_textwidth * self.pt_to_inch)
-        fig_height = max(7.5, self.tex_pt_textwidth * self.pt_to_inch)
+        fig_height = max(6, self.tex_pt_textwidth * self.pt_to_inch)
         logging.info(f"figsize: ({fig_width}, {fig_height})")
         fig, axes = plt.subplots(rows, cols, figsize=(fig_width, fig_height))
 
-        flat = [axes] if len(self.models) == 1 else axes.flat
+        flat = [axes] if num_plots == 1 else axes.flat
 
-        markers = ['.', '+', 'x', '^', ',']
+        sorted_models = sorted(self.models.items(),
+                               key=lambda x: (not x[1].csp, x[0]))
 
-        sorted_models = sorted(self.models.items(), key=lambda x: x[0])
-        
         method_names = set()
         acronym_names = dict()
         for model in self.models.values():
@@ -198,24 +222,21 @@ class JsonComparer:
             for name in model.keys():
                 acronym_names[name] = model.acronyms[name]
         method_names = list(sorted(method_names))
-        assert(len(method_names) == 2)
-        assert(len(acronym_names) == 2)
+        #  assert len(method_names) == 2
+        #  assert len(acronym_names) == 2
 
-        for i, (_, model) in enumerate(sorted_models):
-            
-            if model.csp:
-                self.add_csp_plot(method_names, flat[i], model, markers)
-            else:
-                self.add_cop_plot(method_names, flat[i], model, markers)
-        for i in range(len(self.models), len(flat)):
-            flat[i].axis('off')
+        i = 0
+        for _, model in sorted_models:
+            self.add_csp_plot(method_names, flat[i], model)
+            i += 1
+        fig.legend(method_names, loc='upper center', ncols=len(method_names))
 
-        left = 0.0
-        right = 1
-        bottom = 0.054
+        left = 0.1
+        right = 0.999
+        bottom = 0.07
         top = 0.9
-        wspace = 0.0
-        hspace = 0.35
+        wspace = 0.486
+        hspace = 0.429
         logging.info(f"left: {left}")
         logging.info(f"right: {right}")
         logging.info(f"bottom: {bottom}")
@@ -243,8 +264,73 @@ class JsonComparer:
 
         plt.show()
 
-    def add_cop_plot(self, method_names: List[str], axis, model: Model,
-                     markers: List[str]):
+    def create_cop_plots(self):
+        num_plots = sum(2 for m in self.models.values()
+                        if not m.csp)
+        cols = min(3, num_plots)
+        rows = int(ceil(num_plots / cols))
+        fig_width = max(8, self.tex_pt_textwidth * self.pt_to_inch)
+        fig_height = max(6, self.tex_pt_textwidth * self.pt_to_inch)
+        logging.info(f"figsize: ({fig_width}, {fig_height})")
+        fig, axes = plt.subplots(rows, cols, figsize=(fig_width, fig_height))
+
+        flat = [axes] if num_plots == 1 else axes.flat
+
+        sorted_models = sorted(self.models.items(), key=lambda x: x[0])
+
+        method_names = set()
+        acronym_names = dict()
+        for model in self.models.values():
+            method_names.update(set(model.keys()))
+            for name in model.keys():
+                acronym_names[name] = model.acronyms[name]
+        method_names = list(sorted(method_names))
+        #  assert len(method_names) == 2
+        #  assert len(acronym_names) == 2
+
+        i = 0
+        for _, model in sorted_models:
+            if not model.csp:
+                m_names = [[self.master_method, m] for m in method_names
+                           if m != self.master_method]
+                logging.info(m_names)
+                for mn in m_names:
+                    self.add_cop_plot(mn, flat[i], model)
+                    i += 1
+        left = 0.048
+        right = 0.975
+        bottom = 0.01
+        top = 0.99
+        wspace = 0.23
+        hspace = 0.1
+        logging.info(f"left: {left}")
+        logging.info(f"right: {right}")
+        logging.info(f"bottom: {bottom}")
+        logging.info(f"top: {top}")
+        logging.info(f"wspace: {wspace}")
+        logging.info(f"hspace: {hspace}")
+
+        plt.subplots_adjust(
+          left=left,
+          right=right,
+          bottom=bottom,
+          top=top,
+          wspace=wspace,
+          hspace=hspace)
+
+        seen_labels = set()
+        handles_labels = []
+
+        for ax in flat:
+            ha, la = ax.get_legend_handles_labels()
+            for handle, label in zip(ha, la):
+                if label not in seen_labels:
+                    handles_labels.append((handle, label))
+                    seen_labels.add(label)
+
+        plt.show()
+
+    def add_cop_plot(self, method_names: List[str], axis, model: Model):
         instance_names = set()
         for instances in model.values():
             if len(instance_names) == 0:
@@ -252,36 +338,54 @@ class JsonComparer:
             else:
                 instance_names.intersection_update(instances.keys())
         instance_names = list(sorted(instance_names))
-        data_points = tuple(([(model[m][i].val if m in model.instances else 100)
+        data_points = tuple(([(model[m][i].val if m in model.instances
+                               else 100)
                               for i in instance_names]
                              for m in method_names))
         lim = 0.5
         x, y = data_points
         lim = max([lim, max(x), max(y)])
-        axis.set_title(model.name.replace('\\n', '\n'))
-        axis.set_xlabel(method_names[0], fontsize=10.5)
-        axis.set_ylabel(method_names[-1], fontsize=10.5)
+        axis.set_title(model.name.replace('\\n', '\n'), size=10)
+        axis.text(0.1, 0.75, method_names[0], ha='left', va='top',
+                  transform=axis.transAxes, size=9)
+        axis.text(0.9, 0.25, method_names[-1], ha='right', va='bottom',
+                  transform=axis.transAxes, size=9)
+        axis.set_xlabel('')  # method_names[0], fontsize=10.5)
+        axis.set_ylabel('')  # method_names[-1], fontsize=10.5)
         axis.set_xlim(0, lim)
         axis.set_ylim(0, lim)
         axis.set_box_aspect(1)
         axis.set_xticks(axis.get_yticks())
         axis.set_yticks(axis.get_xticks())
-        marks = list(markers)
-        axis.plot([0, 100], [0, 100])
+        axis.plot([0, 100], [0, 100], color='black', linewidth=1)
+        above = [i for i in range(len(x)) if x[i] < y[i]]
+        on = [i for i in range(len(x)) if x[i] == y[i]]
+        below = [i for i in range(len(x)) if x[i] > y[i]]
+        axis.locator_params(axis='x', nbins=7)
+        axis.locator_params(axis='y', nbins=7)
         axis.scatter(
-            x,
-            y,
-            marker=marks.pop())
+            [x[i] for i in above],
+            [y[i] for i in above],
+            marker=self.marker(method_names[0]),
+            c=self.color(method_names[0]))
+        axis.scatter(
+            [x[i] for i in on],
+            [y[i] for i in on],
+            marker=self.marker(),
+            c=self.color())
+        axis.scatter(
+            [x[i] for i in below],
+            [y[i] for i in below],
+            marker=self.marker(method_names[-1]),
+            c=self.color(method_names[-1]))
 
-    def add_csp_plot(self, method_names: List[str], axis, model: Model,
-                     markers: List[str]):
-        
-        axis.set_title(model.name.replace('\\n', '\n'))
-        axis.set_xlabel('#solved', fontsize=10.5)
-        axis.set_ylabel('time', fontsize=10.5)
-        marks = list(markers)
+    def add_csp_plot(self, method_names: List[str], axis, model: Model):
+        axis.set_title(model.name.replace('\\n', '\n'), size=10)
+        axis.set_xlabel('#solved' if model.csp else "first solution",
+                        fontsize=9)
+        axis.set_ylabel('time (ms)', fontsize=9)
         axis.semilogy()
-        axis.legend()    
+
         for m in method_names:
             if m not in model:
                 continue
@@ -291,8 +395,12 @@ class JsonComparer:
             axis.plot(
                 x,
                 y,
-                marker=marks.pop())
-        axis.legend(method_names)
+                marker=self.marker(m),
+                c=self.color(m))
+        axis.set_ylim(ymin=10, ymax=180000)
+        x_ax = axis.get_xaxis()
+        x_ax.set_major_locator(MaxNLocator(integer=True))
+        axis.locator_params(axis='x', nbins=6)
 
     def csp_plot(self):
         cols = min(2, len(self.models))
@@ -304,8 +412,6 @@ class JsonComparer:
 
         flat = [axes] if len(self.models) == 1 else axes.flat
 
-        markers = ['.', '+', 'x', '^', ',']
-
         sorted_models = sorted(self.models.items(), key=lambda x: x[0])
         
         method_names = set()
@@ -315,11 +421,11 @@ class JsonComparer:
             for name in model.keys():
                 acronym_names[name] = model.acronyms[name]
         method_names = list(sorted(method_names))
-        assert(len(method_names) == 2)
-        assert(len(acronym_names) == 2)
+        assert len(method_names) == 2
+        assert len(acronym_names) == 2
 
         for i, (model_name, model) in enumerate(sorted_models):
-            
+
             instance_names = set()
             for instances in model.values():
                 if len(instance_names) == 0:
@@ -340,17 +446,16 @@ class JsonComparer:
             flat[i].set_box_aspect(1)
             flat[i].set_xticks(flat[i].get_yticks())
             flat[i].set_yticks(flat[i].get_xticks())
-            marks = list(markers)
             flat[i].plot([0, 100], [0, 100])
             flat[i].scatter(
                 x,
                 y,
-                marker=marks.pop())
+                marker='*')
         for i in range(len(self.models), len(flat)):
             flat[i].axis('off')
 
         left = 0.0
-        right = 1
+        right = 0.97
         bottom = 0.054
         top = 0.9
         wspace = 0.0
@@ -425,6 +530,6 @@ if __name__ == '__main__':
         json_comparer.parse(data_file)
 
     if args.plot:
-        json_comparer.scatter_plot()
+        json_comparer.create_plots()
     else:
         json_comparer.table()

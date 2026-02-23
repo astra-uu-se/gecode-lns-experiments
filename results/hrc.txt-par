@@ -1,6 +1,15 @@
-exp2-1-5145	--	0000	false	--	--
-exp2-1-5145	--	0000	false	--	--
-exp2-1-5145	--	0000	false	--	--
-exp2-1-5600	--	0000	false	--	--
-exp2-1-5600	--	0000	false	--	--
-exp2-1-5600	--	0000	false	--	--
+exp1-1-5110	{"best_obj": 6, "status": "OPTIMAL_SOLUTION", "time": 112980, "initial_objective": null, "solutions": [{"time": 2452, "objective": 7}, {"time": 2502, "objective": 6}]}
+exp1-1-5110	{"best_obj": 6, "status": "OPTIMAL_SOLUTION", "time": 131877, "initial_objective": null, "solutions": [{"time": 1071, "objective": 7}, {"time": 1115, "objective": 6}]}
+exp1-1-5110	{"best_obj": 6, "status": "UNKNOWN", "time": 180000, "initial_objective": null, "solutions": [{"time": 1325, "objective": 7}, {"time": 1339, "objective": 6}]}
+exp1-1-5425	{"best_obj": 9, "status": "OPTIMAL_SOLUTION", "time": 17354, "initial_objective": null, "solutions": [{"time": 7986, "objective": 11}, {"time": 7995, "objective": 9}]}
+exp1-1-5425	{"best_obj": 9, "status": "OPTIMAL_SOLUTION", "time": 17714, "initial_objective": null, "solutions": [{"time": 1919, "objective": 12}, {"time": 3680, "objective": 10}, {"time": 3732, "objective": 9}]}
+exp1-1-5425	{"best_obj": 9, "status": "OPTIMAL_SOLUTION", "time": 21162, "initial_objective": null, "solutions": [{"time": 1019, "objective": 10}, {"time": 6058, "objective": 9}]}
+exp1-1-5460	{"best_obj": 9, "status": "OPTIMAL_SOLUTION", "time": 1036, "initial_objective": null, "solutions": [{"time": 194, "objective": 10}, {"time": 894, "objective": 9}]}
+exp1-1-5460	{"best_obj": 9, "status": "OPTIMAL_SOLUTION", "time": 1349, "initial_objective": null, "solutions": [{"time": 231, "objective": 10}, {"time": 986, "objective": 9}]}
+exp1-1-5460	{"best_obj": 9, "status": "OPTIMAL_SOLUTION", "time": 4112, "initial_objective": null, "solutions": [{"time": 327, "objective": 12}, {"time": 568, "objective": 11}, {"time": 1311, "objective": 10}, {"time": 3230, "objective": 9}]}
+exp2-1-5145	{"best_obj": null, "status": "UNKNOWN", "time": 181072, "initial_objective": null, "solutions": []}
+exp2-1-5145	{"best_obj": null, "status": "UNKNOWN", "time": 181124, "initial_objective": null, "solutions": []}
+exp2-1-5145	{"best_obj": null, "status": "UNKNOWN", "time": 181124, "initial_objective": null, "solutions": []}
+exp2-1-5600	{"best_obj": null, "status": "UNKNOWN", "time": 181128, "initial_objective": null, "solutions": []}
+exp2-1-5600	{"best_obj": null, "status": "UNKNOWN", "time": 181128, "initial_objective": null, "solutions": []}
+exp2-1-5600	{"best_obj": null, "status": "UNKNOWN", "time": 181130, "initial_objective": null, "solutions": []}
