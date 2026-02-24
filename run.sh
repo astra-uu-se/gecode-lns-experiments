@@ -1,24 +1,20 @@
 #!/bin/bash
 LNS_SOLVER_DIR="${HOME}/gecode-lns"
 PAR_SOLVER_DIR="${HOME}/gecode-par"
-CP25_SOLVER_DIR="${HOME}/gecode-lns-cp25"
 SOLVERS=(\
 "${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc" \
 "${PAR_SOLVER_DIR}/cmake-build-release/tools/flatzinc/gecode.msc" \
-"${CP25_SOLVER_DIR}/cmake-build-release/tools/flatzinc/gecode.msc" \
-"${CP25_SOLVER_DIR}/cmake-build-release/tools/flatzinc/gecode.msc")
-NUM_RUNS=(3 3 3 3)
-SUFFIXES=("lns" "par" "cp25" "dcs")
+"${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc")
+NUM_RUNS=(3 3 3)
+SUFFIXES=("mab" "par")
 FLAGS=(\
 "--extra --use-pbs -p 8" \
 "--extra -p 8 --assets 3" \
-"--extra --use-pbs -p 8" \
-"--extra --use-dcs --use-pbs -p 8")
+"--extra --use-pbs -p 8 --no-mab")
 declare -a HANDLES_CSP=(\
 true \
 true \
-false \
-false)
+true)
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 declare -a ACTIVE_PROBLEMS=( 2 3 4 6 7 8 ) #( 0 1 2 3 4   6 7 8 )
 declare -a FILE_NAMES=(\
