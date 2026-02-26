@@ -90,21 +90,21 @@ class JsonComparer:
 
     @staticmethod
     def marker(method_name: Optional[str] = None) -> str:
-        if method_name is None or method_name.lower() == 'bandit lns':
+        if method_name is not None and method_name.lower() == 'bandit lns':
             return '*'
-        elif method_name is None or method_name.lower() == 'gecode dcs':
+        elif method_name is not None and method_name.lower() == 'gecode lns':
             return 'x'
-        elif method_name is None or method_name.lower() == 'gecode par':
+        elif method_name is not None and method_name.lower() == 'gecode par':
             return '.'
         return 's'
 
     @staticmethod
     def color(method_name: Optional[str] = None) -> str:
-        if method_name is None or method_name.lower() == 'bandit lns':
+        if method_name is not None and method_name.lower() == 'bandit lns':
             return '#ff7f0e'
-        elif method_name is None or method_name.lower() == 'gecode dcs':
+        elif method_name is not None and method_name.lower() == 'gecode lns':
             return '#2ca02c'
-        elif method_name is None or method_name.lower() == 'gecode par':
+        elif method_name is not None and method_name.lower() == 'gecode par':
             return '#1f77b4'
         return '#7f7f7f'
 
@@ -202,18 +202,17 @@ class JsonComparer:
         self.create_cop_plots()
 
     def create_csp_plots(self):
-        num_plots = len(self.models)
+        num_plots = sum(1 for m in self.models.values() if m.csp)
         cols = min(3, num_plots)
         rows = int(ceil(num_plots / cols))
         fig_width = max(8, self.tex_pt_textwidth * self.pt_to_inch)
-        fig_height = max(6, self.tex_pt_textwidth * self.pt_to_inch)
+        fig_height = 3.5  # max(3, self.tex_pt_textwidth * self.pt_to_inch)
         logging.info(f"figsize: ({fig_width}, {fig_height})")
         fig, axes = plt.subplots(rows, cols, figsize=(fig_width, fig_height))
 
         flat = [axes] if num_plots == 1 else axes.flat
 
-        sorted_models = sorted(self.models.items(),
-                               key=lambda x: (not x[1].csp, x[0]))
+        sorted_models = sorted(self.models.items())
 
         method_names = set()
         acronym_names = dict()
@@ -227,14 +226,18 @@ class JsonComparer:
 
         i = 0
         for _, model in sorted_models:
-            self.add_csp_plot(method_names, flat[i], model)
-            i += 1
-        fig.legend(method_names, loc='upper center', ncols=len(method_names))
+            if model.csp:
+                self.add_csp_plot(method_names, flat[i], model)
+                i += 1
+        leg = fig.legend(method_names, loc='upper center', ncols=len(method_names))
+        for i in range(len(method_names)):
+            leg.legendHandles[i].set_color(self.color(method_names[i]))
+            leg.legendHandles[i].set_marker(self.marker(method_names[i]))
 
         left = 0.1
         right = 0.999
-        bottom = 0.07
-        top = 0.9
+        bottom = 0.114
+        top = 0.83
         wspace = 0.486
         hspace = 0.429
         logging.info(f"left: {left}")
@@ -381,8 +384,7 @@ class JsonComparer:
 
     def add_csp_plot(self, method_names: List[str], axis, model: Model):
         axis.set_title(model.name.replace('\\n', '\n'), size=10)
-        axis.set_xlabel('#solved' if model.csp else "first solution",
-                        fontsize=9)
+        axis.set_xlabel('instances', fontsize=9)
         axis.set_ylabel('time (ms)', fontsize=9)
         axis.semilogy()
 
@@ -413,7 +415,7 @@ class JsonComparer:
         flat = [axes] if len(self.models) == 1 else axes.flat
 
         sorted_models = sorted(self.models.items(), key=lambda x: x[0])
-        
+
         method_names = set()
         acronym_names = dict()
         for model in self.models.values():

@@ -225,15 +225,27 @@ class MiniZincRunner:
                 timeout=(self.time_limit / 1000) + 1000)
         except subprocess.TimeoutExpired:
             logging.warning("SOLVER TIMED OUT")
-            parent = psutil.Process(process.pid)
-            for child in parent.children(recursive=True):
-                child.kill()
+            try:
+                parent = psutil.Process(process.pid)
+                for child in parent.children(recursive=True):
+                    try:
+                        child.kill()
+                    except psutil.NoSuchProcess:
+                        pass
+            except psutil.NoSuchProcess:
+                pass
             process.kill()
         except (KeyboardInterrupt, SystemExit):
             logging.warning("KILLED: shutting down threads...")
-            parent = psutil.Process(process.pid)
-            for child in parent.children(recursive=True):
-                child.kill()
+            try:
+                parent = psutil.Process(process.pid)
+                for child in parent.children(recursive=True):
+                    try:
+                        child.kill()
+                    except psutil.NoSuchProcess:
+                        pass
+            except psutil.NoSuchProcess:
+                pass
             process.kill()
             mzn_runner.kill = True
             logging.warning("KILLED: DONE")
