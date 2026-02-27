@@ -82,7 +82,7 @@ class JsonComparer:
     models: Dict[str, Model] = None
     tex_pt_textwidth: float = 398.33858
     pt_to_inch: float = 0.0138
-    master_method: str = 'Bandit LNS'
+    master_method: str = 'Gecode-depLNS-MAB'
 
     def __init__(self, skip_missing: bool):
         self.skip_missing = skip_missing
@@ -90,21 +90,21 @@ class JsonComparer:
 
     @staticmethod
     def marker(method_name: Optional[str] = None) -> str:
-        if method_name is not None and method_name.lower() == 'bandit lns':
+        if method_name is not None and method_name.lower() in {'gecode-deplns-mab', 'bandit lns'}:
             return '*'
-        elif method_name is not None and method_name.lower() == 'gecode lns':
+        elif method_name is not None and method_name.lower() in {'gecode-deplns', 'gecode lns'}:
             return 'x'
-        elif method_name is not None and method_name.lower() == 'gecode par':
+        elif method_name is not None and method_name.lower() in {'gecode-par', 'gecode par'}:
             return '.'
         return 's'
 
     @staticmethod
     def color(method_name: Optional[str] = None) -> str:
-        if method_name is not None and method_name.lower() == 'bandit lns':
+        if method_name is not None and method_name.lower() in {'gecode-deplns-mab', 'bandit lns'}:
             return '#ff7f0e'
-        elif method_name is not None and method_name.lower() == 'gecode lns':
+        elif method_name is not None and method_name.lower() in {'gecode-deplns', 'gecode lns'}:
             return '#2ca02c'
-        elif method_name is not None and method_name.lower() == 'gecode par':
+        elif method_name is not None and method_name.lower() in {'gecode-par', 'gecode par'}:
             return '#1f77b4'
         return '#7f7f7f'
 
@@ -292,12 +292,12 @@ class JsonComparer:
         #  assert len(acronym_names) == 2
 
         i = 0
-        for _, model in sorted_models:
-            if not model.csp:
-                m_names = [[self.master_method, m] for m in method_names
-                           if m != self.master_method]
-                logging.info(m_names)
-                for mn in m_names:
+        m_names = [[self.master_method, m] for m in method_names
+                   if m != self.master_method]
+        logging.info(m_names)
+        for mn in m_names:
+            for _, model in sorted_models:
+                if not model.csp:
                     self.add_cop_plot(mn, flat[i], model)
                     i += 1
         left = 0.048
@@ -349,9 +349,9 @@ class JsonComparer:
         x, y = data_points
         lim = max([lim, max(x), max(y)])
         axis.set_title(model.name.replace('\\n', '\n'), size=10)
-        axis.text(0.1, 0.75, method_names[0], ha='left', va='top',
+        axis.text(0.05, 0.75, method_names[0], ha='left', va='top',
                   transform=axis.transAxes, size=9)
-        axis.text(0.9, 0.25, method_names[-1], ha='right', va='bottom',
+        axis.text(0.95, 0.25, method_names[-1], ha='right', va='bottom',
                   transform=axis.transAxes, size=9)
         axis.set_xlabel('')  # method_names[0], fontsize=10.5)
         axis.set_ylabel('')  # method_names[-1], fontsize=10.5)

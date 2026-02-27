@@ -271,8 +271,8 @@ class JsonWriter:
                  'vrg': 'Variable-relationship guided LNS',
                  'svd': 'Variable-relationship guided LNS',
                  'rpg': 'Reverse propagation guided LNS',
-                 'mab': 'Bandit LNS',
-                 'lns': 'Gecode LNS',
+                 'mab': 'Gecode-depLNS-MAB',
+                 'lns': 'Gecode-depLNS',
                  'par': 'Gecode Par',
                  'cp25': 'Gecode DCS'}
     acronym_dict = {'random': 'Randomised LNS',
