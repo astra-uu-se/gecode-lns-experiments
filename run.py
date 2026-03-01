@@ -145,6 +145,14 @@ class MiniZincRunner:
                 for line in output_file.readlines():
                     if line.lstrip().startswith(file_name):
                         num_matches += 1
+                        json = line.removeprefix(file_name).strip()
+                        try: 
+                            data = loads(json)
+                            if isinstance(data, dict) and len(data.get('solutions', list())):
+                                num_matches = run_index + 1
+                                break
+                        except:
+                            pass
         finally:
             if requires_lock:
                 self.file_lock.release()
