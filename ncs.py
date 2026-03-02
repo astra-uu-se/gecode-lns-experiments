@@ -80,6 +80,8 @@ class Constraint:
             return 30
         if self.identifier == 'circuit':
             return 40
+        if self.identifier == 'disjunctive':
+            return 45
         if self.identifier == 'regular':
             return 50
 
@@ -295,6 +297,32 @@ if __name__ == '__main__':
                       for w in range(nb_workers)
                       for d in range(week_length)},
                      set()))
+    elif problem == 'jsp':
+        num_jobs = 9
+        num_machines = 5
+        num_tasks = num_machines
+        
+        start = [[Variable(f'start[{j + 1}][{t + 1}]')
+                  for t in range(num_tasks)]
+                 for j in range(num_jobs)]
+        end = [[Variable(f'end[{j + 1}][{t + 1}]') for t in range(num_tasks)]
+               for j in range(num_jobs)]
+        objective = Variable('objective')
+        for j, t in ((j, t) for j in range(num_jobs) for t in range(num_tasks)):
+            graph.constraints.add(
+              Constraint('plus', {start[j][t]}, {end[j][t]}))
+        graph.constraints.add(
+            Constraint('int_max', {end[j][-1] for j in range(num_jobs)},
+                       {objective}))
+        for m in range(num_machines):
+            graph.constraints.add(
+              Constraint('disjunctive',
+                         {start[j][m] for j in range(num_jobs)},
+                         set()))
+        for j in range(num_jobs):
+            for t in range(0, num_tasks-1):
+                graph.constraints.add(
+                    Constraint('le', {end[j][t], start[j][t + 1]}, set()))
 
     neigh = neighbourhood_constraints(
       graph.potential_neighbourhood_constraints)
