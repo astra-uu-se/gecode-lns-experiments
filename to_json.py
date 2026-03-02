@@ -100,45 +100,53 @@ class Method:
     
     @property
     def solved(self) -> bool:
-        return len(self.runs) > 0 and all(r.solved for r in self.runs)
+        # There are more solved runs than unsolved runs:
+        if sum(1 if r.solved else -1 for r in self.runs) > 0:
+            logging.warning(self.name)
+        return (len(self.runs) > 0 and
+                sum(1 if r.solved else -1 for r in self.runs) > 0) 
 
     def append_run(self, instance_data: dict) -> None:
         if len(instance_data.get('solutions', [])) > 0:
             self.runs.append(Run(instance_data))
 
-    def mean_run(self) -> Run:
+    def mean_run(self, global_worst_obj: Optional[int]) -> Run:
         data = dict()
         data['time'] = (
             None 
-            if len(self.runs) == 0 or any(r.time is None for r in self.runs)
+            if len(self.runs) == 0 or all(r.time is None for r in self.runs)
             else mean((r.time for r in self.runs)))
         data['best_obj'] = (
-            None if len(self.runs) == 0 or any(r.best_obj is None for r in self.runs)
-            else mean((r.best_obj for r in self.runs)))
+            None
+            if len(self.runs) == 0 or all(r.best_obj is None for r in self.runs)
+            else mean((global_worst_obj if r.best_obj is None
+                       else r.best_obj for r in self.runs)))
         data['initial_objective'] = (
-            None if len(self.runs) == 0 or any(r.initial_objective is None for r in self.runs)
-            else mean((r.initial_objective for r in self.runs)))
+            None
+            if len(self.runs) == 0 or all(r.initial_objective is None for r in self.runs)
+            else mean((global_worst_obj if r.initial_objective is None
+                       else r.initial_objective for r in self.runs)))
         sols = [r.worst() for r in self.runs]
         first_obj = (
             None 
-            if len(sols) == 0 or any(s is None or s['objective'] is None for s in sols)
-            else mean((s['objective'] for s in sols))
-        )
+            if len(sols) == 0 or all(s['objective'] is None for s in sols)
+            else mean((global_worst_obj if s['objective'] is None
+                      else s['objective'] for s in sols)))
         first_time = (
-            None if len(sols) == 0 or any(s is None or s['time'] is None for s in sols)
-            else mean((s['time'] for s in sols))
-        )
+            None
+            if len(sols) == 0 or all(s['time'] is None for s in sols)
+            else mean((s['time'] for s in sols)))
         data['solutions'] = [
             {'time': first_time, 'objective': first_obj},
             {'time': data['time'], 'objective': data['best_obj']}
         ]
         return Run(data)
 
-    def to_dict(self, all_runs: bool = False):
+    def to_dict(self, worst_obj: Optional[int], all_runs: bool = False):
         d = {'name': self.name,
              'acronym': self.acronym,
              'solved': self.solved,
-             'mean': self.mean_run().to_dict()}
+             'mean': self.mean_run(worst_obj).to_dict()}
         if all_runs:
             d['runs'] = [r.to_dict() for r in self.runs]
         return d
@@ -175,10 +183,6 @@ class Instance:
         ret: Optional[int] = self.initial_objective
         for m in self.methods.values():
             v: Optional[int] = m.worst_objective
-            if self.name == "n100w120.001":
-                logging.warning(f'{m.name} {v}')
-                logging.warning(f'is_minimization {self.is_minimization}')
-                logging.warning(f'{m.name} {[r.to_dict() for r in m.runs]}')
             if v is not None and (ret is None or op(v, ret)):
                 ret = v
         return ret
@@ -213,11 +217,12 @@ class Instance:
                                       else min(vals))
 
     def to_dict(self, all_runs: bool = False):
+        worst_obj = self.worst_objective
         return {'name': self.name,
                 'is_csp': self.is_csp,
                 'worst_obj': self.worst_objective,
                 'best_obj': self.best_obj,
-                'methods': [instance.to_dict(all_runs) for
+                'methods': [instance.to_dict(worst_obj, all_runs) for
                             instance in self.methods.values()
                             if instance.solved]}
 
