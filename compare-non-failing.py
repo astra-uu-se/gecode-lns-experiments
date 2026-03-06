@@ -234,8 +234,8 @@ class JsonComparer:
             leg.legendHandles[i].set_color(self.color(method_names[i]))
             leg.legendHandles[i].set_marker(self.marker(method_names[i]))
 
-        left = 0.1
-        right = 0.999
+        left = 0.07
+        right = 0.99
         bottom = 0.114
         top = 0.83
         wspace = 0.486

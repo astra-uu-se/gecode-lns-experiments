@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, Set, Union
+from typing import Dict, List, Optional, Set, Union
 from argparse import ArgumentParser, ArgumentTypeError, REMAINDER
 from glob import glob
 from os import path
@@ -23,9 +23,10 @@ class MiniZincRunner:
     minizinc_path: str
     solver: str = 'Dexter'
     file_lock: None
+    num_runs: int
     csp: bool
     kill: bool = False
-    no_sol_instances: Set[str] = set()
+    unknown_runs: Dict[str, int] = dict()
 
     unknown_re = re.compile(r'=====UNKNOWN=====')
     optimal_re = re.compile(r'==========')
@@ -34,19 +35,20 @@ class MiniZincRunner:
     solution_re = re.compile(r'solution\s*=\s(.*);')
     initial_objective_re = re.compile(r'initialObjective\s*=\s*(\d+)')
 
-    def __init__(self, solver_path, model, output_path, time_limit, csp, extra):
+    def __init__(self, solver_path, model, output_path, time_limit, num_runs, csp, extra):
         if path.exists(solver_path):
             self.solver = solver_path
         logging.warning(self.solver)
         self.model = model
         self.output_path = output_path
         self.time_limit = time_limit
+        self.num_runs = num_runs
         self.csp = csp
         self.extra = extra
         self.minizinc_path = which('minizinc')
         self.file_lock = Lock()
         self.kill = False
-        self.no_sol_instances = set()
+        self.unknown_runs = dict()
 
     def output_file_exists(self) -> bool:
         return path.exists(self.output_path)
@@ -134,9 +136,8 @@ class MiniZincRunner:
             return True
         if not path.isfile(self.output_path):
             return True
-        if data_file in self.no_sol_instances:
-            return False
         num_matches = 0
+        num_unknown = self.unknown_runs.get(data_file, 0)
         file_name = self.file_name(data_file) + '\t'
         if requires_lock:
             self.file_lock.acquire()
@@ -146,16 +147,23 @@ class MiniZincRunner:
                     if line.lstrip().startswith(file_name):
                         num_matches += 1
                         json = line.removeprefix(file_name).strip()
-                        try: 
+                        try:
                             data = loads(json)
-                            if isinstance(data, dict) and len(data.get('solutions', list())):
-                                num_matches = run_index + 1
-                                break
+                            if not isinstance(data, dict):
+                                continue
+                            if data.get('status', '').strip() != 'UNKNOWN':
+                                continue
+                            if len(data.get('solutions', [])) > 0:
+                                continue
+                            num_unknown += 1
                         except:
                             pass
         finally:
             if requires_lock:
                 self.file_lock.release()
+        if num_unknown * 2 > self.num_runs:
+            logging.warning(f'{data_file}: num_unknowns = {num_unknown}')
+            return False
         return run_index >= num_matches
 
     def get_comments(self, data):
@@ -276,8 +284,11 @@ class MiniZincRunner:
         output_line = (file_name + '\t' +
                        dumps(output_data) + '\n')
 
-        if len(output_data.get('solutions', [])) == 0:
-            self.no_sol_instances.add(data_file)
+        if output_data.get('status', '').strip() == 'UNKNOWN':
+            if file_name not in self.unknown_runs:
+                self.unknown_runs[self.file_name] = 1
+            else:
+                self.unknown_runs[self.file_name] += 1
 
         self.file_lock.acquire()
         try:
@@ -381,7 +392,8 @@ if __name__ == '__main__':
     logging.warning(args.csp)
 
     mzn_runner = MiniZincRunner(args.solver, args.model, args.output,
-                                args.time_limit, args.csp, extra)
+                                args.time_limit, args.num_runs, args.csp,
+                                extra)
 
     tasks = [(di, ri)
              for di in range(len(data_files))

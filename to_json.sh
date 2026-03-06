@@ -30,7 +30,7 @@ NAMES=(\
 "Travelling salesperson\nwith time windows (sequence)" \
 "Time-dependent\ntravelling salesperson" \
 "Hospitals/residents matching with couples" \
-"Rotating workforce" \
+"Rotating workforce rostering" \
 "Nurse rostering" \
 )
 ACRONYMS=(\
