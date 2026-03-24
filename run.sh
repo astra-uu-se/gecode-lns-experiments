@@ -5,7 +5,7 @@ SOLVERS=(\
 "${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc" \
 "${PAR_SOLVER_DIR}/cmake-build-release/tools/flatzinc/gecode.msc" \
 "${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc")
-NUM_RUNS=( 3 3 3 )
+NUM_RUNS=( 3 0 3 )
 SUFFIXES=( "lns" "par" "mab" )
 FLAGS=(\
 "--extra --use-pbs -p 8 --no-mab" \
@@ -59,6 +59,7 @@ true \
 true)
 #  3 min timeout for COP
 # 30 min timeout for CSP
+# TIME_LIMITS=(180000 180000 180000 180000 180000 180000 2700000 2700000 2700000)
 TIME_LIMITS=(180000 180000 180000 180000 180000 180000 180000 180000 180000)
 for s in "${!SOLVERS[@]}"; do
   SOLVER=${SOLVERS[$s]}

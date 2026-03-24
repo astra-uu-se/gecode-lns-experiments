@@ -206,7 +206,7 @@ class JsonComparer:
         cols = min(3, num_plots)
         rows = int(ceil(num_plots / cols))
         fig_width = max(8, self.tex_pt_textwidth * self.pt_to_inch)
-        fig_height = 3.5  # max(3, self.tex_pt_textwidth * self.pt_to_inch)
+        fig_height = 3  # max(3, self.tex_pt_textwidth * self.pt_to_inch)
         logging.info(f"figsize: ({fig_width}, {fig_height})")
         fig, axes = plt.subplots(rows, cols, figsize=(fig_width, fig_height))
 
@@ -236,8 +236,8 @@ class JsonComparer:
 
         left = 0.07
         right = 0.99
-        bottom = 0.114
-        top = 0.83
+        bottom = 0.13
+        top = 0.81
         wspace = 0.486
         hspace = 0.429
         logging.info(f"left: {left}")
