@@ -94,13 +94,13 @@ class Tsptw:
                                   for row in duration]) + '|];')
         if not tsp:
             lines.append('early = [' +
-                        ', '.join(map(str, [loc.ready_time
-                                            for loc in self.locations])) +
-                        '];')
+                         ', '.join(map(str, [loc.ready_time
+                                             for loc in self.locations])) +
+                         '];')
             lines.append('late = [' +
-                        ', '.join(map(str, [loc.due_date
-                                            for loc in self.locations])) +
-                        '];')
+                         ', '.join(map(str, [loc.due_date
+                                             for loc in self.locations])) +
+                         '];')
         lines = '\n'.join(lines)
         with open(output_file, 'w+') as of:
             of.write(lines)

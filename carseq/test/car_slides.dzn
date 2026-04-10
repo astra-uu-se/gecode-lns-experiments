@@ -1,0 +1,11 @@
+Cars = 1..6;
+Options = 1..2;
+Classes = 1..3;
+sequenceMinCapacity = [0, 0];
+sequenceMaxCapacity = [2, 2];
+sequenceSize = [3, 3];
+numOrdered = [2, 2, 2];
+classHasOption = [| true,  true
+                  | true,  false
+                  | false, true |];
+optionOrdering = [1, 2];
