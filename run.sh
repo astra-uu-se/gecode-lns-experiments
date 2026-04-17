@@ -16,41 +16,29 @@ true \
 true \
 true)
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
-declare -a ACTIVE_PROBLEMS=( 2 3 4 6 7 8 ) #( 0 1 2 3 4   6 7 8 )
+declare -a ACTIVE_PROBLEMS=( 0 1 2 3 4 5 )
 declare -a FILE_NAMES=(\
-"tdtsp" \
-"hrc" \
-"csp-jobshop" \
-"orig-tsptw" \
-"csp-sb-steelmillslab" \
-"sequence-tsptw" \
+"jobshop" \
+"tsptw" \
+"steelmillslab" \
 "rotating-workforce" \
-"nurse" \
-"csp-carseq")
+"nurse-rostering" \
+"carseq")
 declare -a FOLDERS=(
-"${SCRIPT_DIR}/tdtsp/" \
-"${SCRIPT_DIR}/hrc/" \
 "${SCRIPT_DIR}/jobshop/" \
 "${SCRIPT_DIR}/tsptw/" \
-"${SCRIPT_DIR}/steelmill/" \
-"${SCRIPT_DIR}/tsptw/" \
+"${SCRIPT_DIR}/steelmillslab/" \
 "${SCRIPT_DIR}/rotating-workforce/" \
-"${SCRIPT_DIR}/nurse/" \
+"${SCRIPT_DIR}/nurse-rostering/" \
 "${SCRIPT_DIR}/carseq/")
 declare -a DATA_LOCATIONS=(\
-"${SCRIPT_DIR}/tdtsp/dzn/*.dzn" \
-"${SCRIPT_DIR}/hrc/dzn/*.dzn" \
-"${SCRIPT_DIR}/jobshop/job/*-10.dzn" \
-"${SCRIPT_DIR}/tsptw/tsptw-orig/*.dzn" \
-"${SCRIPT_DIR}/steelmill/steel/*.dzn" \
-"${SCRIPT_DIR}/tsptw/tsptw-orig/*.dzn" \
-"${SCRIPT_DIR}/rotating-workforce/dzn/*.dzn" \
-"${SCRIPT_DIR}/nurse/dzn/*.dzn" \
-"${SCRIPT_DIR}/carseq/carseq_set_1/*.dzn")
+"${SCRIPT_DIR}/jobshop/dzn/jobshop_swv*-10.dzn" \
+"${SCRIPT_DIR}/tsptw/dzn/*.003.dzn" \
+"${SCRIPT_DIR}/steelmillslab/dzn/bench_20_*.dzn" \
+"${SCRIPT_DIR}/rotating-workforce/dzn/Example3*.dzn" \
+"${SCRIPT_DIR}/nurse-rostering/dzn/*.dzn" \
+"${SCRIPT_DIR}/carseq/dzn/car*1*dzn")
 declare -a IS_CSP=(\
-false \
-false \
-false \
 false \
 false \
 false \
