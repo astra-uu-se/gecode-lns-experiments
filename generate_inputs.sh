@@ -41,6 +41,7 @@ declare -a MAB=(\
 "RavenBandit")
 
 declare -a MAB_IS_USED=(\
+true \
 false \
 false \
 false \
@@ -51,8 +52,7 @@ false \
 false \
 false \
 false \
-false \
-true)
+false)
 
 NUM_RUNS=5
 
@@ -88,7 +88,7 @@ for m in ${!DZN_STEMS[@]}; do
       if [ -f ${OUTPUT_FILE} ]; then
         continue
       fi
-      COMMAND="${MINIZINC_PATH} ${MODEL_STEMS[$m]} --solver ${SOLVER} -d ${DZN_STEMS[$m]} --json-stream --output-time --output-objective --time-limit ${TIME_LIMIT} ${SOL_FLAG} --use-pbs -p ${NUM_CORES} --output-to-file ${OUTPUT_FILE}"
+      COMMAND="${MINIZINC_PATH} ${MODEL_STEMS[$m]} --solver ${SOLVER} -d ${DZN_STEMS[$m]} --json-stream --output-time --output-objective --time-limit ${TIME_LIMIT} ${SOL_FLAG} --output-to-file ${OUTPUT_FILE} --use-pbs -p ${NUM_CORES} --mab-type ${b}"
       echo "$COMMAND" >> ${OUTPUT_SH_PATH}
     done
   done
