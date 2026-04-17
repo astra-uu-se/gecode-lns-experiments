@@ -5,7 +5,7 @@ SOLVERS=(\
 "${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc" \
 "${PAR_SOLVER_DIR}/cmake-build-release/tools/flatzinc/gecode.msc" \
 "${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc")
-NUM_RUNS=( 3 0 3 )
+NUM_RUNS=( 10 10 10 )
 SUFFIXES=( "lns" "par" "mab" )
 FLAGS=(\
 "--extra --use-pbs -p 8 --no-mab" \
