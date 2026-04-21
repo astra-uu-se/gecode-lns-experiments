@@ -11,6 +11,12 @@ all: run
 generate_inputs:
 	bash ${GENERATE_INPUTS}
 
+.PHONY: test
+test: generate_inputs
+	$(eval SLURM_ARRAY_TASK_MAX := $(shell wc -l < ${INPUTS_PATH}))
+	sbatch --array=${SLURM_ARRAY_TASK_MIN}-${SLURM_ARRAY_TASK_MIN} \
+	       -N1 ${SLURM_SCRIPT}
+
 .PHONY: run
 run: generate_inputs
 	$(eval SLURM_ARRAY_TASK_MAX := $(shell wc -l < ${INPUTS_PATH}))

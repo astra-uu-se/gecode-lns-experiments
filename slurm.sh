@@ -8,8 +8,7 @@ if [ -z "${SLURM_ARRAY_TASK_ID}" ]; then
   SLURM_ARRAY_TASK_ID=1
   echo ${SLURM_ARRAY_TASK_ID}
 fi
-SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
-INPUTS_PATH="${SCRIPT_DIR}/inputs.txt"
+INPUTS_PATH="inputs.txt"
 TASK=$(sed "-n" "${SLURM_ARRAY_TASK_ID}p" "${INPUTS_PATH}")
 IFS=';' read -ra COMMANDS <<< "${TASK}"
 
