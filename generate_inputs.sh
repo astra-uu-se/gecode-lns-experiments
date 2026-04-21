@@ -74,8 +74,7 @@ for m in "${!PROBLEMS[@]}"; do
   done
 done
 
-truncate -s 0 ${OUTPUT_SH_PATH}
-
+declare -a JOBS=()
 for m in ${!DZN_STEMS[@]}; do
   echo ${MODEL_STEMS[$m]}
   if [ ${IS_CSP_STEMS[$m]} = false ]; then SOL_FLAG="--num-solutions 1"; else SOL_FLAG="--all-solutions"; fi
@@ -88,8 +87,35 @@ for m in ${!DZN_STEMS[@]}; do
       if [ -f ${OUTPUT_FILE} ]; then
         continue
       fi
-      COMMAND="${MINIZINC_PATH} ${MODEL_STEMS[$m]} --solver ${SOLVER} -d ${DZN_STEMS[$m]} --json-stream --output-time --output-objective --time-limit ${TIME_LIMIT} ${SOL_FLAG} --output-to-file ${OUTPUT_FILE} --use-pbs -p ${NUM_CORES} --mab-type ${b}"
-      echo "$COMMAND" >> ${OUTPUT_SH_PATH}
+      JOBS+=("${MINIZINC_PATH} ${MODEL_STEMS[$m]} --solver ${SOLVER} -d ${DZN_STEMS[$m]} --json-stream --output-time --output-objective --time-limit ${TIME_LIMIT} ${SOL_FLAG} --output-to-file ${OUTPUT_FILE} --use-pbs -p ${NUM_CORES} --mab-type ${b}")
     done
   done
 done
+
+echo "$COMMAND" >> ${OUTPUT_SH_PATH}
+NUM_COMMANDS_PER_JOB=10
+UB=$((${NUM_COMMANDS_PER_JOB} - 1))
+i=0
+BUFFER=""
+FIRST=true
+for j in ${!JOBS[@]}; do
+  BUFFER="${BUFFER}${JOBS[$j]}"
+  if [ "$i" -lt "${UB}" ]; then 
+    BUFFER="${BUFFER};"
+    i=$(($i + 1))
+  else
+    if [ "${FIRST}" = true ]; then
+      echo "${BUFFER}" > ${OUTPUT_SH_PATH}
+      FIRST=false
+    else 
+      echo "${BUFFER}" >> ${OUTPUT_SH_PATH}
+    fi
+    BUFFER=""
+    i=0
+  fi
+done
+
+if [ ! -z "${BUFFER}" ]; then
+  echo "${BUFFER}" >> ${OUTPUT_SH_PATH}
+  BUFFER=""
+fi
