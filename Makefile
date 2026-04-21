@@ -14,8 +14,8 @@ generate_inputs:
 .PHONY: run
 run: generate_inputs
 	$(eval SLURM_ARRAY_TASK_MAX := $(shell wc -l < ${INPUTS_PATH}))
-	sbash --array=${SLURM_ARRAY_TASK_MIN}-${SLURM_ARRAY_TASK_MAX} \
-	      -N1 ${SLURM_SCRIPT}
+	sbatch --array=${SLURM_ARRAY_TASK_MIN}-${SLURM_ARRAY_TASK_MAX} \
+	       -N1 ${SLURM_SCRIPT}
 
 .PHONY: default
 default: run
