@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -A UPPMAX 2026-1-115
+#SBATCH -A uppmax2026-1-115
 #SBATCH --job-name=gecode-lns-mab
 #SBATCH --partition=pelle
 #SBATCH --cpus-per-task=8
