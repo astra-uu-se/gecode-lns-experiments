@@ -14,6 +14,6 @@ IFS=';' read -ra COMMANDS <<< "${TASK}"
 
 for c in "${COMMANDS[@]}"; do
   if [ ! -z "$c" ]; then
-    echo "$c"
+    eval "$c"
   fi
 done
