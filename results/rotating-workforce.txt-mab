@@ -122,3 +122,274 @@ Example8	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 120, "initial_obj
 Example9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 255, "initial_objective": null, "solutions": [{"time": 255, "objective": null}]}
 Example9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 311, "initial_objective": null, "solutions": [{"time": 311, "objective": null}]}
 Example9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 225, "initial_objective": null, "solutions": [{"time": 225, "objective": null}]}
+Example1	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example1	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example1	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example1	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example1	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example1	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example1	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example10	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example10	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 51, "initial_objective": null, "solutions": [{"time": 51, "objective": null}]}
+Example10	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example10	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 51, "initial_objective": null, "solutions": [{"time": 51, "objective": null}]}
+Example10	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example10	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 54, "initial_objective": null, "solutions": [{"time": 54, "objective": null}]}
+Example10	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example11	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example11	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example11	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example11	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example12	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 474, "initial_objective": null, "solutions": [{"time": 474, "objective": null}]}
+Example12	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 3115, "initial_objective": null, "solutions": [{"time": 3115, "objective": null}]}
+Example12	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 2684, "initial_objective": null, "solutions": [{"time": 2684, "objective": null}]}
+Example12	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 1569, "initial_objective": null, "solutions": [{"time": 1569, "objective": null}]}
+Example12	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 729, "initial_objective": null, "solutions": [{"time": 729, "objective": null}]}
+Example12	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 1428, "initial_objective": null, "solutions": [{"time": 1427, "objective": null}]}
+Example12	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 2087, "initial_objective": null, "solutions": [{"time": 2087, "objective": null}]}
+Example13	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 204, "initial_objective": null, "solutions": [{"time": 204, "objective": null}]}
+Example13	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 277, "initial_objective": null, "solutions": [{"time": 277, "objective": null}]}
+Example13	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 212, "initial_objective": null, "solutions": [{"time": 212, "objective": null}]}
+Example13	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 179, "initial_objective": null, "solutions": [{"time": 179, "objective": null}]}
+Example13	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 381, "initial_objective": null, "solutions": [{"time": 381, "objective": null}]}
+Example13	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 183, "initial_objective": null, "solutions": [{"time": 183, "objective": null}]}
+Example13	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 180, "initial_objective": null, "solutions": [{"time": 180, "objective": null}]}
+Example14	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example14	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 54, "initial_objective": null, "solutions": [{"time": 54, "objective": null}]}
+Example14	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example14	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example14	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example14	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example14	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example15	{"best_obj": null, "status": "UNKNOWN", "time": 121279, "initial_objective": null, "solutions": []}
+Example15	{"best_obj": null, "status": "UNKNOWN", "time": 62349, "initial_objective": null, "solutions": []}
+Example15	{"best_obj": null, "status": "UNKNOWN", "time": 40919, "initial_objective": null, "solutions": []}
+Example15	{"best_obj": null, "status": "UNKNOWN", "time": 14291, "initial_objective": null, "solutions": []}
+Example16	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 192, "initial_objective": null, "solutions": [{"time": 192, "objective": null}]}
+Example16	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example16	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 309, "initial_objective": null, "solutions": [{"time": 309, "objective": null}]}
+Example16	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 61, "initial_objective": null, "solutions": [{"time": 61, "objective": null}]}
+Example16	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 57, "initial_objective": null, "solutions": [{"time": 57, "objective": null}]}
+Example16	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example16	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 163, "initial_objective": null, "solutions": [{"time": 163, "objective": null}]}
+Example17	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 637, "initial_objective": null, "solutions": [{"time": 637, "objective": null}]}
+Example17	{"best_obj": null, "status": "UNKNOWN", "time": 6924, "initial_objective": null, "solutions": []}
+Example17	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 106, "initial_objective": null, "solutions": [{"time": 106, "objective": null}]}
+Example17	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 1750, "initial_objective": null, "solutions": [{"time": 1750, "objective": null}]}
+Example17	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 835, "initial_objective": null, "solutions": [{"time": 835, "objective": null}]}
+Example17	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example17	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 3167, "initial_objective": null, "solutions": [{"time": 3167, "objective": null}]}
+Example18	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example18	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example18	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example18	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example19	{"best_obj": null, "status": "UNKNOWN", "time": 180007, "initial_objective": null, "solutions": []}
+Example19	{"best_obj": null, "status": "UNKNOWN", "time": 180007, "initial_objective": null, "solutions": []}
+Example19	{"best_obj": null, "status": "UNKNOWN", "time": 180007, "initial_objective": null, "solutions": []}
+Example19	{"best_obj": null, "status": "UNKNOWN", "time": 180007, "initial_objective": null, "solutions": []}
+Example19	{"best_obj": null, "status": "UNKNOWN", "time": 180007, "initial_objective": null, "solutions": []}
+Example2	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 49, "initial_objective": null, "solutions": [{"time": 49, "objective": null}]}
+Example2	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 65, "initial_objective": null, "solutions": [{"time": 65, "objective": null}]}
+Example2	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example2	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 49, "initial_objective": null, "solutions": [{"time": 49, "objective": null}]}
+Example2	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 49, "initial_objective": null, "solutions": [{"time": 49, "objective": null}]}
+Example2	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 49, "initial_objective": null, "solutions": [{"time": 49, "objective": null}]}
+Example2	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 49, "initial_objective": null, "solutions": [{"time": 49, "objective": null}]}
+Example20	{"best_obj": null, "status": "UNKNOWN", "time": 16679, "initial_objective": null, "solutions": []}
+Example20	{"best_obj": null, "status": "UNKNOWN", "time": 170147, "initial_objective": null, "solutions": []}
+Example20	{"best_obj": null, "status": "UNKNOWN", "time": 19402, "initial_objective": null, "solutions": []}
+Example20	{"best_obj": null, "status": "UNKNOWN", "time": 24654, "initial_objective": null, "solutions": []}
+Example20	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 4013, "initial_objective": null, "solutions": [{"time": 4013, "objective": null}]}
+Example20	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 1322, "initial_objective": null, "solutions": [{"time": 1322, "objective": null}]}
+Example20	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 2433, "initial_objective": null, "solutions": [{"time": 2433, "objective": null}]}
+Example21	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 357, "initial_objective": null, "solutions": [{"time": 357, "objective": null}]}
+Example21	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 2807, "initial_objective": null, "solutions": [{"time": 2807, "objective": null}]}
+Example21	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example21	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 589, "initial_objective": null, "solutions": [{"time": 589, "objective": null}]}
+Example21	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 59, "initial_objective": null, "solutions": [{"time": 59, "objective": null}]}
+Example21	{"best_obj": null, "status": "UNKNOWN", "time": 27314, "initial_objective": null, "solutions": []}
+Example21	{"best_obj": null, "status": "UNKNOWN", "time": 8686, "initial_objective": null, "solutions": []}
+Example22	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example22	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example22	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 188, "initial_objective": null, "solutions": [{"time": 188, "objective": null}]}
+Example22	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example22	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example23	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example23	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 68, "initial_objective": null, "solutions": [{"time": 68, "objective": null}]}
+Example23	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example23	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 54, "initial_objective": null, "solutions": [{"time": 54, "objective": null}]}
+Example23	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example23	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example23	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example24	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example24	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example24	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example24	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example25	{"best_obj": null, "status": "UNKNOWN", "time": 180002, "initial_objective": null, "solutions": []}
+Example25	{"best_obj": null, "status": "UNKNOWN", "time": 61179, "initial_objective": null, "solutions": []}
+Example25	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example25	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example26	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 2535, "initial_objective": null, "solutions": [{"time": 2535, "objective": null}]}
+Example26	{"best_obj": null, "status": "UNKNOWN", "time": 66770, "initial_objective": null, "solutions": []}
+Example26	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 1373, "initial_objective": null, "solutions": [{"time": 1373, "objective": null}]}
+Example26	{"best_obj": null, "status": "UNKNOWN", "time": 7485, "initial_objective": null, "solutions": []}
+Example26	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 2683, "initial_objective": null, "solutions": [{"time": 2683, "objective": null}]}
+Example26	{"best_obj": null, "status": "UNKNOWN", "time": 27491, "initial_objective": null, "solutions": []}
+Example26	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 3100, "initial_objective": null, "solutions": [{"time": 3100, "objective": null}]}
+Example27	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example27	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example27	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example27	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example28	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example28	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example28	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example28	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example29	{"best_obj": null, "status": "UNKNOWN", "time": 180002, "initial_objective": null, "solutions": []}
+Example29	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example29	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example29	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example3	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example3	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 71, "initial_objective": null, "solutions": [{"time": 71, "objective": null}]}
+Example3	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 68, "initial_objective": null, "solutions": [{"time": 68, "objective": null}]}
+Example3	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example3	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example3	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 55, "initial_objective": null, "solutions": [{"time": 55, "objective": null}]}
+Example3	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example30	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 348, "initial_objective": null, "solutions": [{"time": 348, "objective": null}]}
+Example30	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 372, "initial_objective": null, "solutions": [{"time": 372, "objective": null}]}
+Example30	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 383, "initial_objective": null, "solutions": [{"time": 383, "objective": null}]}
+Example30	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 691, "initial_objective": null, "solutions": [{"time": 691, "objective": null}]}
+Example30	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 405, "initial_objective": null, "solutions": [{"time": 405, "objective": null}]}
+Example30	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 477, "initial_objective": null, "solutions": [{"time": 477, "objective": null}]}
+Example30	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 432, "initial_objective": null, "solutions": [{"time": 432, "objective": null}]}
+Example31	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 976, "initial_objective": null, "solutions": [{"time": 976, "objective": null}]}
+Example31	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 1521, "initial_objective": null, "solutions": [{"time": 1521, "objective": null}]}
+Example31	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 2239, "initial_objective": null, "solutions": [{"time": 2239, "objective": null}]}
+Example31	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 1490, "initial_objective": null, "solutions": [{"time": 1490, "objective": null}]}
+Example31	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 2932, "initial_objective": null, "solutions": [{"time": 2932, "objective": null}]}
+Example31	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 2259, "initial_objective": null, "solutions": [{"time": 2259, "objective": null}]}
+Example31	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 1052, "initial_objective": null, "solutions": [{"time": 1052, "objective": null}]}
+Example32	{"best_obj": null, "status": "UNKNOWN", "time": 117191, "initial_objective": null, "solutions": []}
+Example32	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example32	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example32	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example33	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example33	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example33	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example33	{"best_obj": null, "status": "UNKNOWN", "time": 17074, "initial_objective": null, "solutions": []}
+Example34	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example34	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example34	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example34	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example35	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 3612, "initial_objective": null, "solutions": [{"time": 3612, "objective": null}]}
+Example35	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 2744, "initial_objective": null, "solutions": [{"time": 2744, "objective": null}]}
+Example35	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 4436, "initial_objective": null, "solutions": [{"time": 4436, "objective": null}]}
+Example35	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 944, "initial_objective": null, "solutions": [{"time": 944, "objective": null}]}
+Example35	{"best_obj": null, "status": "UNKNOWN", "time": 8360, "initial_objective": null, "solutions": []}
+Example35	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 341, "initial_objective": null, "solutions": [{"time": 341, "objective": null}]}
+Example35	{"best_obj": null, "status": "UNKNOWN", "time": 7003, "initial_objective": null, "solutions": []}
+Example36	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example36	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example36	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example36	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example37	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example37	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example37	{"best_obj": null, "status": "UNKNOWN", "time": 180008, "initial_objective": null, "solutions": []}
+Example37	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example38	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example38	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example38	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example38	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example39	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 575, "initial_objective": null, "solutions": [{"time": 575, "objective": null}]}
+Example39	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 65, "initial_objective": null, "solutions": [{"time": 65, "objective": null}]}
+Example39	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 86, "initial_objective": null, "solutions": [{"time": 86, "objective": null}]}
+Example39	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 2683, "initial_objective": null, "solutions": [{"time": 2683, "objective": null}]}
+Example39	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 75, "initial_objective": null, "solutions": [{"time": 75, "objective": null}]}
+Example39	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 562, "initial_objective": null, "solutions": [{"time": 562, "objective": null}]}
+Example39	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 477, "initial_objective": null, "solutions": [{"time": 477, "objective": null}]}
+Example4	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 49, "initial_objective": null, "solutions": [{"time": 49, "objective": null}]}
+Example4	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 68, "initial_objective": null, "solutions": [{"time": 68, "objective": null}]}
+Example4	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example4	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 49, "initial_objective": null, "solutions": [{"time": 49, "objective": null}]}
+Example4	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 49, "initial_objective": null, "solutions": [{"time": 49, "objective": null}]}
+Example4	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example4	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 49, "initial_objective": null, "solutions": [{"time": 49, "objective": null}]}
+Example40	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example40	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example40	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example40	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example41	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example41	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example41	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 111, "initial_objective": null, "solutions": [{"time": 111, "objective": null}]}
+Example41	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example41	{"best_obj": null, "status": "UNKNOWN", "time": 32386, "initial_objective": null, "solutions": []}
+Example42	{"best_obj": null, "status": "UNKNOWN", "time": 180002, "initial_objective": null, "solutions": []}
+Example42	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example42	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example42	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example43	{"best_obj": null, "status": "UNKNOWN", "time": 180002, "initial_objective": null, "solutions": []}
+Example43	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example43	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example43	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example44	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example44	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example44	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example44	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example45	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example45	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example45	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example45	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example46	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example46	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example46	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example46	{"best_obj": null, "status": "UNKNOWN", "time": 180002, "initial_objective": null, "solutions": []}
+Example47	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example47	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example47	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example47	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example48	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example48	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example48	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example48	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example49	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example49	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example49	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example49	{"best_obj": null, "status": "UNKNOWN", "time": 180004, "initial_objective": null, "solutions": []}
+Example5	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example5	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 74, "initial_objective": null, "solutions": [{"time": 74, "objective": null}]}
+Example5	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 51, "initial_objective": null, "solutions": [{"time": 51, "objective": null}]}
+Example5	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 56, "initial_objective": null, "solutions": [{"time": 56, "objective": null}]}
+Example5	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example5	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example5	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example50	{"best_obj": null, "status": "UNKNOWN", "time": 55992, "initial_objective": null, "solutions": []}
+Example50	{"best_obj": null, "status": "UNSATISFIABLE", "time": 9052, "initial_objective": null, "solutions": []}
+Example50	{"best_obj": null, "status": "UNKNOWN", "time": 58106, "initial_objective": null, "solutions": []}
+Example50	{"best_obj": null, "status": "UNSATISFIABLE", "time": 62171, "initial_objective": null, "solutions": []}
+Example50	{"best_obj": null, "status": "UNKNOWN", "time": 61870, "initial_objective": null, "solutions": []}
+Example50	{"best_obj": null, "status": "UNKNOWN", "time": 57105, "initial_objective": null, "solutions": []}
+Example6	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 49, "initial_objective": null, "solutions": [{"time": 49, "objective": null}]}
+Example6	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example6	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 51, "initial_objective": null, "solutions": [{"time": 51, "objective": null}]}
+Example6	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 49, "initial_objective": null, "solutions": [{"time": 49, "objective": null}]}
+Example6	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example6	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 49, "initial_objective": null, "solutions": [{"time": 49, "objective": null}]}
+Example6	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 49, "objective": null}]}
+Example7	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example7	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example7	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example7	{"best_obj": null, "status": "UNKNOWN", "time": 180003, "initial_objective": null, "solutions": []}
+Example8	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example8	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 63, "initial_objective": null, "solutions": [{"time": 63, "objective": null}]}
+Example8	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 132, "initial_objective": null, "solutions": [{"time": 132, "objective": null}]}
+Example8	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 51, "initial_objective": null, "solutions": [{"time": 51, "objective": null}]}
+Example8	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 53, "initial_objective": null, "solutions": [{"time": 53, "objective": null}]}
+Example8	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 123, "initial_objective": null, "solutions": [{"time": 123, "objective": null}]}
+Example8	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 51, "initial_objective": null, "solutions": [{"time": 51, "objective": null}]}
+Example9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 229, "initial_objective": null, "solutions": [{"time": 229, "objective": null}]}
+Example9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 239, "initial_objective": null, "solutions": [{"time": 239, "objective": null}]}
+Example9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 269, "initial_objective": null, "solutions": [{"time": 269, "objective": null}]}
+Example9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 277, "initial_objective": null, "solutions": [{"time": 277, "objective": null}]}
+Example9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 297, "initial_objective": null, "solutions": [{"time": 297, "objective": null}]}
+Example9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 281, "initial_objective": null, "solutions": [{"time": 281, "objective": null}]}
+Example9	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 407, "initial_objective": null, "solutions": [{"time": 407, "objective": null}]}
