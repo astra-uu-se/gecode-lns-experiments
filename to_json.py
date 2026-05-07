@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict, Union, Tuple, Any
+from typing import List, Dict, Union, Tuple, Any, Optional
 from argparse import ArgumentParser, ArgumentTypeError
 from glob import glob
 from os import path
@@ -8,19 +8,59 @@ import json
 
 
 class Run:
-    objective: Union[int, None] = None
-    time: Union[int, None] = None
-    error: bool = None
+    solutions: List[Dict[str, Optional[int]]]
+    time: Optional[int]
+    best_obj: Optional[int]
+    initial_objective: Optional[int]
 
-    def __init__(self, obj: int, time: int, error: bool):
-        self.objective = obj
-        self.time = time
-        self.error = error
+    def __init__(self, instance_data: dict):
+        self.time = instance_data.get('time', None)
+        self.best_obj = instance_data.get('best_obj', None)
+        self.initial_objective = instance_data.get('initial_objective', None)
+        if isinstance(self.initial_objective, str):
+            self.initial_objective = int(self.initial_objective)
+        self.solutions = instance_data.get('solutions', [])
+        assert('solutions' in instance_data)
+        assert(len(instance_data['solutions']) > 0)
+
+    def worst(self) -> Optional[Dict[str, int]]:
+        if not self.solved:
+            return None
+        return self.solutions[0]
+
+    def best(self) -> Optional[Dict[str, int]]:
+        if not self.solved:
+            return None
+        return self.solutions[-1]
+
+    @property
+    def is_csp(self):
+        return self.solved and self.best_obj is None
+
+    @property
+    def is_minimization(self) -> bool:
+        if self.best_obj is not None and self.initial_objective is not None and self.best_obj != self.initial_objective:
+            return self.best_obj < self.initial_objective
+        return (self.solved and 
+                self.best_obj is not None and
+                len(self.solutions) > 0 and
+                self.worst()['objective'] < self.best_obj)
+
+    @property
+    def is_maximization(self) -> bool:
+        if self.best_obj is not None and self.initial_objective is not None and self.best_obj != self.initial_objective:
+            return self.best_obj > self.initial_objective
+        return (self.solved and 
+                self.best_obj is not None and
+                len(self.solutions) > 0 and
+                self.worst()['objective'] > self.best_obj)
+
+    @property
+    def solved(self) -> bool:
+        return len(self.solutions) > 0
 
     def to_dict(self):
-        return {'objective': self.objective,
-                'time': self.time,
-                'error': self.error}
+        return {'worst': self.worst(), 'best': self.best()}
 
 
 class Method:
@@ -33,21 +73,80 @@ class Method:
         self.acronym = acronym
         self.runs = []
 
-    def append_run(self, obj, time, error) -> None:
-        self.runs.append(Run(obj, time, error))
+    @property
+    def is_csp(self):
+        return any(r.is_csp for r in self.runs)
+    
+    @property
+    def is_minimization(self) -> bool:
+        return any(r.is_minimization for r in self.runs)
 
-    def mean_run(self) -> Run:
-        obj = (None if any(r.objective is None for r in self.runs)
-               else mean((r.objective for r in self.runs)))
-        time = (None if any(r.time is None for r in self.runs)
-                else mean((r.time for r in self.runs)))
-        error = any(r.error for r in self.runs)
-        return Run(obj, time, error)
+    @property
+    def is_maximization(self) -> bool:
+        return any(r.is_maximization for r in self.runs)
 
-    def to_dict(self, all_runs: bool = False):
+    @property
+    def worst_objective(self) -> Optional[int]:
+        iter = (r.worst().get('objective', None) for r in self.runs
+                if r.worst() is not None)
+        return (max(iter, default=None) if self.is_minimization
+                else min(iter, default=None))
+
+    @property
+    def best_objective(self) -> Optional[int]:
+        iter = (r.best_obj for r in self.runs if r.best_obj is not None)
+        return (min(iter, default=None) if self.is_minimization
+                else max(iter, default=None))
+    
+    @property
+    def solved(self) -> bool:
+        # There are more solved runs than unsolved runs:
+        if sum(1 if r.solved else -1 for r in self.runs) > 0:
+            logging.warning(self.name)
+        return (len(self.runs) > 0 and
+                sum(1 if r.solved else -1 for r in self.runs) > 0) 
+
+    def append_run(self, instance_data: dict) -> None:
+        if len(instance_data.get('solutions', [])) > 0:
+            self.runs.append(Run(instance_data))
+
+    def mean_run(self, global_worst_obj: Optional[int]) -> Run:
+        data = dict()
+        data['time'] = (
+            None 
+            if len(self.runs) == 0 or all(r.time is None for r in self.runs)
+            else mean((r.time for r in self.runs)))
+        data['best_obj'] = (
+            None
+            if len(self.runs) == 0 or all(r.best_obj is None for r in self.runs)
+            else mean((global_worst_obj if r.best_obj is None
+                       else r.best_obj for r in self.runs)))
+        data['initial_objective'] = (
+            None
+            if len(self.runs) == 0 or all(r.initial_objective is None for r in self.runs)
+            else mean((global_worst_obj if r.initial_objective is None
+                       else r.initial_objective for r in self.runs)))
+        sols = [r.worst() for r in self.runs]
+        first_obj = (
+            None 
+            if len(sols) == 0 or all(s['objective'] is None for s in sols)
+            else mean((global_worst_obj if s['objective'] is None
+                      else s['objective'] for s in sols)))
+        first_time = (
+            None
+            if len(sols) == 0 or all(s['time'] is None for s in sols)
+            else mean((s['time'] for s in sols)))
+        data['solutions'] = [
+            {'time': first_time, 'objective': first_obj},
+            {'time': data['time'], 'objective': data['best_obj']}
+        ]
+        return Run(data)
+
+    def to_dict(self, worst_obj: Optional[int], all_runs: bool = False):
         d = {'name': self.name,
              'acronym': self.acronym,
-             'mean': self.mean_run().to_dict()}
+             'solved': self.solved,
+             'mean': self.mean_run(worst_obj).to_dict()}
         if all_runs:
             d['runs'] = [r.to_dict() for r in self.runs]
         return d
@@ -55,174 +154,193 @@ class Method:
 
 class Instance:
     name: str = None
-    is_minimisation: bool = True
-    initial_objective: Union[None, int] = None
-    best_objective: Union[None, int] = None
+    initial_objective : Optional[int] = None
     methods = Dict[str, Method]
-
-    def __init__(self, is_minimisation, name):
+    
+    def __init__(self, name):
         self.name = name
-        self.is_minimisation = is_minimisation
         self.initial_objective = None
-        self.best_objective = None
-        self.initial_objectives: List[int] = []
-        self.best_objectivs: List[int] = []
         self.methods = {}
-        assert isinstance(is_minimisation, bool)
+
+    @property
+    def is_csp(self) -> bool:
+        return any(m.is_csp for m in self.methods.values())
+
+    @property
+    def is_minimization(self) -> bool:
+        return any(m.is_minimization for m in self.methods.values())
+
+    @property
+    def is_maximization(self) -> bool:
+        return any(m.is_maximization for m in self.methods.values())
+
+    @property
+    def worst_objective(self) -> Optional[int]:
+        if self.is_csp:
+            return None
+        op = (lambda a,b: a > b if self.is_minimization
+              else lambda a,b: a < b)
+        ret: Optional[int] = self.initial_objective
+        for m in self.methods.values():
+            v: Optional[int] = m.worst_objective
+            if v is not None and (ret is None or op(v, ret)):
+                ret = v
+        return ret
+    
+    @property
+    def best_obj(self) -> Optional[int]:
+        if self.is_csp:
+            return None
+        op = (lambda a,b: a < b if self.is_minimization
+              else lambda a,b: a > b)
+        ret: Optional[int] = self.initial_objective
+        for m in self.methods.values():
+            v: Optional[int] = m.best_objective
+            if v is not None and (ret is None or op(v, ret)):
+                ret = v
+        return ret
 
     def add_method(self, method_name: str, acronym: str,
-                   initial_obj: Union[None, int], obj: Union[None, int],
-                   time: int, error: bool) -> None:
+                   instance_data) -> None:
         if method_name not in self.methods:
             self.methods[method_name] = Method(method_name, acronym)
-        self.methods[method_name].append_run(obj, time, error)
-        self.update_objectives(initial_obj, obj)
+        if instance_data is not None:
+            self.methods[method_name].append_run(instance_data)
 
     def update_objectives(self, *kvargs):
-        entries = list(kvargs) + [self.initial_objective, self.best_objective]
+        entries = list(kvargs) + [self.initial_objective]
         vals = [v for v in entries if v is not None]
         if len(vals) == 0:
             return
-        if self.is_minimisation:
-            self.initial_objective = max(vals)
-            self.best_objective = min(vals)
-        else:
-            self.initial_objective = min(vals)
-            self.best_objective = max(vals)
+        if self.initial_objective is None:
+            self.initial_objective = (max(vals) if self.is_minimization
+                                      else min(vals))
 
     def to_dict(self, all_runs: bool = False):
+        worst_obj = self.worst_objective
         return {'name': self.name,
-                'initial_objective': self.initial_objective,
-                'best_objective': self.best_objective,
-                'methods': [instance.to_dict(all_runs) for
-                            instance in self.methods.values()]}
+                'is_csp': self.is_csp,
+                'worst_obj': self.worst_objective,
+                'best_obj': self.best_obj,
+                'methods': [instance.to_dict(worst_obj, all_runs) for
+                            instance in self.methods.values()
+                            if instance.solved]}
 
 
 class Model:
     name: str = None
     acronym: str = None
     instances: Dict[str, Instance]
-    is_minimisation: Union[None, bool] = None
+
+    @property
+    def is_minimization(self) -> bool:
+        return any(i.is_minimization for i in self.instances.values())
+    
+    @property
+    def is_csp(self) -> bool:
+        return any(i.is_csp for i in self.instances.values())
 
     def __init__(self, name, acronym):
         self.name = name
         self.acronym = acronym
         self.instances = dict()
-        self.is_minimisation = None
 
     def add_instance(self, instance_name: str) -> Instance:
         if instance_name not in self.instances:
-            self.instances[instance_name] = Instance(self.is_minimisation,
-                                                     instance_name)
+            self.instances[instance_name] = Instance(instance_name)
         return self.instances[instance_name]
 
-    def update_objectives(self, best_objective):
-        if best_objective is None:
+    def update_objectives(self, best_obj):
+        if best_obj is None:
             return
         for instance in self.instances.values():
-            instance.update_objectives(best_objective)
+            instance.update_objectives(best_obj)
 
     def to_dict(self, all_runs: bool = False):
         return {
             'model': self.name,
             'acronym': self.acronym,
+            'csp': self.is_csp,
+            'minimize': self.is_minimization,
             'instances': [instance.to_dict(all_runs) for
                           instance in self.instances.values()]}
 
 
 class JsonWriter:
     model: Model = None
-    best_objective: Union[None, int] = None
+    best_obj: Union[None, int] = None
     name_dict = {'random': 'Randomised LNS',
                  'pg': 'Propagation guided LNS',
                  'ci': 'Cost impact guided LNS',
                  'or': 'OR-LNS',
                  'vrg': 'Variable-relationship guided LNS',
                  'svd': 'Variable-relationship guided LNS',
-                 'rpg': 'Reverse propagation guided LNS'}
+                 'rpg': 'Reverse propagation guided LNS',
+                 'mab': 'Gecode-depLNS-MAB',
+                 'lns': 'Gecode-depLNS',
+                 'par': 'Gecode Par',
+                 'cp25': 'Gecode DCS'}
     acronym_dict = {'random': 'Randomised LNS',
                     'pg': 'PG-LNS',
                     'ci': 'CIG-LNS',
                     'or': 'OR-LNS',
                     'vrg': 'VRG-LNS',
                     'svd': 'VRG-LNS',
-                    'rpg': 'RPG-LNS'}
+                    'rpg': 'RPG-LNS',
+                    'mab': 'mab',
+                    'lns': 'lns',
+                    'par': 'par',
+                    'cp25': 'dcs'}
 
-    def __init__(self, model_name, acronym, best_objective):
+    def __init__(self, model_name, acronym, best_obj):
         self.model = Model(model_name, acronym)
-        self.best_objective = best_objective
+        self.best_obj = best_obj
         logging.info(model_name)
         logging.info(acronym)
 
     def parse_file(self, txt_file) -> None:
         fname, ext = path.splitext(path.basename(txt_file))
         method_name = ext.lstrip('.').lstrip('txt').lstrip('-')
+        logging.info(method_name)
         acronym = self.acronym_dict.get(method_name)
         method_name = self.name_dict.get(method_name, method_name)
 
-        if fname.lower().endswith('-cc'):
-            method_name = f'cc-{method_name}'
-
-        data: List[Tuple[Any, Any, Any, Any, bool]] = []
+        data: List[Tuple[str, dict]] = []
         with open(txt_file, 'r') as input:
             for line in input.readlines():
-                entries = [e.strip() for e in line.split('\t')]
-                if len(entries) < 4:
+                entries = [e.strip() for e in line.split('\t', 1)]
+                if len(entries) != 2:
                     continue
                 i_name = entries[0]
+                instance_data = None
                 try:
-                    r_obj = int(entries[1])
-                except ValueError:
-                    r_obj = None
-                try:
-                    r_time = int(entries[2])
-                except ValueError:
-                    r_time = None
-                r_error = entries[3].lower() != 'false'
-                try:
-                    initial_obj = int(entries[4])
-                except ValueError:
-                    initial_obj = None
-
-                data.append((i_name, r_obj, r_time, initial_obj, r_error))
-                if r_obj is None or initial_obj is None:
-                    continue
-                if self.model.is_minimisation is not None:
-                    continue
-                if r_obj < initial_obj:
-                    logging.warning("minimisation")
-                    self.model.is_minimisation = True
-                elif r_obj > initial_obj:
-                    logging.warning("maximisation")
-                    self.model.is_minimisation = False
-        assert self.model.is_minimisation is not None
-        for i_name, r_obj, r_time, initial_obj, r_error in data:
+                    instance_data = json.loads(entries[1])
+                except Exception as e:
+                    pass
+                data.append((i_name, instance_data))
+        for i_name, instance_data in data:
             self.model.add_instance(i_name).add_method(
-                method_name, acronym, initial_obj, r_obj, r_time, r_error)
+                method_name, acronym, instance_data)
 
     def parse_comparative_file(self, txt_file) -> None:
         with open(txt_file, 'r') as input:
             for line in input.readlines():
-                entries = [e.strip() for e in line.split('\t')]
-                if len(entries) < 4:
+                entries = [e.strip() for e in line.split('\t', 1)]
+                if len(entries) != 2:
                     continue
                 i_name = entries[0]
+                instance_data = None
                 try:
-                    r_obj = int(entries[1])
-                except ValueError:
-                    r_obj = None
-                try:
-                    r_time = int(entries[2])
-                except ValueError:
-                    r_time = None
-                r_error = entries[3].lower() != 'false'
-                try:
-                    initial_obj = int(entries[4])
-                except ValueError:
-                    initial_obj = None
+                    instance_data = json.loads(entries[1])
+                except Exception as e:
+                    pass
+                
+                vals = [s['objective'] for s in instance_data.get('solutions', [])
+                        if isinstance(s.get('objective', None), int)]
+                logging.warning(vals)
 
-                self.model.add_instance(i_name).update_objectives(initial_obj,
-                                                                  r_obj)
+                self.model.add_instance(i_name).update_objectives(
+                    *vals)
 
     def write_json(self, json_path, all_runs: bool = False):
         d = self.model.to_dict(all_runs)
@@ -282,7 +400,7 @@ if __name__ == '__main__':
                         action='store_true', default=False,
                         help='output all runs, not just the mean.')
 
-    parser.add_argument('--best-objective', dest='best_objective',
+    parser.add_argument('--best-objective', dest='best_obj',
                         type=int, default=None,
                         help='The best known objective value.')
 
@@ -316,7 +434,7 @@ if __name__ == '__main__':
     data_files = list(sorted(data_files))
     comparative_data_files = list(sorted(comparative_data_files))
 
-    json_writer = JsonWriter(args.model, args.acronym, args.best_objective)
+    json_writer = JsonWriter(args.model, args.acronym, args.best_obj)
 
     for df in data_files:
         json_writer.parse_file(df)

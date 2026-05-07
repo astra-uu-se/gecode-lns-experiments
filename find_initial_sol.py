@@ -22,7 +22,8 @@ class MiniZincRunner:
     data: List[str] = []
     minizinc_path: str
 
-    solution_re = re.compile(r'(solution\s*=\s*\[[^\]]*\]);')
+    solution_re =  re.compile(r'\s*solution\s*=\s(.*);')
+    objective_re = re.compile(r'\s*objective\s*=\s*(\d+)')
 
     def __init__(self, model, solver, extra):
         self.model = model
@@ -33,7 +34,12 @@ class MiniZincRunner:
     @classmethod
     def get_solution(cls, output: str) -> Union[None, str]:
         match = cls.solution_re.search(output)
-        return None if match is None else match.group(0)
+        return None if match is None else match.group(1)
+
+    @classmethod
+    def get_objective(cls, output: str) -> Union[None, int]:
+        match = cls.objective_re.search(output)
+        return None if match is None else int(match.group(1))
 
     @classmethod
     def should_run(cls, data_file: str) -> bool:
@@ -69,16 +75,16 @@ class MiniZincRunner:
 
         output = stdout.decode('utf-8')
         solution = self.get_solution(output)
-
+        objective = self.get_objective(output)
+        
         if solution is None:
             return
 
-        logging.warning(f'{data_file}: "{solution}"')
-
-        solution_line = f'\n{solution}'
+        suffix = (f'\ninitialSolution = {solution};'
+                  f'\ninitialObjective = {objective};')
 
         with open(data_file, 'a') as output_file:
-            output_file.write(solution_line)
+            output_file.write(suffix)
 
 
 if __name__ == '__main__':
@@ -165,10 +171,10 @@ if __name__ == '__main__':
         except Exception as e:
             exc_type, exc_obj, exc_tb = exc_info()
             fname = path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            logging.warning(exc_type)
-            logging.warning(fname)
-            logging.warning(exc_tb.tb_lineno)
-            logging.warning(e)
+            logging.warning(f'exception: {exc_type}')
+            logging.warning(f'exception: {fname}')
+            logging.warning(f'exception: {exc_tb.tb_lineno}')
+            logging.warning(f'exception: {e}')
         finally:
             pass
 

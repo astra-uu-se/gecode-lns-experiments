@@ -1,0 +1,13 @@
+Example1	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 51, "initial_objective": null, "solutions": [{"time": 51, "objective": null}]}
+Example10	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 52, "initial_objective": null, "solutions": [{"time": 52, "objective": null}]}
+Example11	{"best_obj": null, "status": "UNKNOWN", "time": 2700004, "initial_objective": null, "solutions": []}
+Example12	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 1684, "initial_objective": null, "solutions": [{"time": 1684, "objective": null}]}
+Example13	{"best_obj": null, "status": "UNKNOWN", "time": 2700003, "initial_objective": null, "solutions": []}
+Example14	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example15	{"best_obj": null, "status": "UNKNOWN", "time": 2700005, "initial_objective": null, "solutions": []}
+Example16	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 85144, "initial_objective": null, "solutions": [{"time": 85144, "objective": null}]}
+Example17	{"best_obj": null, "status": "UNKNOWN", "time": 2700003, "initial_objective": null, "solutions": []}
+Example18	{"best_obj": null, "status": "UNKNOWN", "time": 2700004, "initial_objective": null, "solutions": []}
+Example19	{"best_obj": null, "status": "UNKNOWN", "time": 2700010, "initial_objective": null, "solutions": []}
+Example2	{"best_obj": null, "status": "ALL_SOLUTIONS", "time": 50, "initial_objective": null, "solutions": [{"time": 50, "objective": null}]}
+Example20	{"best_obj": null, "status": "UNKNOWN", "time": 2700015, "initial_objective": null, "solutions": []}

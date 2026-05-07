@@ -28,7 +28,7 @@ constraint forall (v in Vehicles) (
     accumulatedTravelTime[startNode[v]] = 0);
 constraint forall (n in 1..max(startNode)) (
     accumulatedTravelTime[next[n]] = accumulatedTravelTime[n] + timeToNext[n]);
-solve :: relax_and_reconstruct(next, -1)
+solve % :: relax_and_reconstruct(next, -1)
       :: int_search(timeToNext, max_regret, indomain_min)
          minimize objective;
 output ["solution = \(placedIn);\nobjective = \(objective);\n"];

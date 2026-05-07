@@ -1,0 +1,6 @@
+NURSE = anon_enum(20);
+DAY = anon_enum(30);
+
+req_day = 8;
+req_night = 7;
+min_night = 6;

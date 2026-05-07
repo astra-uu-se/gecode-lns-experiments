@@ -1,5 +1,5 @@
 import logging
-from typing import List, Union
+from typing import Dict, List, Optional, Set, Union
 from argparse import ArgumentParser, ArgumentTypeError, REMAINDER
 from glob import glob
 from os import path
@@ -9,7 +9,9 @@ from time import perf_counter
 from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
 import re
-from sys import exc_info
+from sys import exc_info, argv
+from json import loads, dumps
+import psutil
 
 
 class MiniZincRunner:
@@ -21,25 +23,32 @@ class MiniZincRunner:
     minizinc_path: str
     solver: str = 'Dexter'
     file_lock: None
+    num_runs: int
+    csp: bool
     kill: bool = False
+    unknown_runs: Dict[str, int] = dict()
 
     unknown_re = re.compile(r'=====UNKNOWN=====')
     optimal_re = re.compile(r'==========')
     error_re = re.compile(r'=====ERROR=====')
-    objective_re = re.compile(r'^\s*objective\s*=\s*(\d+)')
-    solution_re = re.compile(r'^\s*solution\s*=\s(.*);')
-    initial_objective_re = re.compile(r'^\s*initialObjective\s*=\s*(\d+)')
+    objective_re = re.compile(r'objective\s*=\s*(\d+)')
+    solution_re = re.compile(r'solution\s*=\s(.*);')
+    initial_objective_re = re.compile(r'initialObjective\s*=\s*(\d+)')
 
-    def __init__(self, solver_path, model, output_path, time_limit, extra):
+    def __init__(self, solver_path, model, output_path, time_limit, num_runs, csp, extra):
         if path.exists(solver_path):
             self.solver = solver_path
+        logging.warning(self.solver)
         self.model = model
         self.output_path = output_path
         self.time_limit = time_limit
+        self.num_runs = num_runs
+        self.csp = csp
         self.extra = extra
         self.minizinc_path = which('minizinc')
         self.file_lock = Lock()
         self.kill = False
+        self.unknown_runs = dict()
 
     def output_file_exists(self) -> bool:
         return path.exists(self.output_path)
@@ -47,14 +56,49 @@ class MiniZincRunner:
     def is_unknown(self, output: str) -> bool:
         return self.unknown_re.search(output) is not None
 
-    def is_optimal(self, output: str) -> bool:
-        return self.optimal_re.search(output) is not None
+    def is_optimal(self, status) -> bool:
+        return isinstance(status, dict) and status.get('status', None) == 'OPTIMAL_SOLUTION'
 
-    def is_timeout(self, output: str) -> bool:
-        return not self.is_optimal(output)
+    def is_timeout(self, status) -> bool:
+        return status.get('time') >= self.time_limit
 
     def has_error(self, output: str) -> bool:
         return self.error_re.search(output) is not None
+
+    def get_solutions(self, data):
+        if data is None:
+            return list()
+        ret = []
+        for o in data:
+            if not isinstance(o, dict) or o.get('type', None) != 'solution':
+                continue
+            time = o.get('time', self.time_limit)
+            objective = o.get('output', dict()).get('json', dict()).get('_objective', None)
+            if objective is None:
+                objective = self.objective(o.get('output', dict).get('raw', ''))
+                try:
+                    objective = int(objective)
+                except:
+                    pass
+            ret.append({'time': time, 'objective': objective})
+        if self.csp and len(ret) > 1:
+            assert ret[0] == min(ret, key=lambda s: s['time'])
+            ret = [ret[0]]
+        return ret
+    
+    def error_status(self):
+        return {'type': 'status', 'status': 'ERROR', 'time': None}
+    
+    def get_status(self, data):
+        if data is None:
+            return {'type': 'status',
+                    'status': 'ERROR',
+                    'time': self.time_limit}
+        for i in range(len(data) - 1, -1, -1):
+            if not isinstance(data[i], dict) or data[i].get('type', None) != 'status':
+                continue
+            return data[i]
+        return {'type': 'status', 'status': 'UNKNOWN', 'time': self.time_limit}
 
     def solution(self, output: str) -> Union[None, str]:
         match = self.solution_re.search(output)
@@ -62,11 +106,17 @@ class MiniZincRunner:
             return None
         return match.group(1)
 
-    def initial_objective(self, output: str) -> Union[None, str]:
-        match = self.initial_objective_re.search(output)
-        if match is None:
+    def initial_objective(self, data) -> Union[None, str]:
+        if data is None:
             return None
-        return match.group(1)
+        for o in data:
+            if not isinstance(o, dict) or o.get('type') != 'solution' or o.get('output', dict).get('raw', None) is None:
+                continue
+            match = self.initial_objective_re.search(o['output']['raw'])
+            if match is None:
+                continue
+            return match.group(1)
+        return None
 
     def objective(self, output: str) -> Union[None, str]:
         match = self.objective_re.search(output)
@@ -75,8 +125,6 @@ class MiniZincRunner:
         return match.group(1)
 
     def time(self, output, duration: float) -> str:
-        if self.is_timeout(output):
-            return str(self.time_limit)
         return str(int(round(duration * 1000)))
 
     def file_name(self, data_file: str) -> str:
@@ -89,6 +137,7 @@ class MiniZincRunner:
         if not path.isfile(self.output_path):
             return True
         num_matches = 0
+        num_unknown = self.unknown_runs.get(data_file, 0)
         file_name = self.file_name(data_file) + '\t'
         if requires_lock:
             self.file_lock.acquire()
@@ -97,101 +146,149 @@ class MiniZincRunner:
                 for line in output_file.readlines():
                     if line.lstrip().startswith(file_name):
                         num_matches += 1
+                        json = line.removeprefix(file_name).strip()
+                        try:
+                            data = loads(json)
+                            if not isinstance(data, dict):
+                                continue
+                            if data.get('status', '').strip() != 'UNKNOWN':
+                                continue
+                            if len(data.get('solutions', [])) > 0:
+                                continue
+                            num_unknown += 1
+                        except:
+                            pass
         finally:
             if requires_lock:
                 self.file_lock.release()
+        if num_unknown * 2 > self.num_runs:
+            logging.warning(f'{data_file}: num_unknowns = {num_unknown}')
+            return False
         return run_index >= num_matches
+
+    def get_comments(self, data):
+        if data is None:
+            return []
+        return [o['comment'] for o in data
+                if isinstance(o.get('comment', None), str)]
+
+    def parse_output(self, output: Optional[str], args, data_file: str,
+                     duration: int):
+        data = None
+        try:
+            if output is not None:
+                objects = output.split('\n')
+                json = ('[' +
+                        ','.join([o.strip() for o in objects
+                                  if len(o.strip()) > 0]) +
+                        ']')
+                data = list() if len(objects) == 0 else loads(json)
+        except Exception as e:
+            logging.warning(e.__dict__)
+            logging.warning(output)
+            exit(1)
+        if any(isinstance(o, dict) and o.get('type', None) == 'error' for o in data):
+            logging.warning("ERROR")
+            logging.warning(output)
+
+        status = self.get_status(data)
+        solutions = self.get_solutions(data)
+        initial_objective = self.initial_objective(data)
+
+        if not self.is_optimal(status) and duration < self.time_limit:
+            logging.warning(
+                "NON-OPTIMAL: expected optimal status, but got = " +
+                status.get('status', 'UNKNOWN'))
+            logging.warning("NON-OPTIMAL: " + ' '.join(args))
+            logging.warning(f'NON-OPTIMAL: {path.basename(data_file)}')
+            if output is not None:
+                logging.info('NON-OPTIMAL: COMMENTS START')
+                for comment in self.get_comments(data):
+                    logging.info(comment)
+                logging.info('NON-OPTIMAL: COMMENTS END')
+
+        return {
+            'best_obj': None if len(solutions) == 0 else solutions[-1]['objective'],
+            'status': status.get('status', 'UNKNOWN'),
+            'time': status.get('time', self.time_limit),
+            'initial_objective': initial_objective,
+            'solutions': solutions
+        }
 
     def run_dzn(self, data_file: str, run_index: int) -> None:
         if not self.should_run(data_file, run_index, True):
             return
 
-        args = [self.minizinc_path,
-                self.model,
-                '--solver', self.solver,
-                '-d', data_file,
-                '--time-limit', str(self.time_limit)] + self.extra
+        args = ([self.minizinc_path,
+                 self.model,
+                 '--solver', self.solver,
+                 '-d', data_file,
+                 '--json-stream',
+                 '--output-time',
+                 '--output-objective',
+                 '--time-limit', str(self.time_limit)] +
+                (['--num-solutions', '1'] if self.csp else ['--all-solutions']) +
+                self.extra)
         start = perf_counter()
-        process = subprocess.Popen(args, stdout=subprocess.PIPE)
+        process = subprocess.Popen(
+            args,
+            stdout=subprocess.PIPE)
 
+        stderr = None
+        stdout = None
         try:
-            stdout, stderr = process.communicate()
+            stdout, stderr = process.communicate(
+                timeout=(self.time_limit / 1000) + 1000)
         except subprocess.TimeoutExpired:
-            logging.warning("Timeout: quitting without storing results.")
-            return
+            logging.warning("SOLVER TIMED OUT")
+            try:
+                parent = psutil.Process(process.pid)
+                for child in parent.children(recursive=True):
+                    try:
+                        child.kill()
+                    except psutil.NoSuchProcess:
+                        pass
+            except psutil.NoSuchProcess:
+                pass
+            process.kill()
+        except (KeyboardInterrupt, SystemExit):
+            logging.warning("KILLED: shutting down threads...")
+            try:
+                parent = psutil.Process(process.pid)
+                for child in parent.children(recursive=True):
+                    try:
+                        child.kill()
+                    except psutil.NoSuchProcess:
+                        pass
+            except psutil.NoSuchProcess:
+                pass
+            process.kill()
+            mzn_runner.kill = True
+            logging.warning("KILLED: DONE")
+            exit(1)
 
         if self.kill:
             logging.warning("KILLED: quitting without storing results.")
             return
 
-        duration = perf_counter() - start
+        duration = int((perf_counter() - start) * 1000)
 
         if stderr is not None:
             logging.warning(stderr.decode('utf-8'))
-
-        output = stdout.decode('utf-8')
         
-        ms = int(duration * 1000)
-
-        if not self.is_optimal(output) and ms < self.time_limit:
-            logging.info(f'UNKNOWN; {path.basename(data_file)}; ' +
-                         f'is optimal: {self.is_optimal(output)}; ' +
-                         f'is_unknown: {self.is_unknown(output)}; ' +
-                         f'duration: {int(round(duration * 1000))}; ' +
-                         '; extra: ' + ' '.join(self.extra))
-
-        solutions = output.split('\n----------\n')
-        solutions = [s.strip() for s in solutions if len(s.strip()) > 0]
-        if len(solutions) == 0:
-            return
-
-        # the best solution is at the end
-        solutions.reverse()
-
-        solution = None
-        initial_objective = None
-        objective = None
-
-        def is_done():
-            return (solution is not None and initial_objective is not None and
-                    objective is not None)
-
-        for sol in solutions:
-            if is_done():
-                break
-            for line in sol.splitlines():
-                if is_done():
-                    break
-                if solution is None:
-                    tmp = self.solution(line)
-                    if tmp is not None:
-                        solution = tmp
-                        continue
-                if initial_objective is None:
-                    tmp = self.initial_objective(line)
-                    if tmp is not None:
-                        initial_objective = tmp
-                        continue
-                if objective is None:
-                    tmp = self.objective(line)
-                    if tmp is not None:
-                        objective = tmp
-                        continue
-
-        solution = solution if solution is not None else '--'
-        initial_objective = (initial_objective if initial_objective is not None
-                             else '--')
-        objective = objective if objective is not None else '--'
+        output = None if stdout is None else stdout.decode('utf-8').strip()
+        output_data = self.parse_output(output, args, data_file, duration)
 
         file_name = self.file_name(data_file)
 
-        output_line = '\t'.join(s for s in [
-            file_name,
-            objective,
-            self.time(output, duration),
-            str(self.has_error(output)).lower(),
-            initial_objective,
-            solution]) + '\n'
+        output_line = (file_name + '\t' +
+                       dumps(output_data) + '\n')
+
+        if output_data.get('status', '').strip() == 'UNKNOWN':
+            if file_name not in self.unknown_runs:
+                self.unknown_runs[self.file_name] = 1
+            else:
+                self.unknown_runs[self.file_name] += 1
 
         self.file_lock.acquire()
         try:
@@ -262,6 +359,10 @@ if __name__ == '__main__':
                         default=180000,
                         help='the time limit for MiniZinc in milliseconds')
 
+    parser.add_argument('--csp', dest='csp', default=False,
+                        action='store_true',
+                        help='the problem is a CSP')
+
     parser.add_argument('--extra', nargs=REMAINDER, dest='extra',
                         type=str,
                         help='The extra flags (with leading dashes) that are '
@@ -286,65 +387,29 @@ if __name__ == '__main__':
         seen_data_files.add(data_file)
     data_files = list(sorted(data_files))
 
-    # enumeration of the PBS asset type:
-    # 0 = branch and bound asset;
-    # 1 = random lns asset;
-    # 2 = propagation guided lns asset;
-    # 3 = cost impact guided lns asset;
-    # 4 = objective relaxation lns asset;
-    # 5 = static variable dependency lns asset;
-    # 6 = reversed propagation guided lns asset;
-    # 7 = prioritized branching bab asset;
-    # 8 = branch and bound opposite branching asset;
-    # 9 = shaving asset;
-    # -1 = run multiple assets"
-
-    curated_lns_asset_types = {
-        'random',
-        'pg',
-        'ci',
-        'vrg',
-        'rpg'
-    }
-
-    lns_asset_types = [
-        (1, "random"),
-        (2, "pg"),
-        (3, "ci"),
-        # (4, "or"),  # not an automated selection heuristic
-        (5, "vrg"),
-        (6, "rpg")
-    ]
-
-    if args.curated_lns:
-        lns_asset_types = [
-            (i, s) for i, s in lns_asset_types if s in curated_lns_asset_types]
-
     extra = [] if args.extra is None else args.extra
 
-    mzn_runners = [MiniZincRunner(args.solver,
-                                  args.model,
-                                  f'{args.output}-{s}',
-                                  args.time_limit,
-                                  extra + ['--pbs-asset-type', str(a)])
-                   for a, s in lns_asset_types]
+    logging.warning(args.csp)
 
-    tasks = [(mi, di, ri)
-             for mi in range(len(mzn_runners))
+    mzn_runner = MiniZincRunner(args.solver, args.model, args.output,
+                                args.time_limit, args.num_runs, args.csp,
+                                extra)
+
+    tasks = [(di, ri)
              for di in range(len(data_files))
              for ri in range(args.num_runs)
-             if mzn_runners[mi].should_run(data_files[di], ri, False)]
+             if mzn_runner.should_run(data_files[di], ri, False)]
 
-    tasks = [(mi, di, ri, ti) for ti, (mi, di, ri) in enumerate(tasks)]
+    tasks = [(di, ri, ti) for ti, (di, ri) in enumerate(tasks)]
 
-    def run(mi: int, di: int, ri: int, ti: int):
-        if mzn_runners[mi].kill:
+    def run(di: int, ri: int, ti: int):
+        if mzn_runner.kill:
             return
         logging.info(f'Run {ti + 1}/{len(tasks)}; ' +
                      f'{path.basename(data_files[di])}; extra: ' +
-                     ' '.join(mzn_runners[mi].extra))
+                     ' '.join(mzn_runner.extra))
         try:
-            mzn_runners[mi].run_dzn(data_files[di], ri)
+            mzn_runner.run_dzn(data_files[di], ri)
         except Exception as e:
             exc_type, exc_obj, exc_tb = exc_info()
             fname = path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -356,20 +421,10 @@ if __name__ == '__main__':
             pass
 
     logging.info(f'Model: {path.basename(args.model)}')
+    logging.info(f'Output file: {args.output}')
     logging.info(f'Time limit: {args.time_limit}')
     logging.info(f'Number of runs: {args.num_runs}')
     logging.info(f"Number of tasks: {len(tasks)}")
 
-    with ThreadPoolExecutor(max_workers=16) as executor:
-        try:
-            for task in tasks:
-                executor.submit(run, *task)
-            executor.shutdown(True)
-        except (KeyboardInterrupt, SystemExit):
-            logging.warning("KILLED: shutting down threads...")
-            for mr in mzn_runners:
-                mr.kill = True
-            executor.shutdown(True)
-            logging.warning("KILLED: DONE")
-            exit(1)
-
+    for task in tasks:
+        run(*task)

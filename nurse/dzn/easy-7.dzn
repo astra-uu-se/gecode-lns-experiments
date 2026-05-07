@@ -1,0 +1,8 @@
+NURSE = anon_enum(10);
+DAY = anon_enum(15);
+% 3* 15 = 45
+req_day = 3;
+% 4 * 15 = 60
+req_night = 4;
+% 6 * 10 = 60
+min_night = 6;
