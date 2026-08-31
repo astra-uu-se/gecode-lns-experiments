@@ -7,7 +7,7 @@ array[Locations] of var Locations: Sequence;
 array[Locations] of var 0..max(late): arrival;
 array[Locations] of var min(early)..max(late): departure =
   [early[depot]] ++ [max(early[Sequence[l]], arrival[l]) | l in 2..n];
-var int: objective = departure[n] + duration[Sequence[n], 1];;
+var int: objective = departure[n] + duration[Sequence[n], 1];
 constraint forall (l in Locations) (
     arrival[l] = if l = 1 then 
       0
@@ -27,9 +27,11 @@ array[Locations] of var Locations: OrderedSequence;
 constraint forall(l in Locations) (
   Sequence[l] = ValueOrdering[OrderedSequence[l]]);
 
+int: initialObjective;
+array[int] of int: initialSolution;
 
 solve :: seq_search([int_search(OrderedSequence, input_order, indomain_min)] ++
                     [int_search([departure[l] | l in arg_sort(early)],
                                 input_order, indomain_min)])
-         maximize objective;
-output ["solution = \(Sequence ++ departure);\nobjective = \(objective);"];
+         minimize objective;
+output ["solution = \(Sequence ++ departure);\ninitialObjective = \(initialObjective);\nobjective = \(objective);\n"];
