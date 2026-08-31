@@ -38,7 +38,12 @@ constraint forall(m in Machines) (disjunctive(
   [   start[j, task[j, m]] | j in Jobs],
   [duration[j, task[j, m]] | j in Jobs]));
 
-solve :: seq_search(
+solve :: warm_start(
+            array1d(start),
+            [sum([sum(duration[pj, ..]) | pj in 1..j - 1]) +
+             sum([duration[j, pt] | pt in 1..t - 1])
+            | j in Jobs, t in Tasks])
+         seq_search(
             [int_search(start[j, ..], first_fail, indomain_min)
             | j in Jobs
             ])
