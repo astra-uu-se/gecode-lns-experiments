@@ -31,4 +31,4 @@ constraint forall (n in 1..max(startNode)) (
 solve :: 
          int_search(timeToNext, max_regret, indomain_min)
          minimize objective;
-output ["solution = \(placedIn);\nobjective = \(objective);\n"];
+output ["solution = \(next);\nobjective = \(objective);\n"];
