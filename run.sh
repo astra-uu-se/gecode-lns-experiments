@@ -1,32 +1,30 @@
 #!/bin/bash
-LNS_SOLVER_DIR="${HOME}/gecode-lns"
-PAR_SOLVER_DIR="${HOME}/gecode-par"
+LNS_SOLVER_DIR="${HOME}/gecode-ls"
+PAR_SOLVER_DIR="${HOME}/gecode-ls"
 SOLVERS=(\
 "${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc" \
-"${PAR_SOLVER_DIR}/cmake-build-release/tools/flatzinc/gecode.msc" \
 "${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc")
-NUM_RUNS=( 10 10 10 )
-SUFFIXES=( "lns" "par" "mab" )
+NUM_RUNS=( 3 3 )
+SUFFIXES=( "gen" "nei" )
 FLAGS=(\
-"--extra --use-pbs -p 8 --no-mab" \
-"--extra -p 8 --assets 3" \
-"--extra --use-pbs -p 8")
+"--extra --portfolio -p 8 --generic" \
+"--extra --portfolio -p 8" )
 declare -a HANDLES_CSP=(\
-true \
-true \
-true)
+false \
+false)
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
-declare -a ACTIVE_PROBLEMS=( 0 1 2 3 4 5 )
-declare -a PROBLEMS=(\
+declare -a ACTIVE_PROBLEMS=( 2 3 9 10 )
+declare -a FILE_NAMES=(\
 "hospital-residents-with-couples" \
 "jobshop" \
 "knapsack" \
 "rcpsp" \
 "rcpsp-wet" \
 "steelmillslab" \
-"tdptw" \
+"tdtsp" \
 "tsptw" \
 "vrp" \
+"openshop" )
 "carseq" \
 "nurse-rostering" \
 "rotating-workforce")
