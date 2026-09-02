@@ -20,25 +20,11 @@ constraint forall (l in Locations) (departure[l] <= late[l]);%* \label{listing:t
 int: initialObjective;
 array[int] of int: initialSolution;
 
-function int: initialPred(int: loc) = 
-  let {
-    int: index = [i | i in Locations where initialSolution[i] = loc][1];
-  } in initialSolution[if index == 1 then n else index - 1 endif];
-
-function int: initialDeparture(int: loc) = 
-  initialSolution[n + loc];
-
-solve %:: warm_start(pred ++ departure,
-      %              [initialPred(loc) | loc in Locations] ++
-      %              [initialDeparture(loc) | loc in Locations])
+solve :: warm_start(pred ++ departure,
+                    initialSolution)
       :: seq_search([int_search(pred, first_fail, indomain_min),
                      int_search([departure[l] | l in arg_sort(early)],
                                 input_order, indomain_min)])
          minimize objective;
 
-constraint forall (l in Locations) (
-    pred[l] = initialPred(l)
-);
-  
-
-output ["solution = \(pred ++ departure);\ninitialObjective = \(initialObjective + duration[initialPred(1), 1]);\nobjective = \(objective);\n"];
+output ["solution = \(pred ++ departure);\ninitialObjective = \(initialObjective + duration[initialSolution[1], 1]);\nobjective = \(objective);\n"];
