@@ -389,8 +389,6 @@ if __name__ == '__main__':
 
     extra = [] if args.extra is None else args.extra
 
-    logging.warning(args.csp)
-
     mzn_runner = MiniZincRunner(args.solver, args.model, args.output,
                                 args.time_limit, args.num_runs, args.csp,
                                 extra)
