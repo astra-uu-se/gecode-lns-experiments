@@ -28,7 +28,16 @@ constraint forall (v in Vehicles) (
     accumulatedTravelTime[startNode[v]] = 0);
 constraint forall (n in 1..max(startNode)) (
     accumulatedTravelTime[next[n]] = accumulatedTravelTime[n] + timeToNext[n]);
-solve :: 
-         int_search(timeToNext, max_regret, indomain_min)
+
+array[Nodes] of Nodes: initialSolution = 
+    % nodes:
+    [l | l in 2..nCustomers] ++ [endNode[1]] ++
+    % start nodes:
+    [1] ++ [endNode[v] | v in 2..nVehicles] ++
+    % end nodes:
+    [startNode[(v mod nVehicles) + 1] | v in Vehicles];
+
+solve :: warm_start(next, initialSolution)
+      :: int_search(timeToNext, max_regret, indomain_min)
          minimize objective;
 output ["solution = \(next);\nobjective = \(objective);\n"];
