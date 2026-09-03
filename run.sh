@@ -73,7 +73,6 @@ for s in "${!SOLVERS[@]}"; do
     echo "         --num-runs ${RUNS}"
     echo "         ${CSP_FLAG}"
     echo "         ${EXTRA}"
-    continue
     python3 run.py --solver ${SOLVER} \
                    ${MZN} \
                    -d ${DATA} \
