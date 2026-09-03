@@ -1,0 +1,15 @@
+bench_20_0.dzn
+bench_20_1.dzn
+bench_20_2.dzn
+bench_20_3.dzn
+bench_20_4.dzn
+bench_20_5.dzn
+bench_20_6.dzn
+bench_20_7.dzn
+bench_20_8.dzn
+bench_20_9.dzn
+bench_20_10.dzn
+bench_20_11.dzn
+bench_20_12.dzn
+bench_20_13.dzn
+bench_20_14.dzn

@@ -1,0 +1,15 @@
+easy-6.dzn
+easy-7.dzn
+easy-8.dzn
+easy-9.dzn
+easy-10.dzn
+nurse-1.dzn
+nurse-2.dzn
+nurse-3.dzn
+nurse-4.dzn
+nurse-5.dzn
+nurse-6.dzn
+nurse-7.dzn
+nurse-8.dzn
+nurse-9.dzn
+nurse-10.dzn
