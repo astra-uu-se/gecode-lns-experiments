@@ -14,7 +14,7 @@ false \
 false)
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 declare -a ACTIVE_PROBLEMS=( 1 7 8 9 )
-declare -a FILE_NAMES=(\
+declare -a PROBLEMS=(\
 "hospital-residents-with-couples" \
 "jobshop" \
 "knapsack" \
