@@ -10,11 +10,21 @@ SOLVER="${HOME}/gecode-ls/build/tools/flatzinc/gecode.msc" \
 NUM_CORES=8
 TIME_LIMIT=180000
 
+declare -a ACTIVE_PROBLEMS=( 1 7 8 9 )
 declare -a PROBLEMS=(\
+"hospital-residents-with-couples" \
 "jobshop" \
+"knapsack" \
+"rcpsp" \
+"rcpsp-wet" \
+"steelmillslab" \
+"tdtsp" \
 "tsptw" \
 "vrp" \
-"openshop")
+"openshop" \
+"carseq" \
+"nurse-rostering" \
+"rotating-workforce")
 
 declare -a SOLVER_EXT=(\
 "gen" \
@@ -31,7 +41,7 @@ mkdir -p ${OUTPUT_DIR}
 declare -a MODEL_STEMS=()
 declare -a DZN_STEMS=()
 declare -a OUTPUT_PREFIX_STEMS=()
-for m in "${!PROBLEMS[@]}"; do
+for m in "${ACTIVE_PROBLEMS[@]}"; do
   DZN_STEMS_FILE="${SCRIPT_DIR}/${PROBLEMS[$m]}/inputs.txt"
   OUTPUT_PROBLEM_DIR="${OUTPUT_DIR}/${PROBLEMS[$m]}"
   mkdir -p ${OUTPUT_PROBLEM_DIR}
