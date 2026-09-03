@@ -4,10 +4,6 @@ from argparse import ArgumentParser, ArgumentTypeError
 from glob import glob
 from os import path
 
-# https://link.springer.com/article/10.1023/A:1021849405707
-# https://www.sciencedirect.com/science/article/pii/037722179390182M?ref=cra_js_challenge&fr=RR-1
-
-
 class Knapsack:
     n_items: int = 0
     capacity: int = 0
