@@ -4,3 +4,5 @@ results/2025-11-26
 results/old
 results/tmp
 results/*.json
+inputs.txt
+results-slurm
