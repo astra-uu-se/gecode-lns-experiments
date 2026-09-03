@@ -5,7 +5,7 @@ from argparse import ArgumentParser, ArgumentTypeError
 from glob import glob
 from os import path
 
-class Rcpsp:
+class RcpspWet:
     n_resources: int = 0
     n_tasks: int = 0
     # resource_capability[r] = capability of resource r
@@ -331,7 +331,7 @@ if __name__ == '__main__':
     for df in data_files:
         logging.info(df)
         dzn = path.basename(df)
-        parser = Rcpsp(df)
+        parser = RcpspWet(df)
         output = path.join(args.output, dzn)
         logging.info(output)
         parser.output(output)
