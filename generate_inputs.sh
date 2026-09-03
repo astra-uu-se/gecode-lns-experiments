@@ -1,11 +1,11 @@
 #!/bin/bash
 MINIZINC_PATH="${HOME}/minizinc"
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
-OUTPUT_DIR="${SCRIPT_DIR}/results"
+OUTPUT_DIR="${SCRIPT_DIR}/results-slurm"
 
 OUTPUT_SH_PATH="${SCRIPT_DIR}/inputs.txt"
 
-SOLVER="${HOME}/gecode-lns/build/tools/flatzinc/gecode.msc" \
+SOLVER="${HOME}/gecode-ls/build/tools/flatzinc/gecode.msc" \
 
 NUM_CORES=8
 TIME_LIMIT=180000
@@ -13,53 +13,23 @@ TIME_LIMIT=180000
 declare -a PROBLEMS=(\
 "jobshop" \
 "tsptw" \
-"steelmillslab" \
-"rotating-workforce" \
-"nurse-rostering" \
-"carseq")
+"vrp" \
+"openshop")
 
-declare -a IS_CSP=(\
-false \
-false \
-false \
-true \
-true \
-true)
+declare -a SOLVER_EXT=(\
+"gen" \
+"nei" )
 
-declare -a MAB=(\
-"GreedyBandit" \
-"RoundRobinBandit" \
-"UCBBandit" \
-"SoftMaxBandit" \
-"Exp3Bandit" \
-"ThompsonBandit" \
-"DiscountedUCBBandit" \
-"SlidingWindowUCBBandit" \
-"DiscountedThompsonBandit" \
-"SlidingWindowThompsonBandit" \
-"FDiscountedSlidingWindowThompsonBandit" \
-"RavenBandit")
-
-declare -a MAB_IS_USED=(\
-true \
-false \
-false \
-false \
-false \
-false \
-false \
-false \
-false \
-false \
-false \
-false)
+SOLVER_FLAGS=(\
+"--portfolio --generic" \
+"--portfolio" )
 
 NUM_RUNS=5
 
+mkdir -p ${OUTPUT_DIR}
 # Read the dzn names into an array
 declare -a MODEL_STEMS=()
 declare -a DZN_STEMS=()
-declare -a IS_CSP_STEMS=()
 declare -a OUTPUT_PREFIX_STEMS=()
 for m in "${!PROBLEMS[@]}"; do
   DZN_STEMS_FILE="${SCRIPT_DIR}/${PROBLEMS[$m]}/inputs.txt"
@@ -69,30 +39,37 @@ for m in "${!PROBLEMS[@]}"; do
   for d in ${!DZN_FILES[@]}; do
     MODEL_STEMS+=("${SCRIPT_DIR}/${PROBLEMS[$m]}/${PROBLEMS[$m]}.mzn")
     DZN_STEMS+=("${SCRIPT_DIR}/${PROBLEMS[$m]}/dzn/${DZN_FILES[$d]}")
-    IS_CSP_STEMS+=(${IS_CSP[$m]})
     OUTPUT_PREFIX_STEMS+=("${OUTPUT_PROBLEM_DIR}/${DZN_FILES[$d]%.*}")
   done
 done
 
 declare -a JOBS=()
-for m in ${!DZN_STEMS[@]}; do
-  echo ${MODEL_STEMS[$m]}
-  if [ ${IS_CSP_STEMS[$m]} = false ]; then SOL_FLAG="--num-solutions 1"; else SOL_FLAG="--all-solutions"; fi
-  for b in ${!MAB[@]}; do
-    if [ ${MAB_IS_USED[$b]} = false ]; then
-      continue
-    fi
+for s in ${!SOLVER_EXT[@]}; do
+  for m in ${!MODEL_STEMS[@]}; do
+    echo ${MODEL_STEMS[$m]}
+    SOL_FLAG="--all-solutions"
     for ((i=0;i<=$NUM_RUNS;i++)); do
-      OUTPUT_FILE="${OUTPUT_PREFIX_STEMS[$m]}-mab-${b}-${i}.json"
+      OUTPUT_FILE="${OUTPUT_PREFIX_STEMS[$m]}-${SOLVER_EXT[$s]}-${i}.json"
       if [ -f ${OUTPUT_FILE} ]; then
         continue
       fi
-      JOBS+=("${MINIZINC_PATH} ${MODEL_STEMS[$m]} --solver ${SOLVER} -d ${DZN_STEMS[$m]} --json-stream --output-time --output-objective --time-limit ${TIME_LIMIT} ${SOL_FLAG} --output-to-file ${OUTPUT_FILE} --use-pbs -p ${NUM_CORES} --mab-type ${b}")
+      JOBS+=(\
+"${MINIZINC_PATH} \
+${MODEL_STEMS[$m]} \
+--solver ${SOLVER} -d \
+${DZN_STEMS[$m]} \
+--time-limit ${TIME_LIMIT} \
+${SOL_FLAG} \
+--output-to-file ${OUTPUT_FILE} \
+-p ${NUM_CORES} \
+${SOLVER_FLAGS[$s]} \
+--json-stream \
+--output-time \
+--output-objective" )
     done
   done
 done
 
-echo "$COMMAND" >> ${OUTPUT_SH_PATH}
 NUM_COMMANDS_PER_JOB=10
 UB=$((${NUM_COMMANDS_PER_JOB} - 1))
 i=0
