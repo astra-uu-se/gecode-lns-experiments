@@ -13,7 +13,7 @@ declare -a HANDLES_CSP=(\
 false \
 false)
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
-declare -a ACTIVE_PROBLEMS=( 2 3 9 10 )
+declare -a ACTIVE_PROBLEMS=( 1 7 8 9 )
 declare -a FILE_NAMES=(\
 "hospital-residents-with-couples" \
 "jobshop" \
@@ -24,11 +24,12 @@ declare -a FILE_NAMES=(\
 "tdtsp" \
 "tsptw" \
 "vrp" \
-"openshop" )
+"openshop" \
 "carseq" \
 "nurse-rostering" \
 "rotating-workforce")
 declare -a IS_CSP=(\
+0 \
 0 \
 0 \
 0 \
