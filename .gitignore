@@ -7,3 +7,4 @@ results/*.json
 inputs.txt
 !*/inputs.txt
 results-slurm
+slurm-*_*.out

@@ -31,8 +31,8 @@ declare -a SOLVER_EXT=(\
 "nei" )
 
 SOLVER_FLAGS=(\
-"--portfolio --generic" \
-"--portfolio" )
+"--portfolio --no-systematic --generic" \
+"--portfolio --no-systematic" )
 
 NUM_RUNS=5
 
