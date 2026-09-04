@@ -10,7 +10,7 @@ SOLVER="${HOME}/gecode-ls/build/tools/flatzinc/gecode.msc" \
 NUM_CORES=8
 TIME_LIMIT=180000
 
-declare -a ACTIVE_PROBLEMS=( 1 7 8 9 )
+declare -a ACTIVE_PROBLEMS=( 1 7 8 9 10 )
 declare -a PROBLEMS=(\
 "hospital-residents-with-couples" \
 "jobshop" \
@@ -22,6 +22,7 @@ declare -a PROBLEMS=(\
 "tsptw" \
 "vrp" \
 "openshop" \
+"poetry" \
 "carseq" \
 "nurse-rostering" \
 "rotating-workforce")
