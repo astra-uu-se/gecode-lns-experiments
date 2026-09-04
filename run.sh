@@ -4,16 +4,16 @@ PAR_SOLVER_DIR="${HOME}/gecode-ls"
 SOLVERS=(\
 "${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc" \
 "${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc")
-NUM_RUNS=( 3 3 )
+NUM_RUNS=( 2 2 )
 SUFFIXES=( "gen" "nei" )
 FLAGS=(\
-"--extra --portfolio -p 8 --generic" \
-"--extra --portfolio -p 8" )
+"--extra --portfolio -p 8 --no-systematic --generic" \
+"--extra --portfolio -p 8 --no-systematic" )
 declare -a HANDLES_CSP=(\
 false \
 false)
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
-declare -a ACTIVE_PROBLEMS=( 1 7 8 9 )
+declare -a ACTIVE_PROBLEMS=( 1 7 8 9 10 )
 declare -a PROBLEMS=(\
 "hospital-residents-with-couples" \
 "jobshop" \
@@ -25,10 +25,12 @@ declare -a PROBLEMS=(\
 "tsptw" \
 "vrp" \
 "openshop" \
+"poetry" \
 "carseq" \
 "nurse-rostering" \
 "rotating-workforce")
 declare -a IS_CSP=(\
+0 \
 0 \
 0 \
 0 \
