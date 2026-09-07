@@ -4,7 +4,7 @@ PAR_SOLVER_DIR="${HOME}/gecode-ls"
 SOLVERS=(\
 "${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc" \
 "${LNS_SOLVER_DIR}/build/tools/flatzinc/gecode.msc")
-NUM_RUNS=( 2 2 )
+NUM_RUNS=( 1 1 )
 SUFFIXES=( "gen" "nei" )
 FLAGS=(\
 "--extra --portfolio -p 8 --no-systematic --generic" \

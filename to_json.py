@@ -79,10 +79,18 @@ class Method:
     
     @property
     def is_minimization(self) -> bool:
+        if all(r.is_minimization for r in self.runs):
+            return True
+        if any(r.is_maximization for r in self.runs):
+            return False
         return any(r.is_minimization for r in self.runs)
 
     @property
     def is_maximization(self) -> bool:
+        if all(r.is_maximization for r in self.runs):
+                    return True
+        if any(r.is_minimization for r in self.runs):
+            return False
         return any(r.is_maximization for r in self.runs)
 
     @property
@@ -168,10 +176,18 @@ class Instance:
 
     @property
     def is_minimization(self) -> bool:
+        if all(m.is_minimization for m in self.methods.values()):
+            return True
+        if any((m.is_maximization for m in self.methods.values())):
+            return False
         return any(m.is_minimization for m in self.methods.values())
 
     @property
     def is_maximization(self) -> bool:
+        if all(m.is_maximization for m in self.methods.values()):
+            return True
+        if any((m.is_minimization for m in self.methods.values())):
+            return False
         return any(m.is_maximization for m in self.methods.values())
 
     @property
@@ -234,6 +250,10 @@ class Model:
 
     @property
     def is_minimization(self) -> bool:
+        if all(i.is_minimization for i in self.instances.values()):
+            return True
+        if any(i.is_maximization for i in self.instances.values()):
+            return False
         return any(i.is_minimization for i in self.instances.values())
     
     @property
@@ -290,7 +310,9 @@ class JsonWriter:
                     'mab': 'mab',
                     'lns': 'lns',
                     'par': 'par',
-                    'cp25': 'dcs'}
+                    'cp25': 'dcs',
+                    'nei': 'NEI',
+                    'gen': 'GEN'}
 
     def __init__(self, model_name, acronym, best_obj):
         self.model = Model(model_name, acronym)

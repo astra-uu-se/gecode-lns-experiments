@@ -41,7 +41,7 @@ class Instance:
 
         self.val = (
             100 if None in {self.objective, best_objective, initial_objective}
-            else 100 * abs(self.objective - best_objective) / initial_objective)
+            else 100 * abs(self.objective - best_objective) / max(1, initial_objective))
 
 
 class Model:
@@ -82,7 +82,7 @@ class JsonComparer:
     models: Dict[str, Model] = None
     tex_pt_textwidth: float = 398.33858
     pt_to_inch: float = 0.0138
-    master_method: str = 'Gecode-depLNS-MAB'
+    master_method: str = 'nei'
 
     def __init__(self, skip_missing: bool):
         self.skip_missing = skip_missing
@@ -203,6 +203,8 @@ class JsonComparer:
 
     def create_csp_plots(self):
         num_plots = sum(1 for m in self.models.values() if m.csp)
+        if num_plots == 0:
+            return
         cols = min(3, num_plots)
         rows = int(ceil(num_plots / cols))
         fig_width = max(8, self.tex_pt_textwidth * self.pt_to_inch)
@@ -270,6 +272,8 @@ class JsonComparer:
     def create_cop_plots(self):
         num_plots = sum(2 for m in self.models.values()
                         if not m.csp)
+        if num_plots == 0:
+            return
         cols = min(3, num_plots)
         rows = int(ceil(num_plots / cols))
         fig_width = max(8, self.tex_pt_textwidth * self.pt_to_inch)
@@ -526,7 +530,7 @@ if __name__ == '__main__':
     data_files = list(sorted(data_files))
 
     logging.basicConfig(level=logging.INFO)
-
+    
     json_comparer = JsonComparer(args.skip_missing)
     for data_file in data_files:
         json_comparer.parse(data_file)
